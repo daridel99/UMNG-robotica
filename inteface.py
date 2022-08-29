@@ -57,21 +57,43 @@ def Aservo3(Aposiciones3):
     board.write(b'\r\n')
 
 #gripper
+globals()["clickeo"]=True
 def abrir():
-    board.write(b'90 \r\n')
+    if  globals()["clickeo"]:
+        globals()["clickeo"]=globals()["clickeo"]^1
+        BoA["bg"]="red"
+        board.write(b'S0 \r\n')
+    
+    else:
+        globals()["clickeo"]=globals()["clickeo"]^1
+        BoA["bg"]="green"
+        board.write(b'S1 \r\n')
 
+globals()["clickeo1"]=True
 def cerrar():
-    board.write(b'0 \r\n')
+    if  globals()["clickeo1"]:
+        globals()["clickeo1"]=globals()["clickeo1"]^1
+        BoC["bg"]="red"
+        board.write(b'A0 \r\n')
+    else:
+        globals()["clickeo1"]=globals()["clickeo1"]^1
+        BoC["bg"]="green"
+        board.write(b'A1 \r\n')
 
 #-------------------------info
 def info():
     messagebox.showinfo("Informacion",
-                          "Modo de uso:\nDesplazar cada slider para mover las articulaciones del brazo robotico para realizar el movimiento de cada articulacion \n o digitar el valor de lo que se quiere mover para \n luego presionar el boton de envio correspondiente"  )
+                          "Modo de uso:\nDesplazar cada slider para mover las articulaciones del brazo robotico para realizar el movimiento de cada articulacion \n o digitar el valor de lo que se quiere mover para \n luego presionar el boton de envio correspondiente \n se pretende obtener las matrices individuales y totales en tiempo real"  )
 
 #----------------------------serial
 def close():
     board.write(b'bye\r\n')
     board.close()
+    #----------- ejemplo de llenado
+    for n in range(1,11):
+        for i in range(0,4):
+            for j in range(0,4):
+                globals()["arr"+ str(n) +"_" + str(i) + str(j)].set(str(n)+"_"+str(i)+str(j)) #globals()
 #----------------------------
 ####################################
 #----------------------------envio de datos por boton
@@ -121,7 +143,10 @@ widget.grid(column=1, row=1)
 
 img1= PhotoImage(file="icon.png")
 widget1 = Label(root, image=img1)
-#widget1.grid(column=3, row=1)
+widget1.grid(column=3, row=1)
+
+globals()["color_boton1"]=StringVar()
+color_boton1='green'
 
 #etiqueta 1
 var= StringVar()
@@ -256,19 +281,22 @@ txt_edit_ang6.insert(tk.END, "0")
 #Gripper
 
 #abrir
-#BoA = Button(root,text="Abrir Gripper",command=abrir,activebackground='green',bd=3,height=2,width=17)
-#BoA.grid(column=2,row=6)
+BoA = Button(root,text="Gripper",command=abrir, 
+bg='green',
+#activebackground='green',
+bd=3,height=2,width=10)
+BoA.grid(column=30,row=5)
 
 #Cerrar
-#BoC = Button(root,text="Cerrar Gripper",command=cerrar,activebackground='red',bd=3,height=2,width=17)
-#BoC.grid(column=2,row=8)
+BoC = Button(root,text="Gripper",command=cerrar,bg='green',bd=3,height=2,width=10)
+BoC.grid(column=30,row=11)
 
 #boton info
 Binf = Button(root,
              text="Modo de uso",
              relief=GROOVE,
              command=info   )
-#Binf.grid(column=4,row=1)
+Binf.grid(column=30,row=1)
 
 #boton com close
 
@@ -276,7 +304,7 @@ Bclose = Button(root,
              text="COM close",
              relief=GROOVE,
              command=close   )
-Bclose.grid(column=1,row=14)
+Bclose.grid(column=1,row=11)
 
 Envio1=Button(root, text='Envio1', activebackground='yellow', command=show_values1)
 Envio1.grid(column=2,row=5)
@@ -402,10 +430,5 @@ for i in range(height): #Rows
 
 #########################
 
-#----------- ejemplo de llenado
-for n in range(1,11):
-    for i in range(0,4):
-        for j in range(0,4):
-            globals()["arr"+ str(n) +"_" + str(i) + str(j)].set(str(n)+"_"+str(i)+str(j)) #globals()
 
 root.mainloop()
