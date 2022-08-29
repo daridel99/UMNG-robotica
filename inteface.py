@@ -62,12 +62,12 @@ def abrir():
     if  globals()["clickeo"]:
         globals()["clickeo"]=globals()["clickeo"]^1
         BoA["bg"]="red"
-        board.write(b'S0 \r\n')
+        board.write(b'E0 \r\n')
     
     else:
         globals()["clickeo"]=globals()["clickeo"]^1
         BoA["bg"]="green"
-        board.write(b'S1 \r\n')
+        board.write(b'E1 \r\n')
 
 globals()["clickeo1"]=True
 def cerrar():
@@ -143,7 +143,7 @@ widget.grid(column=1, row=1)
 
 img1= PhotoImage(file="icon.png")
 widget1 = Label(root, image=img1)
-widget1.grid(column=3, row=1)
+#widget1.grid(column=3, row=1)
 
 globals()["color_boton1"]=StringVar()
 color_boton1='green'
@@ -281,11 +281,9 @@ txt_edit_ang6.insert(tk.END, "0")
 #Gripper
 
 #abrir
-BoA = Button(root,text="Gripper",command=abrir, 
-bg='green',
-#activebackground='green',
-bd=3,height=2,width=10)
+BoA = Button(root,text="Gripper",command=abrir, bg='green', bd=3, height=2, width=10)
 BoA.grid(column=30,row=5)
+#activebackground='green',
 
 #Cerrar
 BoC = Button(root,text="Gripper",command=cerrar,bg='green',bd=3,height=2,width=10)
@@ -313,6 +311,7 @@ Envio2=Button(root, text='Envio2', activebackground='yellow', command=show_value
 Envio2.grid(column=2,row=11)
 
 ####################################
+
 #------------creacion de variables en masa
 for n in range(1,11):
     for i in range(0,4):
@@ -429,6 +428,5 @@ for i in range(height): #Rows
         T23.grid(row=i+8, column=j+24)
 
 #########################
-
 
 root.mainloop()
