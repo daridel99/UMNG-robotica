@@ -429,4 +429,10 @@ for i in range(height): #Rows
 
 #########################
 
+#----------- ejemplo de llenado
+    for n in range(1,11):
+        for i in range(0,4):
+            for j in range(0,4):
+                globals()["arr"+ str(n) +"_" + str(i) + str(j)].set(str(n)+"_"+str(i)+str(j)) #globals()
+
 root.mainloop()
