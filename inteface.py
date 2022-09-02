@@ -1,4 +1,5 @@
 #librerias
+from array import array
 from tkinter import HORIZONTAL, PhotoImage, StringVar, Widget
 #from guizero import App, Slider, TextBox
 from ctypes import sizeof
@@ -10,6 +11,7 @@ from tkinter import messagebox
 #from pyfirmata import Arduino, util, SERVO
 from PIL import Image, ImageTk
 import serial, serial.tools.list_ports
+import math as mt
 
 #configuracion COM
 board =serial.Serial(port='COM1', baudrate=9600)
@@ -17,26 +19,101 @@ board.write( b'fine\r\n' )
 sleep(5) #5 segundos para que establezca la comunicacion
 
 #Funciones de movimiento scada
+def matrices_T(angz,dz,angx,ax):
+    #Fila 1
+    r11="{:.5f}".format(mt.cos(angz))
+    r12="{:.5f}".format((-1)*mt.sin(angz)*mt.cos(angx))
+    r13="{:.5f}".format(mt.sin(angz)*mt.sin(angx))
+    r14="{:.5f}".format(ax*mt.cos(angz))
+    #Fila 2
+    r21="{:.5f}".format(mt.sin(angz))
+    r22="{:.5f}".format(mt.cos(angz)*mt.cos(angx)) 
+    r23="{:.5f}".format((-1)*mt.cos(angz)*mt.sin(angx))
+    r24="{:.5f}".format(ax*mt.sin(angz))
+    #Fila 3
+    r31=0
+    r32="{:.5f}".format(mt.sin(angx))
+    r33="{:.5f}".format(mt.cos(angx))
+    r34="{:.5f}".format(dz)
+    #Fila 4
+    r41=0
+    r42=0 
+    r43=0 
+    r44=1
+    matrix=np.array([[r11,r12,r13,r14],[r21,r22,r23,r24],[r31,r32,r33,r34],[r41,r42,r43,r44]],float)
+    return matrix
+
+def calculo(matrices_DH,n):
+    MatrizFinal=np.eye(4)
+    for j in range (0,n):
+        MatrizFinal=np.dot(MatrizFinal,matrices_DH[j])          
+    return MatrizFinal
+
+def M1(n,d1,t2,t3,t4):
+    matrices=[]
+    z=[0, t2, t3,t4]
+    d=[d1,0,0,0]
+    x=[0,0,0,0] 
+    a=[47.3,149.1,148.8,30]     
+    for i in range (0,n):
+        matrices.append(matrices_T((z[i]*mt.pi/180),d[i],x[i],a[i]))
+    final=calculo(matrices,n)
+    return final,matrices
+
+def M2(n,j1,j2,j3):
+    matrices=[]
+    z=[j1, j2, j3]
+    d=[62.87,0,0]
+    x=[mt.pi/2,0,0] 
+    a=[14.5,67.5,88.28]         
+    for i in range (0,n):
+        matrices.append(matrices_T((z[i]*mt.pi/180),d[i],x[i],a[i]))
+    final=calculo(matrices,n)
+    return final,matrices
+
+#Creacion de variables en masa
+def creacion():
+    for n in range(1,11):
+        for i in range(0,4):
+            for j in range(0,4):
+                globals()["arr"+str(n)+"_" + str(i) + str(j)]=StringVar()
+
+#Llenado
+def llenado (matri):
+    for n in range(6,10):
+        for i in range(0,4):
+            for j in range(0,4):                
+                globals()["arr"+ str(n) +"_" + str(i) + str(j)].set(matri[1][n-6][i][j]) #globals()
+
+def dato1():
+    f=M2(3,angulo1.get(),angulo2.get(),angulo3.get())
+    llenado(f)
 
 def servo1(posiciones1):
     #escritura de angulo
     board.write(b'Eb')
     board.write(posiciones1.encode())
     board.write(b'\r\n')
+    dato1()
+    #globals()["f"]=globals()["M2(3,"+angulo1.get()+","+angulo2.get()+","+angulo3.get()+")"]
+    #print(f[1][1][0][3])
+
 
 def servo2(posiciones2):
     #escritura de angulo
     board.write(b'Ebr')
     board.write(posiciones2.encode())
     board.write(b'\r\n')
+    dato1()
 
 def servo3(posiciones3):
     #escritura de angulo
     board.write(b'Eab')
     board.write(posiciones3.encode())
     board.write(b'\r\n')
+    dato1()
 
-#Funciones de movimiento atropomorfico
+#Funciones de movimiento antropomorfico
 
 def Aservo1(Aposiciones1):
     #escritura de angulo
@@ -89,11 +166,7 @@ def info():
 def close():
     board.write(b'bye\r\n')
     board.close()
-    #----------- ejemplo de llenado
-    for n in range(1,11):
-        for i in range(0,4):
-            for j in range(0,4):
-                globals()["arr"+ str(n) +"_" + str(i) + str(j)].set(str(n)+"_"+str(i)+str(j)) #globals()
+   
 #----------------------------
 ####################################
 #----------------------------envio de datos por boton
@@ -126,13 +199,11 @@ def show_values2():
     board.write(txt_edit_ang6.get(1.0, tk.END).encode())
 
 
-
-
 root = Tk()
 
 root.title("Control de Manipulador Robotico")
 root.minsize(1366,768)
-
+creacion()
 #Widgets ############################
 ####################################
 
@@ -174,7 +245,7 @@ etiquetaAp1.grid(column=1, row=6)
 
 #Barra de posicion base
 angulo1=Scale(root,
-              command = servo1,
+              command = servo1,              
               from_=0,
               to=180,
               orient = HORIZONTAL,
@@ -182,8 +253,10 @@ angulo1=Scale(root,
               troughcolor='gray',
               width = 30,
               cursor='dot',
-              label = 'Posicion Base'  )
+              label = 'Posicion Base'  )              
 angulo1.grid(column=1,row=2)
+
+print (angulo1)
 
 txt_edit_ang1 = tk.Text(root, width = 5, height=2)
 txt_edit_ang1.grid(column=2,row=2)
@@ -312,11 +385,7 @@ Envio2.grid(column=2,row=11)
 
 ####################################
 
-#------------creacion de variables en masa
-for n in range(1,11):
-    for i in range(0,4):
-        for j in range(0,4):
-            globals()["arr"+str(n)+"_" + str(i) + str(j)]=StringVar()
+
 
 ####################################
 #---------------manipulador 1
@@ -429,10 +498,5 @@ for i in range(height): #Rows
 
 #########################
 
-#----------- ejemplo de llenado
-    for n in range(1,11):
-        for i in range(0,4):
-            for j in range(0,4):
-                globals()["arr"+ str(n) +"_" + str(i) + str(j)].set(str(n)+"_"+str(i)+str(j)) #globals()
 
 root.mainloop()
