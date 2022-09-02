@@ -240,12 +240,6 @@ root = Tk()
 root.title("Control de Manipulador Robotico")
 root.minsize(1366,768)
 creacion()
-#Widgets ############################
-#scrollbar = tk.Scrollbar(root)
-#scrollbar.config(command=root.yview)
-#root.scrollbar = tk.Scrollbar(root)
-#root.scrollbar.pack(side="right", fill="y")
-####################################
 
 #logo
 img= PhotoImage(file="LOGOUMNG.png")
