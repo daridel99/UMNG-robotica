@@ -109,14 +109,18 @@ def show_values1():
 
     #ang1 
     board.write(b'Eb')
-    board.write(txt_edit_ang1.get(1.0, tk.END).encode())
+    board.write(txt_edit_ang0.get(1.0, tk.END).encode())
 
     #ang2 
     board.write(b'Ebr')
-    board.write(txt_edit_ang2.get(1.0, tk.END).encode())
+    board.write(txt_edit_ang1.get(1.0, tk.END).encode())
 
     #ang3 
     board.write(b'Eab')
+    board.write(txt_edit_ang2.get(1.0, tk.END).encode())
+
+    #ang4
+    board.write(b'Em')
     board.write(txt_edit_ang3.get(1.0, tk.END).encode())
 
 def show_values2():
@@ -141,13 +145,6 @@ root = Tk()
 root.title("Control de Manipulador Robotico")
 root.minsize(1366,768)
 
-#Widgets ############################
-#scrollbar = tk.Scrollbar(root)
-#scrollbar.config(command=root.yview)
-#root.scrollbar = tk.Scrollbar(root)
-#root.scrollbar.pack(side="right", fill="y")
-####################################
-
 #logo
 img= PhotoImage(file="LOGOUMNG.png")
 widget = Label(root, image=img)
@@ -156,6 +153,10 @@ widget = Label(root, image=img)
 img1= PhotoImage(file="icon.png")
 widget1 = Label(root, image=img1)
 #widget1.grid(column=3, row=1)
+
+#Widgets ############################
+#scrollbar = Scrollbar(root).pack( side = RIGHT, fill=Y )
+####################################
 
 globals()["color_boton1"]=StringVar()
 color_boton1='green'
@@ -188,7 +189,7 @@ etiquetaAp1.grid(column=1, row=6)
 angulo1=Scale(root,
               command = servo1,
               from_=0,
-              to=180,
+              to=122,
               orient = HORIZONTAL,
               length=300,
               troughcolor='gray',
@@ -197,9 +198,9 @@ angulo1=Scale(root,
               label = 'Posicion Base Scara'  )
 angulo1.grid(column=1,row=2)
 
-txt_edit_ang1 = tk.Text(root, width = 5, height=2)
-txt_edit_ang1.grid(column=2,row=2)
-txt_edit_ang1.insert(tk.END, "0")
+txt_edit_ang0 = tk.Text(root, width = 5, height=2)
+txt_edit_ang0.grid(column=2,row=2)
+txt_edit_ang0.insert(tk.END, "0")
 
 #Barra de posicion brazo
 angulo2= Scale(root,
@@ -214,9 +215,9 @@ angulo2= Scale(root,
               label = 'Posicion Brazo Scara'  )
 angulo2.grid(column=1,row=3)
 
-txt_edit_ang2 = tk.Text(root, width = 5, height=2)
-txt_edit_ang2.grid(column=2,row=3)
-txt_edit_ang2.insert(tk.END, "0")
+txt_edit_ang1 = tk.Text(root, width = 5, height=2)
+txt_edit_ang1.grid(column=2,row=3)
+txt_edit_ang1.insert(tk.END, "0")
 
 #Barra de posicion antebrazo
 angulo3= Scale(root,
@@ -231,9 +232,9 @@ angulo3= Scale(root,
               label = 'Posicion anteBrazo Scara'  )
 angulo3.grid(column=1,row=4)
 
-txt_edit_ang3 = tk.Text(root, width = 5, height=2)
-txt_edit_ang3.grid(column=2,row=4)
-txt_edit_ang3.insert(tk.END, "0")
+txt_edit_ang2 = tk.Text(root, width = 5, height=2)
+txt_edit_ang2.grid(column=2,row=4)
+txt_edit_ang2.insert(tk.END, "0")
 
 #Barra de posicion Muñeca
 angulo4= Scale(root,
@@ -248,9 +249,9 @@ angulo4= Scale(root,
               label = 'Posicion Muñeca Scara'  )
 angulo4.grid(column=1,row=5)
 
-txt_edit_ang4 = tk.Text(root, width = 5, height=2)
-txt_edit_ang4.grid(column=2,row=5)
-txt_edit_ang4.insert(tk.END, "0")
+txt_edit_ang3 = tk.Text(root, width = 5, height=2)
+txt_edit_ang3.grid(column=2,row=5)
+txt_edit_ang3.insert(tk.END, "0")
 
 ################################
 
