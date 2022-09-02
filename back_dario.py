@@ -1,5 +1,5 @@
 #librerias
-from array import array
+import math
 from tkinter import HORIZONTAL, PhotoImage, StringVar, Widget
 #from guizero import App, Slider, TextBox
 from ctypes import sizeof
@@ -11,7 +11,7 @@ from tkinter import messagebox
 #from pyfirmata import Arduino, util, SERVO
 from PIL import Image, ImageTk
 import serial, serial.tools.list_ports
-import math as mt
+from tkinter import ttk
 
 #configuracion COM
 board =serial.Serial(port='COM1', baudrate=9600)
@@ -19,101 +19,32 @@ board.write( b'fine\r\n' )
 sleep(5) #5 segundos para que establezca la comunicacion
 
 #Funciones de movimiento scada
-def matrices_T(angz,dz,angx,ax):
-    #Fila 1
-    r11="{:.5f}".format(mt.cos(angz))
-    r12="{:.5f}".format((-1)*mt.sin(angz)*mt.cos(angx))
-    r13="{:.5f}".format(mt.sin(angz)*mt.sin(angx))
-    r14="{:.5f}".format(ax*mt.cos(angz))
-    #Fila 2
-    r21="{:.5f}".format(mt.sin(angz))
-    r22="{:.5f}".format(mt.cos(angz)*mt.cos(angx)) 
-    r23="{:.5f}".format((-1)*mt.cos(angz)*mt.sin(angx))
-    r24="{:.5f}".format(ax*mt.sin(angz))
-    #Fila 3
-    r31=0
-    r32="{:.5f}".format(mt.sin(angx))
-    r33="{:.5f}".format(mt.cos(angx))
-    r34="{:.5f}".format(dz)
-    #Fila 4
-    r41=0
-    r42=0 
-    r43=0 
-    r44=1
-    matrix=np.array([[r11,r12,r13,r14],[r21,r22,r23,r24],[r31,r32,r33,r34],[r41,r42,r43,r44]],float)
-    return matrix
-
-def calculo(matrices_DH,n):
-    MatrizFinal=np.eye(4)
-    for j in range (0,n):
-        MatrizFinal=np.dot(MatrizFinal,matrices_DH[j])          
-    return MatrizFinal
-
-def M1(n,d1,t2,t3,t4):
-    matrices=[]
-    z=[0, t2, t3,t4]
-    d=[d1,0,0,0]
-    x=[0,0,0,0] 
-    a=[47.3,149.1,148.8,30]     
-    for i in range (0,n):
-        matrices.append(matrices_T((z[i]*mt.pi/180),d[i],x[i],a[i]))
-    final=calculo(matrices,n)
-    return final,matrices
-
-def M2(n,j1,j2,j3):
-    matrices=[]
-    z=[j1, j2, j3]
-    d=[62.87,0,0]
-    x=[mt.pi/2,0,0] 
-    a=[14.5,67.5,88.28]         
-    for i in range (0,n):
-        matrices.append(matrices_T((z[i]*mt.pi/180),d[i],x[i],a[i]))
-    final=calculo(matrices,n)
-    return final,matrices
-
-#Creacion de variables en masa
-def creacion():
-    for n in range(1,11):
-        for i in range(0,4):
-            for j in range(0,4):
-                globals()["arr"+str(n)+"_" + str(i) + str(j)]=StringVar()
-
-#Llenado
-def llenado (matri):
-    for n in range(6,10):
-        for i in range(0,4):
-            for j in range(0,4):                
-                globals()["arr"+ str(n) +"_" + str(i) + str(j)].set(matri[1][n-6][i][j]) #globals()
-
-def dato1():
-    f=M2(3,angulo1.get(),angulo2.get(),angulo3.get())
-    llenado(f)
 
 def servo1(posiciones1):
     #escritura de angulo
     board.write(b'Eb')
     board.write(posiciones1.encode())
     board.write(b'\r\n')
-    dato1()
-    #globals()["f"]=globals()["M2(3,"+angulo1.get()+","+angulo2.get()+","+angulo3.get()+")"]
-    #print(f[1][1][0][3])
-
 
 def servo2(posiciones2):
     #escritura de angulo
     board.write(b'Ebr')
     board.write(posiciones2.encode())
     board.write(b'\r\n')
-    dato1()
 
 def servo3(posiciones3):
     #escritura de angulo
     board.write(b'Eab')
     board.write(posiciones3.encode())
     board.write(b'\r\n')
-    dato1()
 
-#Funciones de movimiento antropomorfico
+def servo4(posiciones4):
+    #escritura de angulo
+    board.write(b'Em')
+    board.write(posiciones4.encode())
+    board.write(b'\r\n')
+
+#Funciones de movimiento atropomorfico
 
 def Aservo1(Aposiciones1):
     #escritura de angulo
@@ -166,7 +97,11 @@ def info():
 def close():
     board.write(b'bye\r\n')
     board.close()
-   
+    #----------- ejemplo de llenado
+    for n in range(1,11):
+        for i in range(0,4):
+            for j in range(0,4):
+                globals()["arr"+ str(n) +"_" + str(i) + str(j)].set(str(n)+"_"+str(i)+str(j)) #globals()
 #----------------------------
 ####################################
 #----------------------------envio de datos por boton
@@ -199,18 +134,24 @@ def show_values2():
     board.write(txt_edit_ang6.get(1.0, tk.END).encode())
 
 
+
+
 root = Tk()
 
 root.title("Control de Manipulador Robotico")
 root.minsize(1366,768)
-creacion()
+
 #Widgets ############################
+#scrollbar = tk.Scrollbar(root)
+#scrollbar.config(command=root.yview)
+#root.scrollbar = tk.Scrollbar(root)
+#root.scrollbar.pack(side="right", fill="y")
 ####################################
 
 #logo
 img= PhotoImage(file="LOGOUMNG.png")
 widget = Label(root, image=img)
-widget.grid(column=1, row=1)
+#widget.grid(column=1, row=1)
 
 img1= PhotoImage(file="icon.png")
 widget1 = Label(root, image=img1)
@@ -223,7 +164,7 @@ color_boton1='green'
 var= StringVar()
 etiqueta = Label(root, textvariable=var , relief=FLAT , pady=5)
 var.set("Dario Delgado - 1802992 \n Brayan Ulloa - 1802861 \n Santiago Tobar - 1803015 \n Fernando Llanes - 1802878 \n Karla Baron - 1803648 \n Sebastian Niño - 1803558")
-etiqueta.grid(column=2, row=1)
+#etiqueta.grid(column=2, row=1)
 
 #etiqueta apoyo
 var2= StringVar()
@@ -245,7 +186,7 @@ etiquetaAp1.grid(column=1, row=6)
 
 #Barra de posicion base
 angulo1=Scale(root,
-              command = servo1,              
+              command = servo1,
               from_=0,
               to=180,
               orient = HORIZONTAL,
@@ -253,10 +194,8 @@ angulo1=Scale(root,
               troughcolor='gray',
               width = 30,
               cursor='dot',
-              label = 'Posicion Base'  )              
+              label = 'Posicion Base Scara'  )
 angulo1.grid(column=1,row=2)
-
-print (angulo1)
 
 txt_edit_ang1 = tk.Text(root, width = 5, height=2)
 txt_edit_ang1.grid(column=2,row=2)
@@ -272,7 +211,7 @@ angulo2= Scale(root,
               troughcolor='gray',
               width = 30,
               cursor='dot',
-              label = 'Posicion Brazo'  )
+              label = 'Posicion Brazo Scara'  )
 angulo2.grid(column=1,row=3)
 
 txt_edit_ang2 = tk.Text(root, width = 5, height=2)
@@ -289,12 +228,29 @@ angulo3= Scale(root,
               troughcolor='gray',
               width = 30,
               cursor='dot',
-              label = 'Posicion anteBrazo'  )
+              label = 'Posicion anteBrazo Scara'  )
 angulo3.grid(column=1,row=4)
 
 txt_edit_ang3 = tk.Text(root, width = 5, height=2)
 txt_edit_ang3.grid(column=2,row=4)
 txt_edit_ang3.insert(tk.END, "0")
+
+#Barra de posicion Muñeca
+angulo4= Scale(root,
+              command = servo4,
+              from_=0,
+              to=180,
+              orient = HORIZONTAL,
+              length=300,
+              troughcolor='gray',
+              width = 30,
+              cursor='dot',
+              label = 'Posicion Muñeca Scara'  )
+angulo4.grid(column=1,row=5)
+
+txt_edit_ang4 = tk.Text(root, width = 5, height=2)
+txt_edit_ang4.grid(column=2,row=5)
+txt_edit_ang4.insert(tk.END, "0")
 
 ################################
 
@@ -308,7 +264,7 @@ Aangulo1=Scale(root,
               troughcolor='gray',
               width = 30,
               cursor='dot',
-              label = 'Posicion Base'  )
+              label = 'Posicion Base Antropomorfo'  )
 Aangulo1.grid(column=1,row=8)
 
 txt_edit_ang4 = tk.Text(root, width = 5, height=2)
@@ -325,7 +281,7 @@ Aangulo2= Scale(root,
               troughcolor='gray',
               width = 30,
               cursor='dot',
-              label = 'Posicion Brazo'  )
+              label = 'Posicion Brazo Antropomorfo'  )
 Aangulo2.grid(column=1,row=9)
 
 txt_edit_ang5 = tk.Text(root, width = 5, height=2)
@@ -342,7 +298,7 @@ Aangulo3= Scale(root,
               troughcolor='gray',
               width = 30,
               cursor='dot',
-              label = 'Posicion anteBrazo'  )
+              label = 'Posicion anteBrazo Antropomorfo'  )
 Aangulo3.grid(column=1,row=10)
 
 txt_edit_ang6 = tk.Text(root, width = 5, height=2)
@@ -378,14 +334,18 @@ Bclose = Button(root,
 Bclose.grid(column=1,row=11)
 
 Envio1=Button(root, text='Envio1', activebackground='yellow', command=show_values1)
-Envio1.grid(column=2,row=5)
+Envio1.grid(column=2,row=6)
 
 Envio2=Button(root, text='Envio2', activebackground='yellow', command=show_values2)
 Envio2.grid(column=2,row=11)
 
 ####################################
 
-
+#------------creacion de variables en masa
+for n in range(1,11):
+    for i in range(0,4):
+        for j in range(0,4):
+            globals()["arr"+str(n)+"_" + str(i) + str(j)]=StringVar()
 
 ####################################
 #---------------manipulador 1
@@ -491,12 +451,36 @@ etiquetaAp52.grid(column=23, row=8)
 
 
 #var44=StringVar()
-for i in range(height): #Rows
-    for j in range(width): #Columns
-        T23 = Entry(root, text='', width=5, textvariable=globals()["arr10_" + str(i) + str(j)] )
-        T23.grid(row=i+8, column=j+24)
+#for i in range(height): #Rows
+#    for j in range(width): #Columns
+#        T23 = Entry(root, text='', width=5, textvariable=globals()["arr10_" + str(i) + str(j)] )
+#        T23.grid(row=i+8, column=j+24)
+
 
 #########################
 
+#----------- ejemplo de llenado
 
+for n in range(1,10):
+    for i in range(0,4):
+        for j in range(0,4):
+            globals()["arr"+ str(n) +"_" + str(i) + str(j)].set(str(n)+"_"+str(i)+str(j)) #globals()
+
+#globals()["arr"+str(n)+"_" + str(i) + str(j)].set(str(matrices[n][i][j]))
+
+grados = 60
+radianes = (grados* math.pi)/180
+globals()["arr9_33"].set(radianes)
+
+'''
+
+seno = math.sin(radianes)
+coseno = math.cos(radianes)
+tangente = math.tan(radianes)
+
+print(seno)
+print(coseno)
+print(tangente)     
+
+'''
 root.mainloop()
