@@ -1,8 +1,10 @@
 import math as mt
+from operator import length_hint
 from tkinter import HORIZONTAL, PhotoImage, StringVar, Widget
 from ctypes import sizeof
 import tkinter  as tk
 from tkinter import *
+from turtle import color
 import numpy as np
 from time import sleep
 from tkinter import messagebox
@@ -26,7 +28,7 @@ class Objetos:
         #Logo
         img= PhotoImage(file="LOGOUMNG.png")
         widget = Label(fi, image=img)
-        widget.place(relwidth=1,relheight=)
+        widget.place(relwidth=1,relheight=0.5)
 
         img1= PhotoImage(file="icon.png")
         widget1 = Label(fi, image=img1)
@@ -60,8 +62,7 @@ class Objetos:
                 width = 30,
                 cursor='dot',
                 label = 'Desplazamiento Base',
-                  )
-        angulo1.place(rely=0, relwidth=1/5, relheight=1/4)
+                  ).place(rely=0, relwidth=1/5, relheight=1/4)
         #Text_Box
         txt_edit_ang0 = tk.Text(frm1,width=3)
         txt_edit_ang0.place(relx=1/5, rely=0.13, relheight=1/8-0.03)
@@ -169,13 +170,62 @@ class Objetos:
               troughcolor='gray',
               width = 30,
               cursor='dot',
-              label = 'Rotación Muñeca'  )
+              label = 'Rotación Muñeca')
         Aangulo3.place(rely=(3/4-0.083), relwidth=1/5, relheight=1/3)
         #Text_Box
         txt_edit_ang6 = tk.Text(frm2, width = 3, height=1.8)
         txt_edit_ang6.place(relx=1/5, rely=4/6+0.16, relheight=1/6-0.05)
         txt_edit_ang6.insert(tk.END, "0")
         
+
+        def blanco(n):
+            blanco = Label(frmdh1, width=6)
+            blanco.grid(column=4+n, row=0)
+            
+
+
+        #Frame Matrices Manipulador 1 Scara (Contenedor)
+        frmdh1=LabelFrame(frm1,relief="raised")
+        frmdh1.place(relx=1/5+0.028, relwidth=1, relheight=1)
+
+
+        Titulos = Label(frmdh1, width=10,text="Link 1")
+        Titulos.grid(column=2, row=0)
+
+        espacio = Label(frmdh1, width=10)
+        espacio.grid(column=0, row=0)
+
+        for r in range(2, 6):
+            for c in range(2, 6):
+                cell = Entry(frmdh1, width=12)
+                cell.grid(row=r, column=c, ipady=4)
+
+        blanco(0)
+
+        for r in range(0, 4):
+            for c in range(5, 9):
+                cell = Entry(frmdh1, width=12)
+                cell.grid(row=r, column=c, ipady=4)
+        blanco(5)
+
+        for r in range(0, 4):
+            for c in range(11, 15):
+                cell = Entry(frmdh1, width=12)
+                cell.grid(row=r, column=c, ipady=4)
+        
+        blanco = Label(frmdh1, width=10)
+        blanco.grid(column=1, row=6)
+
+        Titulos = Label(frmdh1, width=10,text="Link 4")
+        Titulos.grid(column=1, row=7)
+
+        for r in range(8, 11):
+            for c in range(0, 4):
+                cell = Entry(frmdh1, width=12)
+                cell.grid(row=r, column=c, ipady=4)
+        
+
+
         # #Botones
         # ttk.Button(fr1,text='Volumen').place(relwidth=1/3, relheight=1/3)
         # ttk.Button(fr1,text='Temperatura').place(relx=1/3,relwidth=1/3, relheight=1/3)
