@@ -26,7 +26,7 @@ class Objetos:
         #Logo
         img= PhotoImage(file="LOGOUMNG.png")
         widget = Label(fi, image=img)
-        widget.place(relwidth=0.5,relheight=1)
+        widget.place(relwidth=1,relheight=)
 
         img1= PhotoImage(file="icon.png")
         widget1 = Label(fi, image=img1)

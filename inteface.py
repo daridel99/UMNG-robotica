@@ -106,28 +106,28 @@ def dato2(band):
 
 def servo1(posiciones1):
     #Escritura De Angulo
-    board.write(b'Eb')
+    board.write(b'Eb,')
     board.write(posiciones1.encode())
     board.write(b'\r\n')
     dato2(1)
 
 def servo2(posiciones2):
     #Escritura De Angulo
-    board.write(b'Ebr')
+    board.write(b'Ebr,')
     board.write(posiciones2.encode())
     board.write(b'\r\n')
     dato2(1)
 
 def servo3(posiciones3):
     #Escritura De Angulo
-    board.write(b'Eab')
+    board.write(b'Eab,')
     board.write(posiciones3.encode())
     board.write(b'\r\n')
     dato2(1)
 
 def servo4(posiciones4):
     #Escritura De Angulo
-    board.write(b'Em')
+    board.write(b'Em,')
     board.write(posiciones4.encode())
     board.write(b'\r\n')
     dato2(1)
@@ -136,21 +136,21 @@ def servo4(posiciones4):
 
 def Aservo1(Aposiciones1):
      #Escritura De Angulo
-    board.write(b'Ab')
+    board.write(b'Ab,')
     board.write(Aposiciones1.encode())
     board.write(b'\r\n')
     dato1(1)
 
 def Aservo2(Aposiciones2):
     #Escritura De Angulo
-    board.write(b'Abr')
+    board.write(b'Abr,')
     board.write(Aposiciones2.encode())
     board.write(b'\r\n')
     dato1(1)
 
 def Aservo3(Aposiciones3):
     #Escritura De Angulo
-    board.write(b'Aab')
+    board.write(b'Aab,')
     board.write(Aposiciones3.encode())
     board.write(b'\r\n')
     dato1(1)
@@ -199,34 +199,34 @@ def close():
 def show_values1():
 
     #Cuadro_Texto_1
-    board.write(b'Eb')
+    board.write(b'Eb,')
     board.write(txt_edit_ang0.get(1.0, tk.END).encode())    
 
     #Cuadro_Texto_2
-    board.write(b'Ebr')
+    board.write(b'Ebr,')
     board.write(txt_edit_ang1.get(1.0, tk.END).encode())
 
     #Cuadro_Texto_3 
-    board.write(b'Eab')
+    board.write(b'Eab,')
     board.write(txt_edit_ang2.get(1.0, tk.END).encode())
 
     #Cuadro_Texto_4
-    board.write(b'Em')
+    board.write(b'Em,')
     board.write(txt_edit_ang3.get(1.0, tk.END).encode())
     dato2(2)
 
 def show_values2():
     
     #Cuadro_Texto_6
-    board.write(b'Ab')
+    board.write(b'Ab,')
     board.write(txt_edit_ang4.get(1.0, tk.END).encode())
 
     #Cuadro_Texto_7
-    board.write(b'Abr')
+    board.write(b'Abr,')
     board.write(txt_edit_ang5.get(1.0, tk.END).encode())
 
     #Cuadro_Texto_8
-    board.write(b'Aab')
+    board.write(b'Aab,')
     board.write(txt_edit_ang6.get(1.0, tk.END).encode())
     dato1(2)
 
