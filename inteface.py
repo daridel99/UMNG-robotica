@@ -11,8 +11,8 @@ import serial, serial.tools.list_ports
 from tkinter import ttk
 
 #Configuracion COM
-board =serial.Serial(port='COM1', baudrate=9600)
-board.write( b'fine\r\n' )
+board =serial.Serial(port='COM1', baudrate=19200)
+#board.write( b'fine\r\n' )
 sleep(5) #5 Segundos Para Que Establezca La Comunicacion
 
 
@@ -188,11 +188,7 @@ def info():
 def close():
     board.write(b'bye\r\n')
     board.close()
-    #Ejemplo de llenado
-    for n in range(1,11):
-        for i in range(0,4):
-            for j in range(0,4):
-                globals()["arr"+ str(n) +"_" + str(i) + str(j)].set(str(n)+"_"+str(i)+str(j)) 
+
 #----------------------------
 
 #Envio de datos por boton
