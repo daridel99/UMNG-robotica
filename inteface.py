@@ -11,12 +11,9 @@ import serial, serial.tools.list_ports
 from tkinter import ttk
 
 #Configuracion COM
-<<<<<<< HEAD
+
 board =serial.Serial(port='COM1', baudrate=19200)
-=======
-board =serial.Serial(port='COM1', baudrate=9600)
->>>>>>> fb51f915f2eaab38c8a01ab341368c804ee11c12
-#board.write( b'fine\r\n' )
+board.write( b'fine\r\n' )
 sleep(5) #5 Segundos Para Que Establezca La Comunicacion
 
 
