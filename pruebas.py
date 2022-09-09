@@ -188,15 +188,8 @@ class Objetos:
         frmdh1=LabelFrame(frm1,relief="raised")
         frmdh1.place(relx=1/5+0.028, relwidth=1, relheight=1)
 
-
-        Titulos = Label(frmdh1, width=10,text="Link 1")
-        Titulos.grid(column=2, row=0)
-
-        espacio = Label(frmdh1, width=10)
-        espacio.grid(column=0, row=0)
-
-        for r in range(2, 6):
-            for c in range(2, 6):
+        for r in range(0, 4):
+            for c in range(0, 4):
                 cell = Entry(frmdh1, width=12)
                 cell.grid(row=r, column=c, ipady=4)
 

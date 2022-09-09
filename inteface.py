@@ -11,9 +11,14 @@ import serial, serial.tools.list_ports
 from tkinter import ttk
 
 #Configuracion COM
+<<<<<<< HEAD
 
 board =serial.Serial(port='COM1', baudrate=19200)
 board.write( b'fine\r\n' )
+=======
+board =serial.Serial(port='COM1', baudrate=19200)
+#board.write( b'fine\r\n' )
+>>>>>>> 979559990d37b0aa61390913318503ac2310d74b
 sleep(5) #5 Segundos Para Que Establezca La Comunicacion
 
 
@@ -194,23 +199,23 @@ def close():
 
 #Envio de datos por boton
 def show_values1():
+    board.write("Rojo".encode()) 
+    # #Cuadro_Texto_1
+    # board.write(b'Eb,')
+    # board.write(txt_edit_ang0.get(1.0, tk.END).encode())    
 
-    #Cuadro_Texto_1
-    board.write(b'Eb,')
-    board.write(txt_edit_ang0.get(1.0, tk.END).encode())    
+    # #Cuadro_Texto_2
+    # board.write(b'Ebr,')
+    # board.write(txt_edit_ang1.get(1.0, tk.END).encode())
 
-    #Cuadro_Texto_2
-    board.write(b'Ebr,')
-    board.write(txt_edit_ang1.get(1.0, tk.END).encode())
+    # #Cuadro_Texto_3 
+    # board.write(b'Eab,')
+    # board.write(txt_edit_ang2.get(1.0, tk.END).encode())
 
-    #Cuadro_Texto_3 
-    board.write(b'Eab,')
-    board.write(txt_edit_ang2.get(1.0, tk.END).encode())
-
-    #Cuadro_Texto_4
-    board.write(b'Em,')
-    board.write(txt_edit_ang3.get(1.0, tk.END).encode())
-    dato2(2)
+    # #Cuadro_Texto_4
+    # board.write(b'Em,')
+    # board.write(txt_edit_ang3.get(1.0, tk.END).encode())
+    # dato2(2)
 
 def show_values2():
     
