@@ -415,7 +415,6 @@ Binf = Button(root,
 Binf.grid(column=30,row=1)
 
 #Boton COM Close
-
 Bclose = Button(root,
              text="COM close",
              relief=GROOVE,
