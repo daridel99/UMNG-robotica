@@ -1,4 +1,5 @@
 #IMPORTAMOS "tkinter"
+from pickletools import float8
 from tkinter import *
 import tkinter
 from tkinter import ttk
@@ -21,8 +22,13 @@ board =serial.Serial(port='COM1', baudrate=19200)
 #board.write( b'fine\r\n' )
 sleep(5) #5 Segundos Para Que Establezca La Comunicacion
 
+def fila_vacia(n): #Crear Filas Vacias
+    for j in range (0,n):
+        fila = Label(frmdh1)
+        fila.grid(column=0, row=(5*j))
 
-def matrices_T(angz,dz,angx,ax): #
+
+def matrices_T(angz,dz,angx,ax): #Matriz Homogenea DH
     #Fila 1
     r11="{:.5f}".format(mt.cos(angz))
     r12="{:.5f}".format((-1)*mt.sin(angz)*mt.cos(angx))
@@ -46,13 +52,14 @@ def matrices_T(angz,dz,angx,ax): #
     matrix=np.array([[r11,r12,r13,r14],[r21,r22,r23,r24],[r31,r32,r33,r34],[r41,r42,r43,r44]],float)
     return matrix
 
-def calculo(matrices_DH,n):
+def calculo(matrices_DH,n): #Calculo de matriz Cinematica Directa
     MatrizFinal=np.eye(4)
     for j in range (0,n):
-        MatrizFinal=np.dot(MatrizFinal,matrices_DH[j])          
+        MatrizFinal=np.dot(MatrizFinal,matrices_DH[j]) 
+        MatrizFinal=np.round(MatrizFinal,decimals=5)    
     return MatrizFinal
 
-def M1(n,d1,t2,t3,t4):
+def M1(n,d1,t2,t3,t4): #Definicion Parametros Scara
     matrices=[]
     z=[0, t2, t3,t4]
     d=[d1,0,0,0]
@@ -63,7 +70,7 @@ def M1(n,d1,t2,t3,t4):
     final=calculo(matrices,n)
     return final,matrices
 
-def M2(n,j1,j2,j3):
+def M2(n,j1,j2,j3): #Definicion Parametros Antropomorfico
     matrices=[]
     z=[j1, j2, j3]
     d=[62.87,0,0]
@@ -82,14 +89,14 @@ def creacion():
                 globals()["arr"+str(n)+"_" + str(i) + str(j)]=StringVar()
 
 
-def llenado1 (matri): #Llenado
+def llenado1 (matri): #Llenado Matrices Antropomorfico
     for n in range(6,9):
         for i in range(0,4):
             for j in range(0,4):                
                 globals()["arr"+ str(n) +"_" + str(i) + str(j)].set(matri[1][n-6][i][j])             
                 globals()["arr9" +"_" + str(i) + str(j)].set(matri[0][i][j]) 
 
-def llenado2 (matri):
+def llenado2 (matri): #Llenado Matrices Scara
     for n in range(1,5):
         for i in range(0,4):
             for j in range(0,4):                
@@ -109,6 +116,8 @@ def dato2(band):
     elif band==2:
         mat2=M1(4,int(txt_edit_ang0.get(1.0, tk.END)),int(txt_edit_ang1.get(1.0, tk.END)),int(txt_edit_ang2.get(1.0, tk.END)),int(txt_edit_ang3.get(1.0, tk.END)))
     llenado2(mat2)
+
+#Funciones De Movimiento Scara
 
 def servo1(posiciones1):
     #Escritura De Angulo
@@ -138,7 +147,7 @@ def servo4(posiciones4):
     board.write(b'\r\n')
     dato2(1)
 
-#Funciones de movimiento Antropomorfico
+#Funciones De Movimiento Antropomorfico
 
 def Aservo1(Aposiciones1):
      #Escritura De Angulo
@@ -203,28 +212,29 @@ def close():
     board.write(b'bye\r\n')
     board.close()
 
-#----------------------------
 
+#Envio de datos Scara
 def show_values1():
     print("Calculando...")
     board.write("Rojo".encode()) 
-    # #Cuadro_Texto_1
+    #Cuadro_Texto_1
     board.write(b'Eb,')
     board.write(txt_edit_ang0.get(1.0, tk.END).encode())    
 
-    # #Cuadro_Texto_2
+    #Cuadro_Texto_2
     board.write(b'Ebr,')
     board.write(txt_edit_ang1.get(1.0, tk.END).encode())
 
-    # #Cuadro_Texto_3 
+    #Cuadro_Texto_3 
     board.write(b'Eab,')
     board.write(txt_edit_ang2.get(1.0, tk.END).encode())
 
-    # #Cuadro_Texto_4
+    #Cuadro_Texto_4
     board.write(b'Em,')
     board.write(txt_edit_ang3.get(1.0, tk.END).encode())
     dato2(2)
 
+#Envio de datos Antropomorfico
 def show_values2():
     
     #Cuadro_Texto_6
@@ -239,6 +249,7 @@ def show_values2():
     board.write(b'Aab,')
     board.write(txt_edit_ang6.get(1.0, tk.END).encode())
     dato1(2)
+
 #VENTANA PRINCIPAL.
 root = tkinter.Tk()
 root.title('Controles de Manipuladores Roboticos')
@@ -256,7 +267,7 @@ pI = ttk.Frame(nb)
 p1 = ttk.Frame(nb)
 p2 = ttk.Frame(nb)   
 
-####################### pestaña 1
+#####Pestaña 1#####
 
 #Frame Informacion (Contenedor)
 fontStyle_T = tkFont.Font(family="Lucida Grande", size=12)
@@ -303,13 +314,13 @@ Bclose = Button(fi,
              command=close   )
 Bclose.grid(column=2,row=1)
 
-######################## pestaña 2
+#####Pestaña 2#####
 
-#Frame Manipuladores (Contenedor)
+#Frame Manipulador Scara (Contenedor)
 frm=LabelFrame(p1,relief="raised")
 frm.place(relwidth=1, relheight=1)
 
-#Frame Manipulador1 Scara (Contenedor)
+#Frame Cinematica Directa DK (Contenedor)
 frm1=LabelFrame(frm,text='DK', labelanchor='n')
 frm1.place(relwidth=1, relheight=0.64)
 
@@ -321,16 +332,16 @@ angulo1=Scale(frm1,
                 to=122,
                 resolution=0.1,
                 orient = HORIZONTAL,
-                length=300,
+                length=266,
                 troughcolor='gray',
                 width = 30,
                 cursor='dot',
                 label = 'Desplazamiento Base',
-                  )
-angulo1.place(rely=0, relwidth=1/5, relheight=1/4)
+                )
+angulo1.place(rely=0)
 #Text_Box
-txt_edit_ang0 = tk.Text(frm1,width=3)
-txt_edit_ang0.place(relx=1/5, rely=0.13, relheight=1/8-0.03)
+txt_edit_ang0 = tk.Text(frm1,width=4)
+txt_edit_ang0.place(relx=1/5, rely=1/12+0.01, relheight=1/8-0.045)
 txt_edit_ang0.insert(tk.END, "0")
         
 #Brazo
@@ -341,35 +352,34 @@ angulo2= Scale(frm1,
               to=180,
               resolution=0.1,
               orient = HORIZONTAL,
-              length=300,
+              length=266,
               troughcolor='gray',
               width = 30,
               cursor='dot',
               label = 'Rotación Brazo'  )
-angulo2.place(rely=((1/5)+0.05), relwidth=1/5, relheight=1/4)
-
+angulo2.place(rely=1/4)
 #Text_Box
-txt_edit_ang1 = tk.Text(frm1, width = 3)
-txt_edit_ang1.place(relx=1/5, rely=2/8+0.13, relheight=1/8-0.03)
+txt_edit_ang1 = tk.Text(frm1, width = 4)
+txt_edit_ang1.place(relx=1/5, rely=4/12+0.01, relheight=1/8-0.045)
 txt_edit_ang1.insert(tk.END, "0")
 
 #Antebrazo
 #Slider
 angulo3= Scale(frm1,     
-command = servo3,         
+              command = servo3,         
               from_=0,
               to=180,
               resolution=0.1,
               orient = HORIZONTAL,
-              length=300,
+              length=266,
               troughcolor='gray',
               width = 30,
               cursor='dot',
               label = 'Rotación Codo'  )
-angulo3.place(rely=((3/5)-0.1), relwidth=1/5, relheight=1/4)
+angulo3.place(rely=2/4)
 #Text_Box
-txt_edit_ang2 = tk.Text(frm1, width = 3)
-txt_edit_ang2.place(relx=1/5, rely=4/8+0.13, relheight=1/8-0.03)
+txt_edit_ang2 = tk.Text(frm1, width = 4)
+txt_edit_ang2.place(relx=1/5, rely=7/12+0.011, relheight=1/8-0.045)
 txt_edit_ang2.insert(tk.END, "0")
 
 #Muñeca
@@ -380,50 +390,99 @@ angulo4= Scale(frm1,
               to=180,
               resolution=0.1,
               orient = HORIZONTAL,
-              length=300,
+              length=266,
               troughcolor='gray',
               width = 30,
               cursor='dot',
               label = 'Rotación Muñeca'  )
-angulo4.place(rely=((4/5)-0.05), relwidth=1/5, relheight=1/4)
+angulo4.place(rely=3/4)
 #Text_Box
-txt_edit_ang3 = tk.Text(frm1, width = 3)
-txt_edit_ang3.place(relx=1/5, rely=6/8+0.13, relheight=1/8-0.03)
+txt_edit_ang3 = tk.Text(frm1, width = 4)
+txt_edit_ang3.place(relx=1/5, rely=10/12+0.011, relheight=1/8-0.045)
 txt_edit_ang3.insert(tk.END, "0")
 
-#Frame Manipulador2 Antropomorfico (Contenedor)
+#Frame Matrices Cinematica Directa DK (Contenedor)
+frmdh1=LabelFrame(frm1,relief="raised")
+frmdh1.place(relx=1/4+0.02, relwidth=1, relheight=1)
+
+#Matriz Link 1
+for r in range(0, 4):
+    for c in range(0, 4):
+        cell = Entry(frmdh1, width=13, textvariable=globals()["arr1_" + str(r) + str(c)])
+        cell.grid(row=r+1, column=c, ipady=4)
+
+#Matriz Link 2
+for r in range(0, 4):
+    for c in range(0, 4):
+        cell = Entry(frmdh1, width=13, textvariable=globals()["arr2_" + str(r) + str(c)])
+        cell.grid(row=r+1, column=c+8, ipady=4)
+
+#Matriz Total
+for r in range(0, 4):
+    for c in range(0, 4):
+        cell = Entry(frmdh1, width=13, textvariable=globals()["arr5_" + str(r) + str(c)])
+        cell.grid(row=r+6, column=c+4, ipady=4)
+ 
+#Matriz Link 3
+for r in range(0, 4):
+    for c in range(0, 4):
+        cell = Entry(frmdh1, width=13, textvariable=globals()["arr3_" + str(r) + str(c)])
+        cell.grid(row=r+11, column=c, ipady=4)
+
+#Matriz Link 4
+for r in range(0, 4):
+    for c in range(0, 4):
+        cell = Entry(frmdh1, width=13, textvariable=globals()["arr4_" + str(r) + str(c)])
+        cell.grid(row=r+11, column=c+8, ipady=4)
+
+#Boton Envio Cinematica Directa Scara
+Envio1=Button(frmdh1, width=10, height=2, text='Envio', activebackground='yellow', command=show_values1)
+Envio1.place(relx=2/6,rely=14/16)
+
+#Boton Gripper Scara
+BoA = Button(frmdh1,text="Gripper",command=abrir, bg='green', bd=3, height=2, width=10)
+BoA.place(relx=2/6,rely=11/16)
+
+#Frame Cinematica Inversa IK (Contenedor)
 frm2=LabelFrame(frm,text='IK', labelanchor='n')
 frm2.place(rely=0.65, relwidth=1, relheight=0.35)
 
-#Text_Box
-txt_edit_xS = tk.Text(frm2, width=3)
-txt_edit_xS.place(relx=1/10,rely=1/10+0.01, relheight=1/6-0.05)
+#Text_Box Px
+txt_edit_xS = tk.Text(frm2, width=4, height=1)
+txt_edit_xS.place(relx=1/10,rely=1/10+0.01)
 txt_edit_xS.insert(tk.END, "0")
         
-#Text_Box
-txt_edit_yS = tk.Text(frm2, width = 3)
-txt_edit_yS.place(relx=1/10, rely=3/10+0.01, relheight=1/6-0.05)
+#Text_Box Py
+txt_edit_yS = tk.Text(frm2, width = 4, height=1)
+txt_edit_yS.place(relx=1/10, rely=3/10+0.01)
 txt_edit_yS.insert(tk.END, "0")
 
-#Text_Box
-txt_edit_zS = tk.Text(frm2, width = 3, height=1.8)
-txt_edit_zS.place(relx=1/10, rely=5/10+0.01, relheight=1/6-0.05)
+#Text_Box Pz
+txt_edit_zS = tk.Text(frm2, width = 4, height=1)
+txt_edit_zS.place(relx=1/10, rely=5/10+0.01)
 txt_edit_zS.insert(tk.END, "0")
-        
+
+#Boton Calcular Cinematica Inversa        
 Calcular1=Button(frm2, text='Calcular', activebackground='yellow', command=show_values1)
 Calcular1.place(relx=1/10-0.01, rely=7/10+0.01, relheight=1/6-0.05)
 
+#Frame Variables de Juntura (Contenedor)
 frmdh2=LabelFrame(frm2,relief="raised")
-frmdh2.place(relx=0.35, rely=0.15, relwidth=0.42, relheight=0.39)
+frmdh2.place(relx=0.35, rely=0.15, relwidth=0.42, relheight=0.5)
 
-etiqueta1 = tk.Label(frmdh2, text="Link 1", fg="black", bg="yellow").grid(column=0, row=0)
+#Variable de Juntura 1
+etiqueta1 = tk.Label(frmdh2, width=5, text="d₁", fg="black", bg="yellow").grid(column=0, row=0)
 text1 = tk.Text(frmdh2, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
 textHsb = tk.Scrollbar(frmdh2, orient="horizontal", command=text1.xview)
 text1.configure(xscrollcommand=textHsb.set)
 text1.grid(row=0, column=1, sticky="nsew")
 textHsb.grid(row=1, column=1, sticky="ew")
 
-etiqueta2 = tk.Label(frmdh2, text="Link 2", fg="black", bg="yellow").grid(column=0, row=3)
+blanco = Label(frmdh2, width=10)
+blanco.grid(column=1, row=2)
+
+#Variable de Juntura 2
+etiqueta2 = tk.Label(frmdh2, width=5, text="θ₂", fg="black", bg="yellow").grid(column=0, row=3)
 text2 = tk.Text(frmdh2, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
 textHsb = tk.Scrollbar(frmdh2, orient="horizontal", command=text2.xview)
 text2.configure(xscrollcommand=textHsb.set)
@@ -432,188 +491,198 @@ textHsb.grid(row=4, column=1, sticky="ew")
 
 blanco = Label(frmdh2, width=10)
 blanco.grid(column=2, row=0)
-blanco = Label(frmdh2, width=10)
-blanco.grid(column=2, row=1)
 
-etiqueta3 = tk.Label(frmdh2, text="Link 3", fg="black", bg="yellow").grid(column=3, row=0)
+#Variable de Juntura 3
+etiqueta3 = tk.Label(frmdh2, width=5, text="θ₃", fg="black", bg="yellow").grid(column=3, row=0)
 text3 = tk.Text(frmdh2, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
 textHsb = tk.Scrollbar(frmdh2, orient="horizontal", command=text3.xview)
 text3.configure(xscrollcommand=textHsb.set)
 text3.grid(row=0, column=4, sticky="nsew")
 textHsb.grid(row=1, column=4, sticky="ew")
 
-etiqueta4 = tk.Label(frmdh2, text="Link 4", fg="black", bg="yellow").grid(column=3, row=3)
+#Variable de Juntura 4
+etiqueta4 = tk.Label(frmdh2, width=5, text="θ₄", fg="black", bg="yellow").grid(column=3, row=3)
 text4 = tk.Text(frmdh2, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
 textHsb = tk.Scrollbar(frmdh2, orient="horizontal", command=text4.xview)
 text4.configure(xscrollcommand=textHsb.set)
 text4.grid(row=3, column=4, sticky="nsew")
 textHsb.grid(row=4, column=4, sticky="ew")
 
-def blanco(n):
-    blanco = Label(frmdh1, width=6)
-    blanco.grid(column=4+n, row=0)
+fila_vacia(3)
+#Titulos Scara (Label)
+Titulos_l1 = Label(frmdh1, width=11,text="Link 1")
+Titulos_l1.place(relx=2/24+0.01,rely=0)
+Titulos_l2 = Label(frmdh1, width=11,text="Link 2")
+Titulos_l2.place(relx=14/24-0.005,rely=0)
+Titulos_l3 = Label(frmdh1, width=11,text="Link 3")
+Titulos_l3.place(relx=2/24+0.01,rely=10/16)
+Titulos_l4 = Label(frmdh1, width=11,text="Link 4")
+Titulos_l4.place(relx=14/24-0.005,rely=10/16)
+Titulos_lT = Label(frmdh1, width=11,text="Total")
+Titulos_lT.place(relx=5/15,rely=5/16)
+Titulos_px = Label(frm2, width=5,text="Px")
+Titulos_px.place(relx=1/15,rely=1/10+0.01)
+Titulos_py = Label(frm2, width=5,text="Py")
+Titulos_py.place(relx=1/15,rely=3/10+0.01)
+Titulos_pz = Label(frm2, width=5,text="Pz")
+Titulos_pz.place(relx=1/15,rely=5/10+0.01)
 
-#Frame Matrices Manipulador 1 Scara (Contenedor)
-frmdh1=LabelFrame(frm1,relief="raised")
-frmdh1.place(relx=0.23, relwidth=1.09, relheight=1)
+#####Pestaña 3#####
 
-for r in range(0, 4):
-    for c in range(0, 4):
-        cell = Entry(frmdh1, width=12, textvariable=globals()["arr1_" + str(r) + str(c)])
-        cell.grid(row=r, column=c, ipady=4)
-
-blanco(0)
-
-blanco(5)
-
-for r in range(0, 4):
-    for c in range(0, 4):
-        cell = Entry(frmdh1, width=12, textvariable=globals()["arr2_" + str(r) + str(c)])
-        cell.grid(row=r, column=c+11, ipady=4)
-        
-blanco = Label(frmdh1, width=10)
-blanco.grid(column=1, row=6)
-
-for r in range(0, 4):
-    for c in range(0, 4):
-        cell = Entry(frmdh1, width=12, textvariable=globals()["arr3_" + str(r) + str(c)])
-        cell.grid(row=r+8, column=c+5, ipady=4)
- 
-blanco = Label(frmdh1, width=10)
-blanco.grid(column=1, row=14)
-
-for r in range(0, 4):
-    for c in range(0, 4):
-        cell = Entry(frmdh1, width=12, textvariable=globals()["arr4_" + str(r) + str(c)])
-        cell.grid(row=r+16, column=c, ipady=4)
-
-for r in range(0, 4):
-    for c in range(0, 4):
-        cell = Entry(frmdh1, width=12, textvariable=globals()["arr5_" + str(r) + str(c)])
-        cell.grid(row=r+16, column=c+11, ipady=4)
-
-#########################
-Titulos_l1 = Label(frmdh1, width=10,text="Link 1")
-Titulos_l1.grid(column=1, row=6)
-Titulos_l2 = Label(frmdh1, width=10,text="Link 2")
-Titulos_l2.grid(column=12, row=6)
-Titulos_l3 = Label(frmdh1, width=10,text="Link 4")
-Titulos_l3.grid(column=1, row=22)
-Titulos_l4 = Label(frmdh1, width=10,text="Total")
-Titulos_l4.grid(column=12, row=22)
-Titulos_lT = Label(frmdh1, width=10,text="Link 3")
-Titulos_lT.grid(column=6, row=14)
-###########################
-Envio1=Button(frmdh1, text='Envio', activebackground='yellow', command=show_values1)
-Envio1.grid(column=6,row=22)
-
-#Gripper
-
-BoA = Button(frmdh1,text="Gripper",command=abrir, bg='green', bd=3, height=2, width=10)
-BoA.place(x=500,y=350)#grid(column=7,row=22)#
-###################### pestaña 3
-
-#Frame Manipuladores (Contenedor)
+#Frame Manipulador Antropomorfico (Contenedor)
 frmA=LabelFrame(p2,relief="raised")
 frmA.place(relwidth=1, relheight=1)
 
-#Frame Manipulador1 Scara (Contenedor)
+#Frame Cinematica Directa DK (Contenedor)
 frm1A=LabelFrame(frmA,text='DK', labelanchor='n')
 frm1A.place(relwidth=1, relheight=0.64)
 
 #Base
 #Slider
 Aangulo1=Scale(frm1A,
-command = Aservo1,
+                command = Aservo1,
+                resolution=0.1,
                 from_=0,
                 to=180,
                 orient = HORIZONTAL,
-                length=300,
+                length=266,
                 troughcolor='gray',
                 width = 30,
                 cursor='dot',
-                label = 'Rotación Base',
-                  ).place(rely=0, relwidth=1/5, relheight=0.3)
+                label = 'Rotación Base')
+Aangulo1.place(rely=0)
 #Text_Box
-txt_edit_ang4 = tk.Text(frm1A,width=3)
-txt_edit_ang4.place(relx=1/5, rely=0.13, relheight=1/8-0.03)
+txt_edit_ang4 = tk.Text(frm1A,width=4)
+txt_edit_ang4.place(relx=1/5, rely=1/12+0.01, relheight=1/8-0.045)
 txt_edit_ang4.insert(tk.END, "0")
         
 #Brazo
 #Slider
 Aangulo2= Scale(frm1A,
-command = Aservo2,
+              command = Aservo2,
+              resolution=0.1,
               from_=0,
               to=180,
               orient = HORIZONTAL,
-              length=300,
+              length=266,
               troughcolor='gray',
               width = 30,
               cursor='dot',
-              label = 'Rotación Brazo'  
-              ).place(rely=((1/5)+0.05), relwidth=1/5, relheight=0.3)
+              label = 'Rotación Brazo')
+Aangulo2.place(rely=1/4)
 #Text_Box
-txt_edit_ang5 = tk.Text(frm1A, width = 3)
-txt_edit_ang5.place(relx=1/5, rely=2/8+0.13, relheight=1/8-0.03)
+txt_edit_ang5 = tk.Text(frm1A, width = 4)
+txt_edit_ang5.place(relx=1/5, rely=4/12+0.01, relheight=1/8-0.045)
 txt_edit_ang5.insert(tk.END, "0")
 
 #Antebrazo
 #Slider
 Aangulo3= Scale(frm1A,  
-command = Aservo3,            
+              command = Aservo3,  
+              resolution=0.1,          
               from_=0,
               to=180,
               orient = HORIZONTAL,
-              length=300,
+              length=266,
               troughcolor='gray',
               width = 30,
               cursor='dot',
-              label = 'Rotación Codo'  
-              ).place(rely=((3/5)-0.1), relwidth=1/5, relheight=0.3)
+              label = 'Rotación Codo')
+Aangulo3.place(rely=2/4)
 #Text_Box
-txt_edit_ang6 = tk.Text(frm1A, width = 3)
-txt_edit_ang6.place(relx=1/5, rely=4/8+0.13, relheight=1/8-0.03)
+txt_edit_ang6 = tk.Text(frm1A, width = 4)
+txt_edit_ang6.place(relx=1/5, rely=7/12+0.011, relheight=1/8-0.045)
 txt_edit_ang6.insert(tk.END, "0")
 
-#Gripper
+def blancoA(n):
+    blanco = Label(frmdh1A, width=6)
+    blanco.grid(column=4+n, row=0)
 
+#Frame Matrices Cinematica Directa DK (Contenedor)
+frmdh1A=LabelFrame(frm1A,relief="raised")
+frmdh1A.place(relx=0.35, relwidth=0.525, relheight=1)
+
+#Matriz Link 1
+for r in range(0, 4):
+    for c in range(0, 4):
+        cell = Entry(frmdh1A, width=12,  textvariable=globals()["arr6_" + str(r) + str(c)])
+        cell.grid(row=r+1, column=c, ipady=4)
+
+blancoA(0)
+
+blancoA(5)
+
+#Matriz Link 2
+for r in range(0, 4):
+    for c in range(0, 4):
+        cell = Entry(frmdh1A, width=12,  textvariable=globals()["arr7_" + str(r) + str(c)])
+        cell.grid(row=r+1, column=c+8, ipady=4)
+        
+blanco = Label(frmdh1A)
+blanco.grid(column=0, row=5)
+blanco1 = Label(frmdh1A)
+blanco1.grid(column=0, row=6)
+blanco2 = Label(frmdh1A)
+blanco2.grid(column=0, row=7)
+blanco3 = Label(frmdh1A)
+blanco3.grid(column=0, row=8)
+
+#Matriz Link 3
+for r in range(0, 4):
+    for c in range(0, 4):
+        cell = Entry(frmdh1A, width=12, textvariable=globals()["arr8_" + str(r) + str(c)])
+        cell.grid(row=r+9, column=c, ipady=4)
+
+#Matriz Total
+for r in range(0, 4):
+    for c in range(0, 4):
+        cell = Entry(frmdh1A, width=12,  textvariable=globals()["arr9_" + str(r) + str(c)])
+        cell.grid(row=r+9, column=c+8, ipady=4)
+
+#Boton Envio Cinematica Directa Antropomorfico
+Envio2=Button(frmdh1A, width=12, height=2, text='Envio', activebackground='yellow', command=show_values1)
+Envio2.grid(column=4,row=13)
+
+#Boton Gripper Antropomorfico
 BoC = Button(frm1A,text="Gripper",command=cerrar,bg='green',bd=3,height=2,width=10)
-BoC.place(x=110,y=310)
-#grid(column=1,row=10)
+BoC.place(x=110,rely=3/4)
 
-#Frame Manipulador2 Antropomorfico (Contenedor)
+#Frame Cinematica Inversa IK (Contenedor)
 frm2A=LabelFrame(frmA,text='IK', labelanchor='n')
 frm2A.place(rely=0.65, relwidth=1, relheight=0.35)
 
-#Text_Box
-txt_edit_xA = tk.Text(frm2A, width=3)
-txt_edit_xA.place(relx=1/10,rely=1/10+0.01, relheight=1/6-0.05)
+#Text_Box Px
+txt_edit_xA = tk.Text(frm2A, width=4, height=1)
+txt_edit_xA.place(relx=1/10,rely=1/10+0.01)
 txt_edit_xA.insert(tk.END, "0")
         
-#Text_Box
-txt_edit_yA = tk.Text(frm2A, width = 3)
-txt_edit_yA.place(relx=1/10, rely=3/10+0.01, relheight=1/6-0.05)
+#Text_Box Py
+txt_edit_yA = tk.Text(frm2A, width = 4, height=1)
+txt_edit_yA.place(relx=1/10, rely=3/10+0.01)
 txt_edit_yA.insert(tk.END, "0")
 
-#Text_Box
-txt_edit_zA = tk.Text(frm2A, width = 3, height=1.8)
-txt_edit_zA.place(relx=1/10, rely=5/10+0.01, relheight=1/6-0.05)
+#Text_Box Pz
+txt_edit_zA = tk.Text(frm2A, width = 4, height=1)
+txt_edit_zA.place(relx=1/10, rely=5/10+0.01)
 txt_edit_zA.insert(tk.END, "0")
-        
+
+#Boton Calcular Cinematica Inversa Antropomorfico        
 Calcular2=Button(frm2A, text='Calcular', activebackground='yellow', command=show_values1)
 Calcular2.place(relx=1/10-0.01, rely=7/10+0.01, relheight=1/6-0.05)
 
 frmdh2A=LabelFrame(frm2A,relief="raised")
 frmdh2A.place(relx=0.4, rely=0.1, relwidth=0.25, relheight=0.8)
 
-etiqueta1 = tk.Label(frmdh2A, text="Link 1", fg="black", bg="yellow").grid(column=0, row=0)
+#Variable de Juntura 1
+etiqueta1 = tk.Label(frmdh2A, width=5, text="θ₁", fg="black", bg="yellow").grid(column=0, row=0)
 text1A = tk.Text(frmdh2A, padx= 20, pady=2, width=25, height=1, wrap="none", borderwidth=0)
 textHsb = tk.Scrollbar(frmdh2A, orient="horizontal", command=text1A.xview)
 text1A.configure(xscrollcommand=textHsb.set)
 text1A.grid(row=0, column=1, sticky="nsew")
 textHsb.grid(row=1, column=1, sticky="ew")
 
-etiqueta2 = tk.Label(frmdh2A, text="Link 2", fg="black", bg="yellow").grid(column=0, row=3)
+#Variable de Juntura 2
+etiqueta2 = tk.Label(frmdh2A, width=5, text="θ₂", fg="black", bg="yellow").grid(column=0, row=3)
 text2A = tk.Text(frmdh2A, padx= 20, pady=2, width=25, height=1, wrap="none", borderwidth=0)
 textHsb = tk.Scrollbar(frmdh2A, orient="horizontal", command=text2A.xview)
 text2A.configure(xscrollcommand=textHsb.set)
@@ -623,7 +692,8 @@ textHsb.grid(row=4, column=1, sticky="ew")
 blanco = Label(frmdh2A, width=10)
 blanco.grid(column=0, row=2)
 
-etiqueta3 = tk.Label(frmdh2A, text="Link 3", fg="black", bg="yellow").grid(column=0, row=6)
+#Variable de Juntura 3
+etiqueta3 = tk.Label(frmdh2A, width=5, text="θ₃", fg="black", bg="yellow").grid(column=0, row=6)
 text3A = tk.Text(frmdh2A, padx= 20, pady=2, width=25, height=1, wrap="none", borderwidth=0)
 textHsb = tk.Scrollbar(frmdh2A, orient="horizontal", command=text3A.xview)
 text3A.configure(xscrollcommand=textHsb.set)
@@ -633,59 +703,21 @@ textHsb.grid(row=7, column=1, sticky="ew")
 blanco = Label(frmdh2A, width=10)
 blanco.grid(column=0, row=5)
 
-def blancoA(n):
-    blanco = Label(frmdh1A, width=6)
-    blanco.grid(column=4+n, row=0)
-
-#Frame Matrices Manipulador 1 Scara (Contenedor)
-frmdh1A=LabelFrame(frm1A,relief="raised")
-frmdh1A.place( relx=0.35, rely=0.01, relwidth=0.53, relheight=0.9)
-
-for r in range(1, 5):
-    for c in range(1, 5):
-        cell = Entry(frmdh1A, width=12)
-        cell.grid(row=r, column=c, ipady=4)
-
-blancoA(0)
-
-blancoA(5)
-
-for r in range(1, 5):
-    for c in range(10, 14):
-        cell = Entry(frmdh1A, width=12)
-        cell.grid(row=r, column=c, ipady=4)
-        
-blanco = Label(frmdh1A, width=10)
-blanco.grid(column=1, row=6)
-
-blanco = Label(frmdh1A, width=10)
-blanco.grid(column=10, row=7)
-blanco = Label(frmdh1A, width=10)
-blanco.grid(column=1, row=14)
-
-for r in range(15, 19):
-    for c in range(1, 5):
-        cell = Entry(frmdh1A, width=12)
-        cell.grid(row=r, column=c, ipady=4)
-
-for r in range(15, 19):
-    for c in range(10, 14):
-        cell = Entry(frmdh1A, width=12)
-        cell.grid(row=r, column=c, ipady=4)
-
-#########################
-Titulos_l1 = Label(frmdh1A, width=10,text="Link 1")
-Titulos_l1.grid(column=2, row=6)
-Titulos_l2 = Label(frmdh1A, width=10,text="Link 2")
-Titulos_l2.grid(column=11, row=6)
-Titulos_l3 = Label(frmdh1A, width=10,text="Link 3")
-Titulos_l3.grid(column=2, row=20)
-Titulos_lT = Label(frmdh1A, width=10,text="Total")
-Titulos_lT.grid(column=11, row=20)
-###########################
-
-Envio2=Button(frmdh1A, text='Envio', activebackground='yellow', command=show_values1)
-Envio2.grid(column=7,row=22)
+#Titulos Antropomorfico (Label)
+Titulos_l1 = Label(frmdh1A, width=11,text="Link 1")
+Titulos_l1.place(relx=3/18-0.01,rely=0)
+Titulos_l2 = Label(frmdh1A, width=11,text="Link 2")
+Titulos_l2.place(relx=13/18-0.01,rely=0)
+Titulos_l3 = Label(frmdh1A, width=11,text="Link 3")
+Titulos_l3.place(relx=3/18-0.01,rely=7/14-0.03)
+Titulos_lT = Label(frmdh1A, width=11,text="Total")
+Titulos_lT.place(relx=13/18-0.01,rely=7/14-0.03)
+Titulos_px = Label(frm2A, width=5,text="Px")
+Titulos_px.place(relx=1/15,rely=1/10+0.01)
+Titulos_py = Label(frm2A, width=5,text="Py")
+Titulos_py.place(relx=1/15,rely=3/10+0.01)
+Titulos_pz = Label(frm2A, width=5,text="Pz")
+Titulos_pz.place(relx=1/15,rely=5/10+0.01)
 
 #AGREGAMOS PESTAÑAS CREADAS
 nb.add(pI,text='Portada')
