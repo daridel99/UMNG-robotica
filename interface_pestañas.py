@@ -463,7 +463,7 @@ txt_edit_zS.place(relx=1/10, rely=5/10+0.01)
 txt_edit_zS.insert(tk.END, "0")
 
 #Boton Calcular Cinematica Inversa        
-Calcular1=Button(frm2, text='Calcular', activebackground='yellow', command=show_values1)
+Calcular1=Button(frm2, text='Calcular', activebackground='yellow')
 Calcular1.place(relx=1/10-0.01, rely=7/10+0.01, relheight=1/6-0.05)
 
 #Frame Variables de Juntura (Contenedor)
@@ -640,7 +640,7 @@ for r in range(0, 4):
         cell.grid(row=r+9, column=c+8, ipady=4)
 
 #Boton Envio Cinematica Directa Antropomorfico
-Envio2=Button(frmdh1A, width=12, height=2, text='Envio', activebackground='yellow', command=show_values1)
+Envio2=Button(frmdh1A, width=12, height=2, text='Envio', activebackground='yellow', command=show_values2)
 Envio2.grid(column=4,row=13)
 
 #Boton Gripper Antropomorfico
@@ -667,7 +667,7 @@ txt_edit_zA.place(relx=1/10, rely=5/10+0.01)
 txt_edit_zA.insert(tk.END, "0")
 
 #Boton Calcular Cinematica Inversa Antropomorfico        
-Calcular2=Button(frm2A, text='Calcular', activebackground='yellow', command=show_values1)
+Calcular2=Button(frm2A, text='Calcular', activebackground='yellow')
 Calcular2.place(relx=1/10-0.01, rely=7/10+0.01, relheight=1/6-0.05)
 
 frmdh2A=LabelFrame(frm2A,relief="raised")
