@@ -122,6 +122,7 @@ def dato2(band):
 def servo1(posiciones1):
     #Escritura De Angulo
     board.write(b'Eb,')
+    sleep(0.2)
     board.write(posiciones1.encode())
     board.write(b'\r\n')
     dato2(1)
@@ -129,6 +130,7 @@ def servo1(posiciones1):
 def servo2(posiciones2):
     #Escritura De Angulo
     board.write(b'Ebr,')
+    sleep(0.2)
     board.write(posiciones2.encode())
     board.write(b'\r\n')
     dato2(1)
@@ -136,6 +138,7 @@ def servo2(posiciones2):
 def servo3(posiciones3):
     #Escritura De Angulo
     board.write(b'Eab,')
+    sleep(0.2)
     board.write(posiciones3.encode())
     board.write(b'\r\n')
     dato2(1)
@@ -143,6 +146,7 @@ def servo3(posiciones3):
 def servo4(posiciones4):
     #Escritura De Angulo
     board.write(b'Em,')
+    sleep(0.2)
     board.write(posiciones4.encode())
     board.write(b'\r\n')
     dato2(1)
@@ -152,6 +156,7 @@ def servo4(posiciones4):
 def Aservo1(Aposiciones1):
      #Escritura De Angulo
     board.write(b'Ab,')
+    sleep(0.2)
     board.write(Aposiciones1.encode())
     board.write(b'\r\n')
     dato1(1)
@@ -159,6 +164,7 @@ def Aservo1(Aposiciones1):
 def Aservo2(Aposiciones2):
     #Escritura De Angulo
     board.write(b'Abr,')
+    sleep(0.2)
     board.write(Aposiciones2.encode())
     board.write(b'\r\n')
     dato1(1)
@@ -166,6 +172,7 @@ def Aservo2(Aposiciones2):
 def Aservo3(Aposiciones3):
     #Escritura De Angulo
     board.write(b'Aab,')
+    sleep(0.2)
     board.write(Aposiciones3.encode())
     board.write(b'\r\n')
     dato1(1)
@@ -216,7 +223,7 @@ def close():
 #Envio de datos Scara
 def show_values1():
     print("Calculando...")
-    board.write("Rojo".encode()) 
+    #board.write("Rojo".encode()) 
     #Cuadro_Texto_1
     board.write(b'Eb,')
     board.write(txt_edit_ang0.get(1.0, tk.END).encode())    
@@ -330,7 +337,7 @@ angulo1=Scale(frm1,
                 command = servo1,
                 from_=0,
                 to=122,
-                resolution=0.1,
+                resolution=0.5,
                 orient = HORIZONTAL,
                 length=266,
                 troughcolor='gray',
@@ -350,7 +357,7 @@ angulo2= Scale(frm1,
               command = servo2,
               from_=0,
               to=180,
-              resolution=0.1,
+              resolution=0.5,
               orient = HORIZONTAL,
               length=266,
               troughcolor='gray',
@@ -369,7 +376,7 @@ angulo3= Scale(frm1,
               command = servo3,         
               from_=0,
               to=180,
-              resolution=0.1,
+              resolution=0.5,
               orient = HORIZONTAL,
               length=266,
               troughcolor='gray',
@@ -388,7 +395,7 @@ angulo4= Scale(frm1,
               command = servo4,
               from_=0,
               to=180,
-              resolution=0.1,
+              resolution=0.5,
               orient = HORIZONTAL,
               length=266,
               troughcolor='gray',
@@ -531,7 +538,7 @@ Titulos_py = Label(frm2, width=5,text="Py")
 Titulos_py.place(relx=1/15,rely=3/10+0.01)
 Titulos_pz = Label(frm2, width=5,text="Pz")
 Titulos_pz.place(relx=1/15,rely=5/10+0.01)
-Titulos_pphi = Label(frm2, width=5,text="Phi")
+Titulos_pphi = Label(frm2, width=5,text="ϕ")
 Titulos_pphi.place(relx=1/15,rely=7/10+0.01)
 #####Pestaña 3#####
 
@@ -547,7 +554,7 @@ frm1A.place(relwidth=1, relheight=0.64)
 #Slider
 Aangulo1=Scale(frm1A,
                 command = Aservo1,
-                resolution=0.1,
+                resolution=0.5,
                 from_=0,
                 to=180,
                 orient = HORIZONTAL,
@@ -566,7 +573,7 @@ txt_edit_ang4.insert(tk.END, "0")
 #Slider
 Aangulo2= Scale(frm1A,
               command = Aservo2,
-              resolution=0.1,
+              resolution=0.5,
               from_=0,
               to=180,
               orient = HORIZONTAL,
@@ -585,7 +592,7 @@ txt_edit_ang5.insert(tk.END, "0")
 #Slider
 Aangulo3= Scale(frm1A,  
               command = Aservo3,  
-              resolution=0.1,          
+              resolution=0.5,          
               from_=0,
               to=180,
               orient = HORIZONTAL,
@@ -647,7 +654,7 @@ for r in range(0, 4):
 
 #Boton Envio Cinematica Directa Antropomorfico
 Envio2=Button(frmdh1A, width=12, height=2, text='Envio', activebackground='yellow', command=show_values2)
-Envio2.grid(column=4,row=13)
+Envio2.place(relx=4/9-0.05,rely=0.83)
 
 #Boton Gripper Antropomorfico
 BoC = Button(frm1A,text="Gripper",command=cerrar,bg='green',bd=3,height=2,width=10)
