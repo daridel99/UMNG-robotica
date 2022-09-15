@@ -445,7 +445,7 @@ BoA.place(relx=2/6,rely=11/16)
 
 #Frame Cinematica Inversa IK (Contenedor)
 frm2=LabelFrame(frm,text='IK', labelanchor='n')
-frm2.place(rely=0.65, relwidth=1, relheight=0.35)
+frm2.place(rely=0.63, relwidth=1, relheight=0.37)
 
 #Text_Box Px
 txt_edit_xS = tk.Text(frm2, width=4, height=1)
@@ -462,9 +462,14 @@ txt_edit_zS = tk.Text(frm2, width = 4, height=1)
 txt_edit_zS.place(relx=1/10, rely=5/10+0.01)
 txt_edit_zS.insert(tk.END, "0")
 
+#Text_Box Phi
+txt_edit_phiS = tk.Text(frm2, width = 4, height=1)
+txt_edit_phiS.place(relx=1/10, rely=7/10+0.01)
+txt_edit_phiS.insert(tk.END, "0")
+
 #Boton Calcular Cinematica Inversa        
 Calcular1=Button(frm2, text='Calcular', activebackground='yellow')
-Calcular1.place(relx=1/10-0.01, rely=7/10+0.01, relheight=1/6-0.05)
+Calcular1.place(relx=1/10-0.01, rely=9/10-0.03, relheight=1/6-0.05)
 
 #Frame Variables de Juntura (Contenedor)
 frmdh2=LabelFrame(frm2,relief="raised")
@@ -526,7 +531,8 @@ Titulos_py = Label(frm2, width=5,text="Py")
 Titulos_py.place(relx=1/15,rely=3/10+0.01)
 Titulos_pz = Label(frm2, width=5,text="Pz")
 Titulos_pz.place(relx=1/15,rely=5/10+0.01)
-
+Titulos_pphi = Label(frm2, width=5,text="Phi")
+Titulos_pphi.place(relx=1/15,rely=7/10+0.01)
 #####Pestaña 3#####
 
 #Frame Manipulador Antropomorfico (Contenedor)
