@@ -1,20 +1,16 @@
-#IMPORTAMOS "tkinter"
-from pickletools import float8
+import tkinter 
 from tkinter import *
-import tkinter
+import tkinter as tk
 from tkinter import ttk
 import tkinter.font as tkFont
-import math as mt
+from tkinter import messagebox
 from tkinter import HORIZONTAL, PhotoImage, StringVar, Widget
+import math as mt
 from ctypes import sizeof
-import tkinter  as tk
-from tkinter import *
 import numpy as np
 from time import sleep
-from tkinter import messagebox
 from PIL import Image, ImageTk
 import serial, serial.tools.list_ports
-from tkinter import ttk
 
 
 #Configuracion COM
