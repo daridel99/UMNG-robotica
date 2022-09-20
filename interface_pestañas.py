@@ -119,6 +119,26 @@ def Button_IK_Scara_P3R():
     text4Ar.insert(tk.END, str(M[6]))
     llenado2(M1(4, M[0], M[1], M[2], M[3]))
 
+def Button_IK_Antropo_3R():
+    M=Fnc.IK_Antropo_3R(float(txt_edit_xA.get(1.0, tk.END)), float(txt_edit_yA.get(1.0, tk.END)), float(txt_edit_zA.get(1.0, tk.END)))
+    text1A.delete("1.0","end")
+    text1A.insert( tk.END,str(M[0]))
+    text1AAr.delete("1.0","end")
+    text1AAr.insert(tk.END, str(M[0]))
+    text2A.delete("1.0","end")
+    text2A.insert( tk.END,str(M[1]))
+    text2AAr.delete("1.0","end")
+    text2AAr.insert(tk.END, str(M[4]))
+    text3A.delete("1.0","end")
+    text3A.insert( tk.END,str(M[2]))
+    text3AAr.delete("1.0","end")
+    text3AAr.insert(tk.END, str(M[5]))
+    '''text4.delete("1.0","end")
+    text4.insert( tk.END,str(M[3]))
+    text4Ar.delete("1.0","end")
+    text4Ar.insert(tk.END, str(M[6]))'''
+    llenado1(M2(3, M[0], M[1], M[2]))
+
 def dato1(band):
     if band==1:
         mat=M2(3,Aangulo1.get(),Aangulo2.get(),Aangulo3.get())
@@ -276,7 +296,7 @@ def show_values2():
 #VENTANA PRINCIPAL.
 root = tkinter.Tk()
 root.title('Controles de Manipuladores Roboticos')
-root.geometry("1366x768")
+root.geometry("1320x660")
 creacion()
 nombre = StringVar()
 numero = IntVar()
@@ -720,27 +740,21 @@ txt_edit_zA.place(relx=1/10, rely=5/10+0.01)
 txt_edit_zA.insert(tk.END, "0")
 
 #Boton Calcular Cinematica Inversa Antropomorfico        
-Calcular2=Button(frm2A, text='Calcular', activebackground='yellow')
+Calcular2=Button(frm2A, text='Calcular', activebackground='yellow',command=Button_IK_Antropo_3R)
 Calcular2.place(relx=1/10-0.01, rely=7/10+0.01, relheight=1/6-0.05)
-
-frmdh2A=LabelFrame(frm2A,relief="raised")
-frmdh2A.place(relx=0.4, rely=0.1, relwidth=0.25, relheight=0.8)
+###############
+frmdh2A=LabelFrame(frm2A,relief="raised",text='Codo Abajo',labelanchor='n')
+frmdh2A.place(relx=0.3, rely=0.1, relwidth=0.25, relheight=0.7)
 
 #Variable de Juntura 1
 etiqueta1 = tk.Label(frmdh2A, width=5, text="θ₁", fg="black", bg="yellow").grid(column=0, row=0)
 text1A = tk.Text(frmdh2A, padx= 20, pady=2, width=25, height=1, wrap="none", borderwidth=0)
-textHsb = tk.Scrollbar(frmdh2A, orient="horizontal", command=text1A.xview)
-text1A.configure(xscrollcommand=textHsb.set)
 text1A.grid(row=0, column=1, sticky="nsew")
-textHsb.grid(row=1, column=1, sticky="ew")
 
 #Variable de Juntura 2
 etiqueta2 = tk.Label(frmdh2A, width=5, text="θ₂", fg="black", bg="yellow").grid(column=0, row=3)
 text2A = tk.Text(frmdh2A, padx= 20, pady=2, width=25, height=1, wrap="none", borderwidth=0)
-textHsb = tk.Scrollbar(frmdh2A, orient="horizontal", command=text2A.xview)
-text2A.configure(xscrollcommand=textHsb.set)
 text2A.grid(row=3, column=1, sticky="nsew")
-textHsb.grid(row=4, column=1, sticky="ew")
 
 blanco = Label(frmdh2A, width=10)
 blanco.grid(column=0, row=2)
@@ -748,12 +762,33 @@ blanco.grid(column=0, row=2)
 #Variable de Juntura 3
 etiqueta3 = tk.Label(frmdh2A, width=5, text="θ₃", fg="black", bg="yellow").grid(column=0, row=6)
 text3A = tk.Text(frmdh2A, padx= 20, pady=2, width=25, height=1, wrap="none", borderwidth=0)
-textHsb = tk.Scrollbar(frmdh2A, orient="horizontal", command=text3A.xview)
-text3A.configure(xscrollcommand=textHsb.set)
 text3A.grid(row=6, column=1, sticky="nsew")
-textHsb.grid(row=7, column=1, sticky="ew")
 
 blanco = Label(frmdh2A, width=10)
+blanco.grid(column=0, row=5)
+###############
+frmdh2AAr=LabelFrame(frm2A,relief="raised",text='Codo Arriba',labelanchor='n')
+frmdh2AAr.place(relx=0.6, rely=0.1, relwidth=0.25, relheight=0.7)
+
+#Variable de Juntura 1
+etiqueta1 = tk.Label(frmdh2AAr, width=5, text="θ₁", fg="black", bg="yellow").grid(column=0, row=0)
+text1AAr = tk.Text(frmdh2AAr, padx= 20, pady=2, width=25, height=1, wrap="none", borderwidth=0)
+text1AAr.grid(row=0, column=1, sticky="nsew")
+
+#Variable de Juntura 2
+etiqueta2 = tk.Label(frmdh2AAr, width=5, text="θ₂", fg="black", bg="yellow").grid(column=0, row=3)
+text2AAr = tk.Text(frmdh2AAr, padx= 20, pady=2, width=25, height=1, wrap="none", borderwidth=0)
+text2AAr.grid(row=3, column=1, sticky="nsew")
+
+blanco = Label(frmdh2AAr, width=10)
+blanco.grid(column=0, row=2)
+
+#Variable de Juntura 3
+etiqueta3 = tk.Label(frmdh2AAr, width=5, text="θ₃", fg="black", bg="yellow").grid(column=0, row=6)
+text3AAr = tk.Text(frmdh2AAr, padx= 20, pady=2, width=25, height=1, wrap="none", borderwidth=0)
+text3AAr.grid(row=6, column=1, sticky="nsew")
+
+blanco = Label(frmdh2AAr, width=10)
 blanco.grid(column=0, row=5)
 
 #Titulos Antropomorfico (Label)
