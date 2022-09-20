@@ -28,6 +28,6 @@ def IK_Scara_P3R(P_X, P_Y, P_Z, phi):
     d_1=P_Z
 
     '''se envia a m1(4,d_1,theta_2,theta_3, theta_4)'''
-    IK_FINAL=np.array([d_1, theta_2ab*180/mt.pi,theta_3ab*180/mt.pi, theta_4ab,  theta_2ar*180/mt.pi,theta_3ar*180/mt.pi, theta_4ar],float)
+    IK_FINAL=np.array([d_1, theta_2ab*180/mt.pi, theta_3ab*180/mt.pi, theta_4ab,  theta_2ar*180/mt.pi,theta_3ar*180/mt.pi, theta_4ar],float)
     return IK_FINAL
 print(IK_Scara_P3R(17,26,120,34))

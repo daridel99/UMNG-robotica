@@ -101,8 +101,23 @@ def llenado2 (matri): #Llenado Matrices Scara
 
 def Button_IK_Scara_P3R():
     M=Fnc.IK_Scara_P3R(float(txt_edit_xS.get(1.0, tk.END)), float(txt_edit_yS.get(1.0, tk.END)), float(txt_edit_zS.get(1.0, tk.END)), float(txt_edit_phiS.get(1.0, tk.END)))
-    #print(M)
-    #M1(4, M[0], M[1], M[2], M[3])
+    text1.delete("1.0","end")
+    text1.insert( tk.END,str(M[0]))
+    text1Ar.delete("1.0","end")
+    text1Ar.insert(tk.END, str(M[0]))
+    text2.delete("1.0","end")
+    text2.insert( tk.END,str(M[1]))
+    text2Ar.delete("1.0","end")
+    text2Ar.insert(tk.END, str(M[4]))
+    text3.delete("1.0","end")
+    text3.insert( tk.END,str(M[2]))
+    text3Ar.delete("1.0","end")
+    text3Ar.insert(tk.END, str(M[5]))
+    text4.delete("1.0","end")
+    text4.insert( tk.END,str(M[3]))
+    text4Ar.delete("1.0","end")
+    text4Ar.insert(tk.END, str(M[6]))
+    llenado2(M1(4, M[0], M[1], M[2], M[3]))
 
 def dato1(band):
     if band==1:
@@ -481,7 +496,7 @@ Calcular1.place(relx=1/10-0.01, rely=9/10-0.03, relheight=1/6-0.05)
 
 #Frame Variables de Juntura (Contenedor)
 frmdh2=LabelFrame(frm2,relief="raised", text='Codo Abajo', labelanchor='n')
-frmdh2.place(relx=0.35, rely=0.15, relwidth=0.42, relheight=0.5)
+frmdh2.place(relx=0.3, rely=0.1, relwidth=0.22, relheight=0.78)
 
 #Variable de Juntura 1
 etiqueta1 = tk.Label(frmdh2, width=5, text="d₁", fg="black", bg="yellow").grid(column=0, row=0)
@@ -489,33 +504,62 @@ text1 = tk.Text(frmdh2, padx= 20, pady=2, width=10, height=1, wrap="none", borde
 text1.grid(row=0, column=1, sticky="nsew")
 
 blanco = Label(frmdh2, width=10)
-blanco.grid(column=1, row=2)
+blanco.grid(column=0, row=1)
 
 #Variable de Juntura 2
-etiqueta2 = tk.Label(frmdh2, width=5, text="θ₂", fg="black", bg="yellow").grid(column=0, row=3)
+etiqueta2 = tk.Label(frmdh2, width=5, text="θ₂", fg="black", bg="yellow").grid(column=0, row=2)
 text2 = tk.Text(frmdh2, padx= 20, pady=2, width=10, height=1, wrap="none", borderwidth=0)
-#textHsb = tk.Scrollbar(frmdh2, orient="horizontal", command=text2.xview)
-#text2.configure(xscrollcommand=textHsb.set)
-text2.grid(row=1, column=1, sticky="ew")
-#textHsb.grid(row=4, column=1, sticky="ew")
+text2.grid(row=2, column=1, sticky="ew")
 
 blanco = Label(frmdh2, width=10)
-blanco.grid(column=2, row=0)
+blanco.grid(column=0, row=3)
 
 #Variable de Juntura 3
-etiqueta3 = tk.Label(frmdh2, width=5, text="θ₃", fg="black", bg="yellow").grid(column=3, row=0)
+etiqueta3 = tk.Label(frmdh2, width=5, text="θ₃", fg="black", bg="yellow").grid(column=0, row=4)
 text3 = tk.Text(frmdh2, padx= 20, pady=2, width=10, height=1, wrap="none", borderwidth=0)
-text3.grid(row=3, column=1, sticky="nsew")
+text3.grid(row=4, column=1, sticky="nsew")
 
+blanco = Label(frmdh2, width=10)
+blanco.grid(column=0, row=5)
 
 #Variable de Juntura 4
-etiqueta4 = tk.Label(frmdh2, width=5, text="θ₄", fg="black", bg="yellow").grid(column=3, row=3)
+etiqueta4 = tk.Label(frmdh2, width=5, text="θ₄", fg="black", bg="yellow").grid(column=0, row=6)
 text4 = tk.Text(frmdh2, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
-textHsb = tk.Scrollbar(frmdh2, orient="horizontal", command=text4.xview)
-text4.configure(xscrollcommand=textHsb.set)
-text4.grid(row=3, column=4, sticky="nsew")
-textHsb.grid(row=4, column=4, sticky="ew")
+text4.grid(row=6, column=1, sticky="nsew")
+################
+#Frame Variables de Juntura (Contenedor)
+frmdh2Ar=LabelFrame(frm2,relief="raised", text='Codo Arriba', labelanchor='n')
+frmdh2Ar.place(relx=0.6, rely=0.1, relwidth=0.22, relheight=0.78)
 
+#Variable de Juntura 1
+etiqueta1 = tk.Label(frmdh2Ar, width=5, text="d₁", fg="black", bg="yellow").grid(column=0, row=0)
+text1Ar = tk.Text(frmdh2Ar, padx= 20, pady=2, width=10, height=1, wrap="none", borderwidth=0)
+text1Ar.grid(row=0, column=1, sticky="nsew")
+
+blanco = Label(frmdh2Ar, width=10)
+blanco.grid(column=0, row=1)
+
+#Variable de Juntura 2
+etiqueta2 = tk.Label(frmdh2Ar, width=5, text="θ₂", fg="black", bg="yellow").grid(column=0, row=2)
+text2Ar = tk.Text(frmdh2Ar, padx= 20, pady=2, width=10, height=1, wrap="none", borderwidth=0)
+text2Ar.grid(row=2, column=1, sticky="ew")
+
+blanco = Label(frmdh2Ar, width=10)
+blanco.grid(column=0, row=3)
+
+#Variable de Juntura 3
+etiqueta3 = tk.Label(frmdh2Ar, width=5, text="θ₃", fg="black", bg="yellow").grid(column=0, row=4)
+text3Ar = tk.Text(frmdh2Ar, padx= 20, pady=2, width=10, height=1, wrap="none", borderwidth=0)
+text3Ar.grid(row=4, column=1, sticky="nsew")
+
+blanco = Label(frmdh2Ar, width=10)
+blanco.grid(column=0, row=5)
+
+#Variable de Juntura 4
+etiqueta4 = tk.Label(frmdh2Ar, width=5, text="θ₄", fg="black", bg="yellow").grid(column=0, row=6)
+text4Ar = tk.Text(frmdh2Ar, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
+text4Ar.grid(row=6, column=1, sticky="nsew")
+############
 fila_vacia(3)
 #Titulos Scara (Label)
 Titulos_l1 = Label(frmdh1, width=11,text="Link 1")
