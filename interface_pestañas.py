@@ -11,7 +11,7 @@ import numpy as np
 from time import sleep
 from PIL import Image, ImageTk
 import serial, serial.tools.list_ports
-
+import Fnc
 
 #Configuracion COM
 board =serial.Serial(port='COM1', baudrate=19200)
@@ -98,6 +98,11 @@ def llenado2 (matri): #Llenado Matrices Scara
             for j in range(0,4):                
                 globals()["arr"+ str(n) +"_" + str(i) + str(j)].set(matri[1][n-1][i][j]) 
                 globals()["arr5" +"_" + str(i) + str(j)].set(matri[0][i][j])
+
+def Button_IK_Scara_P3R():
+    M=Fnc.IK_Scara_P3R(float(txt_edit_xS.get(1.0, tk.END)), float(txt_edit_yS.get(1.0, tk.END)), float(txt_edit_zS.get(1.0, tk.END)), float(txt_edit_phiS.get(1.0, tk.END)))
+    #print(M)
+    #M1(4, M[0], M[1], M[2], M[3])
 
 def dato1(band):
     if band==1:
@@ -471,42 +476,37 @@ txt_edit_phiS.place(relx=1/10, rely=7/10+0.01)
 txt_edit_phiS.insert(tk.END, "0")
 
 #Boton Calcular Cinematica Inversa        
-Calcular1=Button(frm2, text='Calcular', activebackground='yellow')
+Calcular1=Button(frm2, text='Calcular', activebackground='yellow', command=Button_IK_Scara_P3R)
 Calcular1.place(relx=1/10-0.01, rely=9/10-0.03, relheight=1/6-0.05)
 
 #Frame Variables de Juntura (Contenedor)
-frmdh2=LabelFrame(frm2,relief="raised")
+frmdh2=LabelFrame(frm2,relief="raised", text='Codo Abajo', labelanchor='n')
 frmdh2.place(relx=0.35, rely=0.15, relwidth=0.42, relheight=0.5)
 
 #Variable de Juntura 1
 etiqueta1 = tk.Label(frmdh2, width=5, text="d₁", fg="black", bg="yellow").grid(column=0, row=0)
-text1 = tk.Text(frmdh2, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
-textHsb = tk.Scrollbar(frmdh2, orient="horizontal", command=text1.xview)
-text1.configure(xscrollcommand=textHsb.set)
+text1 = tk.Text(frmdh2, padx= 20, pady=2, width=10, height=1, wrap="none", borderwidth=0)
 text1.grid(row=0, column=1, sticky="nsew")
-textHsb.grid(row=1, column=1, sticky="ew")
 
 blanco = Label(frmdh2, width=10)
 blanco.grid(column=1, row=2)
 
 #Variable de Juntura 2
 etiqueta2 = tk.Label(frmdh2, width=5, text="θ₂", fg="black", bg="yellow").grid(column=0, row=3)
-text2 = tk.Text(frmdh2, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
-textHsb = tk.Scrollbar(frmdh2, orient="horizontal", command=text2.xview)
-text2.configure(xscrollcommand=textHsb.set)
-text2.grid(row=3, column=1, sticky="nsew")
-textHsb.grid(row=4, column=1, sticky="ew")
+text2 = tk.Text(frmdh2, padx= 20, pady=2, width=10, height=1, wrap="none", borderwidth=0)
+#textHsb = tk.Scrollbar(frmdh2, orient="horizontal", command=text2.xview)
+#text2.configure(xscrollcommand=textHsb.set)
+text2.grid(row=1, column=1, sticky="ew")
+#textHsb.grid(row=4, column=1, sticky="ew")
 
 blanco = Label(frmdh2, width=10)
 blanco.grid(column=2, row=0)
 
 #Variable de Juntura 3
 etiqueta3 = tk.Label(frmdh2, width=5, text="θ₃", fg="black", bg="yellow").grid(column=3, row=0)
-text3 = tk.Text(frmdh2, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
-textHsb = tk.Scrollbar(frmdh2, orient="horizontal", command=text3.xview)
-text3.configure(xscrollcommand=textHsb.set)
-text3.grid(row=0, column=4, sticky="nsew")
-textHsb.grid(row=1, column=4, sticky="ew")
+text3 = tk.Text(frmdh2, padx= 20, pady=2, width=10, height=1, wrap="none", borderwidth=0)
+text3.grid(row=3, column=1, sticky="nsew")
+
 
 #Variable de Juntura 4
 etiqueta4 = tk.Label(frmdh2, width=5, text="θ₄", fg="black", bg="yellow").grid(column=3, row=3)
