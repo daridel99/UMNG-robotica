@@ -1,0 +1,19 @@
+SCARA:
+
+DK
+
+Sliders:
+D.Base=0,122.5
+R.Brazo=-90,90
+R.Codo=-90,90
+R.Muñeca=-90,90
+
+IK
+
+Edit Text pasarlos a Sliders
+
+Z:limite=0<Pz<122.5
+X:Limite=17.3<Px<375.2 (Px=17.3->Py=297.9; Px=375.2->Py=0)
+Y:Limite=119.1<PY<327.9 (Py=297.9->Px=17.3<Px<77.3; PY=327.9->Px=47.3;Py=119.1->Px=101.5)
+Phi=-90<Phi<90
+
