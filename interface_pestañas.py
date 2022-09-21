@@ -143,14 +143,14 @@ def dato1(band):
     if band==1:
         mat=M2(3,Aangulo1.get(),Aangulo2.get(),Aangulo3.get())
     elif band==2:
-        mat=M2(3,int(txt_edit_ang4.get(1.0, tk.END)),int(txt_edit_ang5.get(1.0, tk.END)),int(txt_edit_ang6.get(1.0, tk.END)))
+        mat=M2(3,float(txt_edit_ang4.get(1.0, tk.END)),float(txt_edit_ang5.get(1.0, tk.END)),float(txt_edit_ang6.get(1.0, tk.END)))
     llenado1(mat)
 
 def dato2(band):
     if band==1:
         mat2=M1(4,angulo1.get(),angulo2.get(),angulo3.get(),angulo4.get())
     elif band==2:
-        mat2=M1(4,int(txt_edit_ang0.get(1.0, tk.END)),int(txt_edit_ang1.get(1.0, tk.END)),int(txt_edit_ang2.get(1.0, tk.END)),int(txt_edit_ang3.get(1.0, tk.END)))
+        mat2=M1(4,float(txt_edit_ang0.get(1.0, tk.END)),float(txt_edit_ang1.get(1.0, tk.END)),float(txt_edit_ang2.get(1.0, tk.END)),int(txt_edit_ang3.get(1.0, tk.END)))
     llenado2(mat2)
 
 #Funciones De Movimiento Scara
@@ -383,7 +383,7 @@ angulo1=Scale(frm1,
                 )
 angulo1.place(rely=0)
 #Text_Box
-txt_edit_ang0 = tk.Text(frm1,width=4)
+txt_edit_ang0 = tk.Text(frm1,width=6)
 txt_edit_ang0.place(relx=1/5, rely=1/12+0.01, relheight=1/8-0.045)
 txt_edit_ang0.insert(tk.END, "0")
         
@@ -402,7 +402,7 @@ angulo2= Scale(frm1,
               label = 'Rotación Brazo'  )
 angulo2.place(rely=1/4)
 #Text_Box
-txt_edit_ang1 = tk.Text(frm1, width = 4)
+txt_edit_ang1 = tk.Text(frm1, width = 6)
 txt_edit_ang1.place(relx=1/5, rely=4/12+0.01, relheight=1/8-0.045)
 txt_edit_ang1.insert(tk.END, "0")
 
@@ -421,7 +421,7 @@ angulo3= Scale(frm1,
               label = 'Rotación Codo'  )
 angulo3.place(rely=2/4)
 #Text_Box
-txt_edit_ang2 = tk.Text(frm1, width = 4)
+txt_edit_ang2 = tk.Text(frm1, width = 6)
 txt_edit_ang2.place(relx=1/5, rely=7/12+0.011, relheight=1/8-0.045)
 txt_edit_ang2.insert(tk.END, "0")
 
@@ -440,13 +440,13 @@ angulo4= Scale(frm1,
               label = 'Rotación Muñeca'  )
 angulo4.place(rely=3/4)
 #Text_Box
-txt_edit_ang3 = tk.Text(frm1, width = 4)
+txt_edit_ang3 = tk.Text(frm1, width = 6)
 txt_edit_ang3.place(relx=1/5, rely=10/12+0.011, relheight=1/8-0.045)
 txt_edit_ang3.insert(tk.END, "0")
 
 #Frame Matrices Cinematica Directa DK (Contenedor)
 frmdh1=LabelFrame(frm1,relief="raised")
-frmdh1.place(relx=1/4+0.02, relwidth=1, relheight=1)
+frmdh1.place(relx=1/4+0.01, relwidth=1, relheight=1)
 
 #Matriz Link 1
 for r in range(0, 4):
@@ -491,22 +491,22 @@ frm2=LabelFrame(frm,text='IK', labelanchor='n')
 frm2.place(rely=0.63, relwidth=1, relheight=0.37)
 
 #Text_Box Px
-txt_edit_xS = tk.Text(frm2, width=4, height=1)
+txt_edit_xS = tk.Text(frm2, width=8, height=1)
 txt_edit_xS.place(relx=1/10,rely=1/10+0.01)
 txt_edit_xS.insert(tk.END, "0")
         
 #Text_Box Py
-txt_edit_yS = tk.Text(frm2, width = 4, height=1)
+txt_edit_yS = tk.Text(frm2, width =8 , height=1)
 txt_edit_yS.place(relx=1/10, rely=3/10+0.01)
 txt_edit_yS.insert(tk.END, "0")
 
 #Text_Box Pz
-txt_edit_zS = tk.Text(frm2, width = 4, height=1)
+txt_edit_zS = tk.Text(frm2, width =8 , height=1)
 txt_edit_zS.place(relx=1/10, rely=5/10+0.01)
 txt_edit_zS.insert(tk.END, "0")
 
 #Text_Box Phi
-txt_edit_phiS = tk.Text(frm2, width = 4, height=1)
+txt_edit_phiS = tk.Text(frm2, width =8 , height=1)
 txt_edit_phiS.place(relx=1/10, rely=7/10+0.01)
 txt_edit_phiS.insert(tk.END, "0")
 
@@ -520,7 +520,7 @@ frmdh2.place(relx=0.3, rely=0.1, relwidth=0.22, relheight=0.78)
 
 #Variable de Juntura 1
 etiqueta1 = tk.Label(frmdh2, width=5, text="d₁", fg="black", bg="yellow").grid(column=0, row=0)
-text1 = tk.Text(frmdh2, padx= 20, pady=2, width=10, height=1, wrap="none", borderwidth=0)
+text1 = tk.Text(frmdh2, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
 text1.grid(row=0, column=1, sticky="nsew")
 
 blanco = Label(frmdh2, width=10)
@@ -528,7 +528,7 @@ blanco.grid(column=0, row=1)
 
 #Variable de Juntura 2
 etiqueta2 = tk.Label(frmdh2, width=5, text="θ₂", fg="black", bg="yellow").grid(column=0, row=2)
-text2 = tk.Text(frmdh2, padx= 20, pady=2, width=10, height=1, wrap="none", borderwidth=0)
+text2 = tk.Text(frmdh2, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
 text2.grid(row=2, column=1, sticky="ew")
 
 blanco = Label(frmdh2, width=10)
@@ -536,7 +536,7 @@ blanco.grid(column=0, row=3)
 
 #Variable de Juntura 3
 etiqueta3 = tk.Label(frmdh2, width=5, text="θ₃", fg="black", bg="yellow").grid(column=0, row=4)
-text3 = tk.Text(frmdh2, padx= 20, pady=2, width=10, height=1, wrap="none", borderwidth=0)
+text3 = tk.Text(frmdh2, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
 text3.grid(row=4, column=1, sticky="nsew")
 
 blanco = Label(frmdh2, width=10)
@@ -553,7 +553,7 @@ frmdh2Ar.place(relx=0.6, rely=0.1, relwidth=0.22, relheight=0.78)
 
 #Variable de Juntura 1
 etiqueta1 = tk.Label(frmdh2Ar, width=5, text="d₁", fg="black", bg="yellow").grid(column=0, row=0)
-text1Ar = tk.Text(frmdh2Ar, padx= 20, pady=2, width=10, height=1, wrap="none", borderwidth=0)
+text1Ar = tk.Text(frmdh2Ar, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
 text1Ar.grid(row=0, column=1, sticky="nsew")
 
 blanco = Label(frmdh2Ar, width=10)
@@ -561,7 +561,7 @@ blanco.grid(column=0, row=1)
 
 #Variable de Juntura 2
 etiqueta2 = tk.Label(frmdh2Ar, width=5, text="θ₂", fg="black", bg="yellow").grid(column=0, row=2)
-text2Ar = tk.Text(frmdh2Ar, padx= 20, pady=2, width=10, height=1, wrap="none", borderwidth=0)
+text2Ar = tk.Text(frmdh2Ar, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
 text2Ar.grid(row=2, column=1, sticky="ew")
 
 blanco = Label(frmdh2Ar, width=10)
@@ -569,7 +569,7 @@ blanco.grid(column=0, row=3)
 
 #Variable de Juntura 3
 etiqueta3 = tk.Label(frmdh2Ar, width=5, text="θ₃", fg="black", bg="yellow").grid(column=0, row=4)
-text3Ar = tk.Text(frmdh2Ar, padx= 20, pady=2, width=10, height=1, wrap="none", borderwidth=0)
+text3Ar = tk.Text(frmdh2Ar, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
 text3Ar.grid(row=4, column=1, sticky="nsew")
 
 blanco = Label(frmdh2Ar, width=10)
@@ -625,7 +625,7 @@ Aangulo1=Scale(frm1A,
                 label = 'Rotación Base')
 Aangulo1.place(rely=0)
 #Text_Box
-txt_edit_ang4 = tk.Text(frm1A,width=4)
+txt_edit_ang4 = tk.Text(frm1A,width= 6)
 txt_edit_ang4.place(relx=1/5, rely=1/12+0.01, relheight=1/8-0.045)
 txt_edit_ang4.insert(tk.END, "0")
         
@@ -644,7 +644,7 @@ Aangulo2= Scale(frm1A,
               label = 'Rotación Brazo')
 Aangulo2.place(rely=1/4)
 #Text_Box
-txt_edit_ang5 = tk.Text(frm1A, width = 4)
+txt_edit_ang5 = tk.Text(frm1A, width = 6)
 txt_edit_ang5.place(relx=1/5, rely=4/12+0.01, relheight=1/8-0.045)
 txt_edit_ang5.insert(tk.END, "0")
 
@@ -663,7 +663,7 @@ Aangulo3= Scale(frm1A,
               label = 'Rotación Codo')
 Aangulo3.place(rely=2/4)
 #Text_Box
-txt_edit_ang6 = tk.Text(frm1A, width = 4)
+txt_edit_ang6 = tk.Text(frm1A, width = 6)
 txt_edit_ang6.place(relx=1/5, rely=7/12+0.011, relheight=1/8-0.045)
 txt_edit_ang6.insert(tk.END, "0")
 
@@ -725,17 +725,17 @@ frm2A=LabelFrame(frmA,text='IK', labelanchor='n')
 frm2A.place(rely=0.65, relwidth=1, relheight=0.35)
 
 #Text_Box Px
-txt_edit_xA = tk.Text(frm2A, width=4, height=1)
+txt_edit_xA = tk.Text(frm2A, width=8, height=1)
 txt_edit_xA.place(relx=1/10,rely=1/10+0.01)
 txt_edit_xA.insert(tk.END, "0")
         
 #Text_Box Py
-txt_edit_yA = tk.Text(frm2A, width = 4, height=1)
+txt_edit_yA = tk.Text(frm2A, width = 8, height=1)
 txt_edit_yA.place(relx=1/10, rely=3/10+0.01)
 txt_edit_yA.insert(tk.END, "0")
 
 #Text_Box Pz
-txt_edit_zA = tk.Text(frm2A, width = 4, height=1)
+txt_edit_zA = tk.Text(frm2A, width = 8, height=1)
 txt_edit_zA.place(relx=1/10, rely=5/10+0.01)
 txt_edit_zA.insert(tk.END, "0")
 
