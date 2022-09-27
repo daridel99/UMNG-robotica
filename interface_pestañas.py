@@ -1,3 +1,4 @@
+from gc import disable
 import tkinter 
 from tkinter import *
 import tkinter as tk
@@ -10,12 +11,12 @@ from ctypes import sizeof
 import numpy as np
 from time import sleep
 from PIL import Image, ImageTk
+
 import serial, serial.tools.list_ports
 import Fnc
 
 #Configuracion COM
 board =serial.Serial(port='COM1', baudrate=19200)
-#board.write( b'fine\r\n' )
 sleep(5) #5 Segundos Para Que Establezca La Comunicacion
 
 def fila_vacia(n): #Crear Filas Vacias
@@ -100,7 +101,7 @@ def llenado2 (matri): #Llenado Matrices Scara
                 globals()["arr5" +"_" + str(i) + str(j)].set(matri[0][i][j])
 
 def Button_IK_Scara_P3R():
-    M=Fnc.IK_Scara_P3R(float(txt_edit_xS.get(1.0, tk.END)), float(txt_edit_yS.get(1.0, tk.END)), float(txt_edit_zS.get(1.0, tk.END)), float(txt_edit_phiS.get(1.0, tk.END)))
+    M=Fnc.IK_Scara_P3R(float(txt_edit_xS.get()), float(txt_edit_yS.get()), float(txt_edit_zS.get()), float(txt_edit_phiS.get()))
     text1.delete("1.0","end")
     text1.insert( tk.END,str(M[0]))
     text1Ar.delete("1.0","end")
@@ -138,6 +139,16 @@ def Button_IK_Antropo_3R():
     text4Ar.delete("1.0","end")
     text4Ar.insert(tk.END, str(M[6]))'''
     llenado1(M2(3, M[0], M[1], M[2]))
+
+def re_def_SLIDER(IKxS):
+    print(IKxS)
+    if float(IKxS) > 50:
+        txt_edit_yS.place(relx=1/11, rely=3/10-0.1)
+        txt_edit_yS['state']='active'
+        txt_edit_yS['from_']='17.5'
+        txt_edit_yS['to']='100'
+    else:
+        txt_edit_yS.place_forget()
 
 def dato1(band):
     if band==1:
@@ -296,6 +307,7 @@ def show_values2():
 #VENTANA PRINCIPAL.
 root = tkinter.Tk()
 root.title('Controles de Manipuladores Roboticos')
+#root.iconbitmap('../UMNG-robotica/two-sword.png')
 root.geometry("1320x660")
 creacion()
 nombre = StringVar()
@@ -372,7 +384,7 @@ frm1.place(relwidth=1, relheight=0.64)
 angulo1=Scale(frm1,
                 command = servo1,
                 from_=0,
-                to=122,
+                to=122.5,
                 resolution=0.5,
                 orient = HORIZONTAL,
                 length=266,
@@ -391,8 +403,8 @@ txt_edit_ang0.insert(tk.END, "0")
 #Slider
 angulo2= Scale(frm1,
               command = servo2,
-              from_=0,
-              to=180,
+              from_=-90,
+              to=90,
               resolution=0.5,
               orient = HORIZONTAL,
               length=266,
@@ -410,8 +422,8 @@ txt_edit_ang1.insert(tk.END, "0")
 #Slider
 angulo3= Scale(frm1,     
               command = servo3,         
-              from_=0,
-              to=180,
+              from_=-90,
+              to=90,
               resolution=0.5,
               orient = HORIZONTAL,
               length=266,
@@ -429,8 +441,8 @@ txt_edit_ang2.insert(tk.END, "0")
 #Slider
 angulo4= Scale(frm1,
               command = servo4,
-              from_=0,
-              to=180,
+              from_=-90,
+              to=90,
               resolution=0.5,
               orient = HORIZONTAL,
               length=266,
@@ -491,24 +503,69 @@ frm2=LabelFrame(frm,text='IK', labelanchor='n')
 frm2.place(rely=0.63, relwidth=1, relheight=0.37)
 
 #Text_Box Px
-txt_edit_xS = tk.Text(frm2, width=8, height=1)
-txt_edit_xS.place(relx=1/10,rely=1/10+0.01)
-txt_edit_xS.insert(tk.END, "0")
+txt_edit_xS =Scale(frm2,
+                command = re_def_SLIDER,
+                from_=0,
+                to=122.5,
+                resolution=0.5,
+                orient = HORIZONTAL,
+                length=220,
+                troughcolor='gray',
+                width = 25,
+                cursor='dot'
+                )#tk.Text(frm2, width =8 , height=1)
+txt_edit_xS.place(relx=1/11, rely=1/10-0.1)
+#tk.Text(frm2, width=8, height=1)
+#txt_edit_xS.place(relx=1/10,rely=1/10+0.01)
+#txt_edit_xS.insert(tk.END, "0")
         
 #Text_Box Py
-txt_edit_yS = tk.Text(frm2, width =8 , height=1)
-txt_edit_yS.place(relx=1/10, rely=3/10+0.01)
-txt_edit_yS.insert(tk.END, "0")
+''''''
+txt_edit_yS = Scale(frm2,
+                #command = re_def_SLIDER,
+                from_=0,
+                to=122.5,
+                resolution=0.5,
+                orient = HORIZONTAL,
+                length=220,
+                troughcolor='gray',
+                width = 30,
+                cursor='dot',
+                state= DISABLED
+                )#tk.Text(frm2, width =8 , height=1)
+txt_edit_yS.place(relx=1/11, rely=3/10-0.1)
+txt_edit_yS.place_forget()
+
+#tk.Text(frm2, width =8 , height=1)
+#txt_edit_yS.place(relx=1/10, rely=3/10+0.01)
+#txt_edit_yS.insert(tk.END, "0")
 
 #Text_Box Pz
-txt_edit_zS = tk.Text(frm2, width =8 , height=1)
-txt_edit_zS.place(relx=1/10, rely=5/10+0.01)
-txt_edit_zS.insert(tk.END, "0")
+txt_edit_zS =Scale(frm2,
+                #command = re_def_SLIDER,
+                from_=0,
+                to=122.5,
+                resolution=0.5,
+                orient = HORIZONTAL,
+                length=220,
+                troughcolor='gray',
+                width = 30,
+                cursor='dot'
+                )#tk.Text(frm2, width =8 , height=1)
+txt_edit_zS.place(relx=1/11, rely=5/10-0.1)
 
 #Text_Box Phi
-txt_edit_phiS = tk.Text(frm2, width =8 , height=1)
-txt_edit_phiS.place(relx=1/10, rely=7/10+0.01)
-txt_edit_phiS.insert(tk.END, "0")
+txt_edit_phiS = Scale(frm2,
+                from_=-90,
+                to=90,
+                resolution=0.5,
+                orient = HORIZONTAL,
+                length=220,
+                troughcolor='gray',
+                width = 30,
+                cursor='dot'
+                )#tk.Text(frm2, width =8 , height=1)#tk.Text(frm2, width =8 , height=1)
+txt_edit_phiS.place(relx=1/11, rely=7/10-0.1)
 
 #Boton Calcular Cinematica Inversa        
 Calcular1=Button(frm2, text='Calcular', activebackground='yellow', command=Button_IK_Scara_P3R)
@@ -593,13 +650,13 @@ Titulos_l4.place(relx=14/24-0.005,rely=10/16)
 Titulos_lT = Label(frmdh1, width=11,text="Total")
 Titulos_lT.place(relx=5/15,rely=5/16)
 Titulos_px = Label(frm2, width=5,text="Px")
-Titulos_px.place(relx=1/15,rely=1/10+0.01)
+Titulos_px.place(relx=1/16,rely=1/10+0.01)
 Titulos_py = Label(frm2, width=5,text="Py")
-Titulos_py.place(relx=1/15,rely=3/10+0.01)
+Titulos_py.place(relx=1/16,rely=3/10+0.01)
 Titulos_pz = Label(frm2, width=5,text="Pz")
-Titulos_pz.place(relx=1/15,rely=5/10+0.01)
+Titulos_pz.place(relx=1/16,rely=5/10+0.01)
 Titulos_pphi = Label(frm2, width=5,text="ϕ")
-Titulos_pphi.place(relx=1/15,rely=7/10+0.01)
+Titulos_pphi.place(relx=1/16,rely=7/10+0.01)
 #####Pestaña 3#####
 
 #Frame Manipulador Antropomorfico (Contenedor)
