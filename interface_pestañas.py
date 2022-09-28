@@ -144,11 +144,12 @@ def re_def_SLIDER(IKxS):
     print(IKxS)
     if float(IKxS) > 50:
         txt_edit_yS.place(relx=1/11, rely=3/10-0.1)
+        value=17.5-float(IKxS)
         txt_edit_yS['state']='active'
-        txt_edit_yS['from_']='17.5'
+        txt_edit_yS['from_']=str(value)#'17.5'
         txt_edit_yS['to']='100'
-    else:
-        txt_edit_yS.place_forget()
+   #else:
+    #    txt_edit_yS.place_forget()
 
 def dato1(band):
     if band==1:
@@ -529,7 +530,7 @@ txt_edit_yS = Scale(frm2,
                 orient = HORIZONTAL,
                 length=220,
                 troughcolor='gray',
-                width = 30,
+                width = 25,
                 cursor='dot',
                 state= DISABLED
                 )#tk.Text(frm2, width =8 , height=1)
@@ -549,7 +550,7 @@ txt_edit_zS =Scale(frm2,
                 orient = HORIZONTAL,
                 length=220,
                 troughcolor='gray',
-                width = 30,
+                width = 25,
                 cursor='dot'
                 )#tk.Text(frm2, width =8 , height=1)
 txt_edit_zS.place(relx=1/11, rely=5/10-0.1)
@@ -562,7 +563,7 @@ txt_edit_phiS = Scale(frm2,
                 orient = HORIZONTAL,
                 length=220,
                 troughcolor='gray',
-                width = 30,
+                width = 25,
                 cursor='dot'
                 )#tk.Text(frm2, width =8 , height=1)#tk.Text(frm2, width =8 , height=1)
 txt_edit_phiS.place(relx=1/11, rely=7/10-0.1)
