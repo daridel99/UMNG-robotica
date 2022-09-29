@@ -63,3 +63,47 @@ def IK_Antropo_3R(P_X, P_Y, P_Z):
     #IK_FINAL=np.array([d_1, theta_2ab*180/mt.pi, theta_3ab*180/mt.pi, theta_4ab,  theta_2ar*180/mt.pi,theta_3ar*180/mt.pi, theta_4ar],float)
     return IK_FINAL
 #print(IK_Antropo_3R(36,50,20))
+
+def varX_scara(PosX):
+    ValX=float(PosX)
+    centro=float(47.3)
+    Xmin=float(-101.5)
+    Xmax=float(375.2)
+    Xmedio=float(190.5945)    
+    if ValX==Xmax:
+        yinf=0
+        ysup=0
+    elif ValX>Xmedio:
+        ysup=limites(ValX,1)
+        yinf=-limites(ValX,1)  
+        neg=0
+    elif (ValX>=centro and ValX<Xmedio):
+        ysup=limites(ValX,1)
+        yinf=limites(ValX,2)
+        neg=1
+    elif (ValX<centro and ValX>Xmin):
+        ysup=limites(ValX,3)
+        yinf=limites(ValX,2)
+        neg=1
+    elif (ValX<=Xmin):
+        ysup=limites(ValX,3)
+        yinf=limites(ValX,4)
+        neg=1
+    else: 
+        print ("No es posible el punto")
+    return ysup,yinf,neg
+     
+def limites (X,ID):
+    match ID:
+        case 1:
+            yext1=mt.sqrt((float(327.9))**2-(float(X)-float(47.3))**2) 
+            return yext1
+        case 2:     
+            yint1=mt.sqrt((float(190.5945))**2-(float(X)-float(47.3))**2)    #Cuando X<Xmedio
+            return yint1
+        case 3:
+            yext2=mt.sqrt((float(178.8))**2-(float(X)-float(47.3))**2)+float(149.1)  #Cuando X<centro
+            return yext2
+        case 4:
+            yint2=-mt.sqrt((float(30))**2-(float(X)+float(101.5))**2)+float(149.1)  #Cuando X<Xmin
+            return yint2

@@ -141,13 +141,13 @@ def Button_IK_Antropo_3R():
     llenado1(M2(3, M[0], M[1], M[2]))
 
 def re_def_SLIDER(IKxS):
-    print(IKxS)
-    if float(IKxS) > 50:
-        txt_edit_yS.place(relx=1/11, rely=3/10-0.1)
-        value=17.5-float(IKxS)
-        txt_edit_yS['state']='active'
-        txt_edit_yS['from_']=str(value)#'17.5'
-        txt_edit_yS['to']='100'
+    LimitY=Fnc.varX_scara(IKxS)
+    txt_edit_yS.place(relx=1/11, rely=3/10-0.1)
+    supe=LimitY[0]
+    infe=LimitY[1]
+    txt_edit_yS['state']='active'
+    txt_edit_yS['from_']=str(infe)#'17.5'
+    txt_edit_yS['to']=str(supe)
    #else:
     #    txt_edit_yS.place_forget()
 
@@ -506,8 +506,8 @@ frm2.place(rely=0.63, relwidth=1, relheight=0.37)
 #Text_Box Px
 txt_edit_xS =Scale(frm2,
                 command = re_def_SLIDER,
-                from_=0,
-                to=122.5,
+                from_=-131.5,
+                to=375.2,
                 resolution=0.5,
                 orient = HORIZONTAL,
                 length=220,
