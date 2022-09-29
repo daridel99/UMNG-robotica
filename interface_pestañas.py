@@ -146,10 +146,8 @@ def re_def_SLIDER(IKxS):
     supe=LimitY[0]
     infe=LimitY[1]
     txt_edit_yS['state']='active'
-    txt_edit_yS['from_']=str(infe)#'17.5'
+    txt_edit_yS['from_']=str(infe)
     txt_edit_yS['to']=str(supe)
-   #else:
-    #    txt_edit_yS.place_forget()
 
 def dato1(band):
     if band==1:
@@ -507,7 +505,7 @@ frm2.place(rely=0.63, relwidth=1, relheight=0.37)
 txt_edit_xS =Scale(frm2,
                 command = re_def_SLIDER,
                 from_=-131.5,
-                to=375.2,
+                to=375.5,
                 resolution=0.5,
                 orient = HORIZONTAL,
                 length=220,
@@ -557,8 +555,8 @@ txt_edit_zS.place(relx=1/11, rely=5/10-0.1)
 
 #Text_Box Phi
 txt_edit_phiS = Scale(frm2,
-                from_=-90,
-                to=90,
+                from_=-270,
+                to=270,
                 resolution=0.5,
                 orient = HORIZONTAL,
                 length=220,

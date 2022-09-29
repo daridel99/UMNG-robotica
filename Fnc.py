@@ -25,6 +25,8 @@ def IK_Scara_P3R(P_X, P_Y, P_Z, phi):
     theta_2ar=(alpha+beta)
     theta_4ar=(phi-(theta_2ar*180/mt.pi)-(theta_3ar*180/mt.pi))
 
+    if (theta_2ab or theta_3ab or theta_4ab or theta_2ar or theta_3ar or theta_4ar)>90 or (theta_2ab or theta_3ab or theta_4ab or theta_2ar or theta_3ar or theta_4ar)<-90:
+        print ("Varie el valor de Phi")
     d_1=P_Z
 
     '''se envia a m1(4,d_1,theta_2,theta_3, theta_4)'''
@@ -73,6 +75,7 @@ def varX_scara(PosX):
     if ValX==Xmax:
         yinf=0
         ysup=0
+        neg=0
     elif ValX>Xmedio:
         ysup=limites(ValX,1)
         yinf=-limites(ValX,1)  
