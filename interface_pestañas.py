@@ -11,6 +11,7 @@ from ctypes import sizeof
 import numpy as np
 from time import sleep
 from PIL import Image, ImageTk
+import numpy
 
 import serial, serial.tools.list_ports
 import Fnc
@@ -80,11 +81,11 @@ def M2(n,j1,j2,j3): #Definicion Parametros Antropomorfico
 
 #Creacion de variables en masa
 def creacion():
+    globals()["txt_edit_yS_var"] = StringVar()
     for n in range(1,11):
         for i in range(0,4):
             for j in range(0,4):
                 globals()["arr"+str(n)+"_" + str(i) + str(j)]=StringVar()
-
 
 def llenado1 (matri): #Llenado Matrices Antropomorfico
     for n in range(6,9):
@@ -101,7 +102,12 @@ def llenado2 (matri): #Llenado Matrices Scara
                 globals()["arr5" +"_" + str(i) + str(j)].set(matri[0][i][j])
 
 def Button_IK_Scara_P3R():
-    M=Fnc.IK_Scara_P3R(float(txt_edit_xS.get()), float(txt_edit_yS.get()), float(txt_edit_zS.get()), float(txt_edit_phiS.get()))
+    M=Fnc.IK_Scara_P3R(float(txt_edit_xS.get()), float(globals()["txt_edit_yS_var"]), float(txt_edit_zS.get()), float(txt_edit_phiS.get()))
+    print(M)
+
+    if M[7] == 1:
+        messagebox.showinfo(title="error",
+        message="El valor de alguna variable de juntura supera los limites mecanicos. \n \t \t Varie el valor de ϕ  ")
     text1.delete("1.0","end")
     text1.insert( tk.END,str(M[0]))
     text1Ar.delete("1.0","end")
@@ -122,34 +128,83 @@ def Button_IK_Scara_P3R():
 
 def Button_IK_Antropo_3R():
     M=Fnc.IK_Antropo_3R(float(txt_edit_xA.get(1.0, tk.END)), float(txt_edit_yA.get(1.0, tk.END)), float(txt_edit_zA.get(1.0, tk.END)))
-    text1A.delete("1.0","end")
-    text1A.insert( tk.END,str(M[0]))
-    text1AAr.delete("1.0","end")
-    text1AAr.insert(tk.END, str(M[0]))
-    text2A.delete("1.0","end")
-    text2A.insert( tk.END,str(M[1]))
-    text2AAr.delete("1.0","end")
-    text2AAr.insert(tk.END, str(M[4]))
-    text3A.delete("1.0","end")
-    text3A.insert( tk.END,str(M[2]))
-    text3AAr.delete("1.0","end")
-    text3AAr.insert(tk.END, str(M[5]))
-    '''text4.delete("1.0","end")
-    text4.insert( tk.END,str(M[3]))
-    text4Ar.delete("1.0","end")
-    text4Ar.insert(tk.END, str(M[6]))'''
-    llenado1(M2(3, M[0], M[1], M[2]))
+    print(M)
+    if numpy.size(M) == 1:
+        messagebox.showinfo(title="error", message="Varie el valor de Phi")
+
+    else:
+        text1A.delete("1.0","end")
+        text1A.insert( tk.END,str(M[0]))
+        text1AAr.delete("1.0","end")
+        text1AAr.insert(tk.END, str(M[0]))
+        text2A.delete("1.0","end")
+        text2A.insert( tk.END,str(M[1]))
+        text2AAr.delete("1.0","end")
+        text2AAr.insert(tk.END, str(M[4]))
+        text3A.delete("1.0","end")
+        text3A.insert( tk.END,str(M[2]))
+        text3AAr.delete("1.0","end")
+        text3AAr.insert(tk.END, str(M[5]))
+        '''text4.delete("1.0","end")
+        text4.insert( tk.END,str(M[3]))
+        text4Ar.delete("1.0","end")
+        text4Ar.insert(tk.END, str(M[6]))'''
+        llenado1(M2(3, M[0], M[1], M[2]))
 
 def re_def_SLIDER(IKxS):
-    LimitY=Fnc.varX_scara(IKxS)
-    txt_edit_yS.place(relx=1/11, rely=3/10-0.1)
+    LimitY=Fnc.varX_scara(txt_edit_xS.get())
+    #txt_edit_yS.place(relx=1/11, rely=3/10-0.1)
+    txt_edit_yS.place(relx=1/11+0.03, rely=3/10-0.1)
     supe=LimitY[0]
     infe=LimitY[1]
     txt_edit_yS['state']='active'
     txt_edit_yS['from_']=str(infe)#'17.5'
     txt_edit_yS['to']=str(supe)
+    if LimitY[2]== 0 :
+        checkbox.place_forget()
+        globals() ["txt_edit_yS_var"] = txt_edit_yS.get()
+    else:
+        checkbox.place(relx=1/11+0.01, rely=3/10-0.01)
+        if checkbox_value.get():
+            globals() ["txt_edit_yS_var"] = -1*txt_edit_yS.get()
+        else:
+            globals() ["txt_edit_yS_var"] = txt_edit_yS.get()
+    #print(globals()["txt_edit_yS_var"])
    #else:
     #    txt_edit_yS.place_forget()
+
+def re_def_SLIDER_clk():
+    LimitY=Fnc.varX_scara(txt_edit_xS.get())
+    #txt_edit_yS.place(relx=1/11, rely=3/10-0.1)
+    txt_edit_yS.place(relx=1/11+0.03, rely=3/10-0.1)
+    supe=LimitY[0]
+    infe=LimitY[1]
+    txt_edit_yS['state']='active'
+    txt_edit_yS['from_']=str(infe)#'17.5'
+    txt_edit_yS['to']=str(supe)
+    if LimitY[2]== 0 :
+        checkbox.place_forget()
+        globals() ["txt_edit_yS_var"] = txt_edit_yS.get()
+    else:
+        checkbox.place(relx=1/11+0.01, rely=3/10-0.01)
+        if checkbox_value.get():
+            globals() ["txt_edit_yS_var"] = -1*txt_edit_yS.get()
+        else:
+            globals() ["txt_edit_yS_var"] = txt_edit_yS.get()
+    #print(globals()["txt_edit_yS_var"])
+
+def selection_changed(event):
+    selection = combo.get()
+    if selection == "DK":
+        frm6Rik.place_forget()
+        frm6Rdk.place(rely=0.05, relwidth=1, relheight=0.95)
+    else:
+        frm6Rdk.place_forget()
+        frm6Rik.place(rely=0.05, relwidth=1, relheight=0.95)
+    messagebox.showinfo(
+        title="Nuevo elemento seleccionado",
+        message=selection
+    )
 
 def dato1(band):
     if band==1:
@@ -262,6 +317,17 @@ Digitar el valor del efector final y presionar el boton
 de calcular para obtener los distintos valores de juntura.
 """)
 
+def info2():
+    messagebox.showinfo("Informacion de uso",
+"""
+Modo de uso:\nDeslizar cada slider para darle
+la posicion del efector final, para ello
+se establecieron los limites mecanicos y del
+espacio del trabajo del manipulador; esto mediante
+la descripcion y planteamiento de una ecuacion de 
+circunferencia.
+""")
+
 #Serial
 def close():
     board.write(b'bye\r\n')
@@ -271,7 +337,7 @@ def close():
 #Envio de datos Scara
 def show_values1():
     print("Calculando...")
-    #board.write("Rojo".encode()) 
+
     #Cuadro_Texto_1
     board.write(b'Eb,')
     board.write(txt_edit_ang0.get(1.0, tk.END).encode())    
@@ -287,11 +353,11 @@ def show_values1():
     #Cuadro_Texto_4
     board.write(b'Em,')
     board.write(txt_edit_ang3.get(1.0, tk.END).encode())
+
     dato2(2)
 
 #Envio de datos Antropomorfico
 def show_values2():
-    
     #Cuadro_Texto_6
     board.write(b'Ab,')
     board.write(txt_edit_ang4.get(1.0, tk.END).encode())
@@ -303,6 +369,7 @@ def show_values2():
     #Cuadro_Texto_8
     board.write(b'Aab,')
     board.write(txt_edit_ang6.get(1.0, tk.END).encode())
+
     dato1(2)
 
 #VENTANA PRINCIPAL.
@@ -321,7 +388,9 @@ nb.pack(fill='both',expand='yes')
 #CREAMOS PESTAÑAS
 pI = ttk.Frame(nb)
 p1 = ttk.Frame(nb)
-p2 = ttk.Frame(nb)   
+p2 = ttk.Frame(nb)
+p3 = ttk.Frame(nb)     
+p4 = ttk.Frame(nb)
 
 #####Pestaña 1#####
 
@@ -339,11 +408,11 @@ etiqueta = Label(fi, textvariable=var , relief=FLAT , pady=10, font=fontStyle)
 var.set("""
 Dario Delgado - 1802992 \n 
 Brayan Ulloa - 1802861 \n 
-Santiago Tobar - 1803015 \n
 Fernando Llanes - 1802878 \n
 Karla Baron - 1803648 \n 
 Sebastian Niño - 1803558
 """)
+#Santiago Tobar - 1803015 \n
 etiqueta.place(relwidth=0.97,relheight=0.7)
 
 #Logos
@@ -515,7 +584,7 @@ txt_edit_xS =Scale(frm2,
                 width = 25,
                 cursor='dot'
                 )#tk.Text(frm2, width =8 , height=1)
-txt_edit_xS.place(relx=1/11, rely=1/10-0.1)
+txt_edit_xS.place(relx=1/11, rely=1/10-0.125)
 #tk.Text(frm2, width=8, height=1)
 #txt_edit_xS.place(relx=1/10,rely=1/10+0.01)
 #txt_edit_xS.insert(tk.END, "0")
@@ -523,19 +592,26 @@ txt_edit_xS.place(relx=1/11, rely=1/10-0.1)
 #Text_Box Py
 ''''''
 txt_edit_yS = Scale(frm2,
-                #command = re_def_SLIDER,
+                command = re_def_SLIDER,
                 from_=0,
                 to=122.5,
                 resolution=0.5,
                 orient = HORIZONTAL,
-                length=220,
+                length=182.5,
                 troughcolor='gray',
                 width = 25,
                 cursor='dot',
-                state= DISABLED
+                digits=5,
+                #state= DISABLED
                 )#tk.Text(frm2, width =8 , height=1)
-txt_edit_yS.place(relx=1/11, rely=3/10-0.1)
-txt_edit_yS.place_forget()
+txt_edit_yS.place(relx=1/11+0.03, rely=3/10-0.1)
+#txt_edit_yS.place_forget()
+checkbox_value = BooleanVar()
+checkbox = ttk.Checkbutton(frm2, 
+                           text="-", 
+                           variable=checkbox_value, 
+                           command = re_def_SLIDER_clk)
+checkbox.place(relx=1/11+0.01, rely=3/10-0.01)
 
 #tk.Text(frm2, width =8 , height=1)
 #txt_edit_yS.place(relx=1/10, rely=3/10+0.01)
@@ -557,8 +633,8 @@ txt_edit_zS.place(relx=1/11, rely=5/10-0.1)
 
 #Text_Box Phi
 txt_edit_phiS = Scale(frm2,
-                from_=-90,
-                to=90,
+                from_=-270,
+                to=270,
                 resolution=0.5,
                 orient = HORIZONTAL,
                 length=220,
@@ -571,6 +647,12 @@ txt_edit_phiS.place(relx=1/11, rely=7/10-0.1)
 #Boton Calcular Cinematica Inversa        
 Calcular1=Button(frm2, text='Calcular', activebackground='yellow', command=Button_IK_Scara_P3R)
 Calcular1.place(relx=1/10-0.01, rely=9/10-0.03, relheight=1/6-0.05)
+
+info2_uso = Button(frm2,
+             text="Modo de Uso",
+             relief=GROOVE,
+             command=info2   )
+info2_uso.place(relx=0.9, rely=0.5)
 
 #Frame Variables de Juntura (Contenedor)
 frmdh2=LabelFrame(frm2,relief="raised", text='Codo Abajo', labelanchor='n')
@@ -865,9 +947,26 @@ Titulos_py.place(relx=1/15,rely=3/10+0.01)
 Titulos_pz = Label(frm2A, width=5,text="Pz")
 Titulos_pz.place(relx=1/15,rely=5/10+0.01)
 
+###############
+combo = ttk.Combobox(p4,
+        state="readonly",
+        values=["DK", "IK"]
+)
+combo.bind("<<ComboboxSelected>>", selection_changed)
+combo.place(x=10, y=10)
+
+frm6Rdk=LabelFrame(p4,text='DK', labelanchor='n')
+frm6Rdk.place(rely=0.63, relwidth=1, relheight=0.37)
+frm6Rdk.place_forget()
+
+frm6Rik=LabelFrame(p4,text='IK', labelanchor='n')
+frm6Rik.place(rely=0.63, relwidth=1, relheight=0.37)
+frm6Rik.place_forget()
 #AGREGAMOS PESTAÑAS CREADAS
-nb.add(pI,text='Portada')
+#nb.add(pI,text='Portada')
 nb.add(p1,text='Robot Scara')
 nb.add(p2,text='Robot Antropomorfico (RRR)')
+nb.add(p4,text='Antropomorfico (RRRRRR)')
+nb.add(p3,text='Jacobiano')
 
 root.mainloop()

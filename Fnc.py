@@ -1,4 +1,5 @@
 import math as mt
+from tkinter import StringVar
 import numpy as np
 
 def IK_Scara_P3R(P_X, P_Y, P_Z, phi):
@@ -18,6 +19,7 @@ def IK_Scara_P3R(P_X, P_Y, P_Z, phi):
     beta=mt.acos((a_2**(2)+c**(2)-a_3**(2))/(2*a_2*c));
     #Codo abajo
     theta_3ab=mt.acos((c**(2)-a_2**(2)-a_3**(2))/(2*a_2*a_3))
+    print(theta_3ab)
     theta_2ab=(alpha-beta)
     theta_4ab=(phi-(theta_2ab*180/mt.pi)-(theta_3ab*180/mt.pi))
     #Codo ariba
@@ -25,10 +27,17 @@ def IK_Scara_P3R(P_X, P_Y, P_Z, phi):
     theta_2ar=(alpha+beta)
     theta_4ar=(phi-(theta_2ar*180/mt.pi)-(theta_3ar*180/mt.pi))
 
+    if (((theta_3ab or theta_3ar)>mt.pi/2) or ((theta_2ar or theta_2ab)>mt.pi/2) or ((theta_4ar or theta_4ab)>90)) or (((theta_3ab or theta_3ar)<-mt.pi/2) or ((theta_2ar or theta_2ab)<-mt.pi/2) or ((theta_4ar or theta_4ab)<-90)):
+        ind=1    
+    else:
+        ind=0
+
+    #print ("Varie el valor de Phi")
+
     d_1=P_Z
 
     '''se envia a m1(4,d_1,theta_2,theta_3, theta_4)'''
-    IK_FINAL=np.array([d_1, theta_2ab*180/mt.pi, theta_3ab*180/mt.pi, theta_4ab,  theta_2ar*180/mt.pi,theta_3ar*180/mt.pi, theta_4ar],float)
+    IK_FINAL=np.array([d_1, theta_2ab*180/mt.pi, theta_3ab*180/mt.pi, theta_4ab,  theta_2ar*180/mt.pi,theta_3ar*180/mt.pi, theta_4ar,ind],float)
     return IK_FINAL
 #print(IK_Scara_P3R(17,26,120,34))
 
