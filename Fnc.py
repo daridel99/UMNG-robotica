@@ -19,7 +19,7 @@ def IK_Scara_P3R(P_X, P_Y, P_Z, phi):
     beta=mt.acos((a_2**(2)+c**(2)-a_3**(2))/(2*a_2*c));
     #Codo abajo
     theta_3ab=mt.acos((c**(2)-a_2**(2)-a_3**(2))/(2*a_2*a_3))
-    print(theta_3ab)
+    #print(theta_3ab)
     theta_2ab=(alpha-beta)
     theta_4ab=(phi-(theta_2ab*180/mt.pi)-(theta_3ab*180/mt.pi))
     #Codo ariba

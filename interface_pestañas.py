@@ -102,12 +102,13 @@ def llenado2 (matri): #Llenado Matrices Scara
                 globals()["arr5" +"_" + str(i) + str(j)].set(matri[0][i][j])
 
 def Button_IK_Scara_P3R():
-    M=Fnc.IK_Scara_P3R(float(txt_edit_xS.get()), float(globals()["txt_edit_yS_var"]), float(txt_edit_zS.get()), float(txt_edit_phiS.get()))
-    print(M)
+    M=Fnc.IK_Scara_P3R(float(txt_edit_xS.get()), float(txt_edit_yS.get()), float(txt_edit_zS.get()), float(txt_edit_phiS.get()))
+    #print(M)
 
     if M[7] == 1:
         messagebox.showinfo(title="error",
         message="El valor de alguna variable de juntura supera los limites mecanicos. \n \t \t Varie el valor de ϕ  ")
+
     text1.delete("1.0","end")
     text1.insert( tk.END,str(M[0]))
     text1Ar.delete("1.0","end")
@@ -128,7 +129,7 @@ def Button_IK_Scara_P3R():
 
 def Button_IK_Antropo_3R():
     M=Fnc.IK_Antropo_3R(float(txt_edit_xA.get(1.0, tk.END)), float(txt_edit_yA.get(1.0, tk.END)), float(txt_edit_zA.get(1.0, tk.END)))
-    print(M)
+    #print(M)
     if numpy.size(M) == 1:
         messagebox.showinfo(title="error", message="Varie el valor de Phi")
 
@@ -152,45 +153,32 @@ def Button_IK_Antropo_3R():
         llenado1(M2(3, M[0], M[1], M[2]))
 
 def re_def_SLIDER(IKxS):
+
     LimitY=Fnc.varX_scara(txt_edit_xS.get())
-    #txt_edit_yS.place(relx=1/11, rely=3/10-0.1)
-    txt_edit_yS.place(relx=1/11+0.03, rely=3/10-0.1)
+    txt_edit_yS.place(relx=0.035, rely=0.225)
+
     supe=LimitY[0]
     infe=LimitY[1]
     txt_edit_yS['state']='active'
-    txt_edit_yS['from_']=str(infe)
-    txt_edit_yS['to']=str(supe)
+    
 
     if LimitY[2]== 0 :
         checkbox.place_forget()
         globals() ["txt_edit_yS_var"] = txt_edit_yS.get()
     else:
-        checkbox.place(relx=1/11+0.01, rely=3/10-0.01)
+        checkbox.place(relx=0.21, rely=0.33)
         if checkbox_value.get():
-            globals() ["txt_edit_yS_var"] = -1*txt_edit_yS.get()
+            #globals() ["txt_edit_yS_var"] = -1*txt_edit_yS.get()
+            txt_edit_yS['from_']=str(float(-1)*supe)
+            txt_edit_yS['to']=str(float(-1)*infe)
         else:
-            globals() ["txt_edit_yS_var"] = txt_edit_yS.get()
-
+            #globals() ["txt_edit_yS_var"] = txt_edit_yS.get()
+            txt_edit_yS['from_']=str(infe)
+            txt_edit_yS['to']=str(supe)
 
 def re_def_SLIDER_clk():
-    LimitY=Fnc.varX_scara(txt_edit_xS.get())
-    #txt_edit_yS.place(relx=1/11, rely=3/10-0.1)
-    txt_edit_yS.place(relx=1/11+0.03, rely=3/10-0.1)
-    supe=LimitY[0]
-    infe=LimitY[1]
-    txt_edit_yS['state']='active'
-    txt_edit_yS['from_']=str(infe)#'17.5'
-    txt_edit_yS['to']=str(supe)
-    if LimitY[2]== 0 :
-        checkbox.place_forget()
-        globals() ["txt_edit_yS_var"] = txt_edit_yS.get()
-    else:
-        checkbox.place(relx=1/11+0.01, rely=3/10-0.01)
-        if checkbox_value.get():
-            globals() ["txt_edit_yS_var"] = -1*txt_edit_yS.get()
-        else:
-            globals() ["txt_edit_yS_var"] = txt_edit_yS.get()
-    #print(globals()["txt_edit_yS_var"])
+    re_def_SLIDER(0)
+
 
 def selection_changed(event):
     selection = combo.get()
@@ -583,10 +571,7 @@ txt_edit_xS =Scale(frm2,
                 width = 25,
                 cursor='dot'
                 )#tk.Text(frm2, width =8 , height=1)
-txt_edit_xS.place(relx=1/11, rely=1/10-0.125)
-#tk.Text(frm2, width=8, height=1)
-#txt_edit_xS.place(relx=1/10,rely=1/10+0.01)
-#txt_edit_xS.insert(tk.END, "0")
+txt_edit_xS.place(relx=0.035, rely=1/10-0.125)
         
 #Text_Box Py
 ''''''
@@ -596,25 +581,21 @@ txt_edit_yS = Scale(frm2,
                 to=122.5,
                 resolution=0.5,
                 orient = HORIZONTAL,
-                length=182.5,
+                length=220,
                 troughcolor='gray',
                 width = 25,
                 cursor='dot',
                 digits=5,
                 #state= DISABLED
                 )#tk.Text(frm2, width =8 , height=1)
-txt_edit_yS.place(relx=1/11+0.03, rely=3/10-0.1)
+txt_edit_yS.place(relx=0.035, rely=0.225)
 #txt_edit_yS.place_forget()
 checkbox_value = BooleanVar()
 checkbox = ttk.Checkbutton(frm2, 
                            text="-", 
                            variable=checkbox_value, 
                            command = re_def_SLIDER_clk)
-checkbox.place(relx=1/11+0.01, rely=3/10-0.01)
-
-#tk.Text(frm2, width =8 , height=1)
-#txt_edit_yS.place(relx=1/10, rely=3/10+0.01)
-#txt_edit_yS.insert(tk.END, "0")
+checkbox.place(relx=0.21, rely=0.33)
 
 #Text_Box Pz
 txt_edit_zS =Scale(frm2,
@@ -628,7 +609,7 @@ txt_edit_zS =Scale(frm2,
                 width = 25,
                 cursor='dot'
                 )#tk.Text(frm2, width =8 , height=1)
-txt_edit_zS.place(relx=1/11, rely=5/10-0.1)
+txt_edit_zS.place(relx=0.035, rely=0.48)
 
 #Text_Box Phi
 txt_edit_phiS = Scale(frm2,
@@ -641,11 +622,11 @@ txt_edit_phiS = Scale(frm2,
                 width = 25,
                 cursor='dot'
                 )#tk.Text(frm2, width =8 , height=1)#tk.Text(frm2, width =8 , height=1)
-txt_edit_phiS.place(relx=1/11, rely=7/10-0.1)
+txt_edit_phiS.place(relx=0.035, rely=0.75)
 
 #Boton Calcular Cinematica Inversa        
 Calcular1=Button(frm2, text='Calcular', activebackground='yellow', command=Button_IK_Scara_P3R)
-Calcular1.place(relx=1/10-0.01, rely=9/10-0.03, relheight=1/6-0.05)
+Calcular1.place(relx=2.5/10-0.01, rely=0.85, relheight=1/6-0.05)
 
 info2_uso = Button(frm2,
              text="Modo de Uso",
@@ -731,14 +712,15 @@ Titulos_l4 = Label(frmdh1, width=11,text="Link 4")
 Titulos_l4.place(relx=14/24-0.005,rely=10/16)
 Titulos_lT = Label(frmdh1, width=11,text="Total")
 Titulos_lT.place(relx=5/15,rely=5/16)
-Titulos_px = Label(frm2, width=5,text="Px")
-Titulos_px.place(relx=1/16,rely=1/10+0.01)
-Titulos_py = Label(frm2, width=5,text="Py")
-Titulos_py.place(relx=1/16,rely=3/10+0.01)
-Titulos_pz = Label(frm2, width=5,text="Pz")
-Titulos_pz.place(relx=1/16,rely=5/10+0.01)
-Titulos_pphi = Label(frm2, width=5,text="ϕ")
-Titulos_pphi.place(relx=1/16,rely=7/10+0.01)
+
+Titulos_px = Label(frm2, width=2,text="Px")
+Titulos_px.place(relx=0.009,rely=1/10-0.011)
+Titulos_py = Label(frm2, width=2,text="Py")
+Titulos_py.place(relx=0.009,rely=3/10+0.011)
+Titulos_pz = Label(frm2, width=2,text="Pz")
+Titulos_pz.place(relx=0.009,rely=6/10-0.012)
+Titulos_pphi = Label(frm2, width=2,text="ϕ")
+Titulos_pphi.place(relx=0.009,rely=8/10+0.05)
 #####Pestaña 3#####
 
 #Frame Manipulador Antropomorfico (Contenedor)
@@ -962,7 +944,7 @@ frm6Rik=LabelFrame(p4,text='IK', labelanchor='n')
 frm6Rik.place(rely=0.63, relwidth=1, relheight=0.37)
 frm6Rik.place_forget()
 #AGREGAMOS PESTAÑAS CREADAS
-#nb.add(pI,text='Portada')
+nb.add(pI,text='Portada')
 nb.add(p1,text='Robot Scara')
 nb.add(p2,text='Robot Antropomorfico (RRR)')
 nb.add(p4,text='Antropomorfico (RRRRRR)')
