@@ -158,8 +158,9 @@ def re_def_SLIDER(IKxS):
     supe=LimitY[0]
     infe=LimitY[1]
     txt_edit_yS['state']='active'
-    txt_edit_yS['from_']=str(infe)#'17.5'
+    txt_edit_yS['from_']=str(infe)
     txt_edit_yS['to']=str(supe)
+
     if LimitY[2]== 0 :
         checkbox.place_forget()
         globals() ["txt_edit_yS_var"] = txt_edit_yS.get()
@@ -169,9 +170,7 @@ def re_def_SLIDER(IKxS):
             globals() ["txt_edit_yS_var"] = -1*txt_edit_yS.get()
         else:
             globals() ["txt_edit_yS_var"] = txt_edit_yS.get()
-    #print(globals()["txt_edit_yS_var"])
-   #else:
-    #    txt_edit_yS.place_forget()
+
 
 def re_def_SLIDER_clk():
     LimitY=Fnc.varX_scara(txt_edit_xS.get())
@@ -576,7 +575,7 @@ frm2.place(rely=0.63, relwidth=1, relheight=0.37)
 txt_edit_xS =Scale(frm2,
                 command = re_def_SLIDER,
                 from_=-131.5,
-                to=375.2,
+                to=375.5,
                 resolution=0.5,
                 orient = HORIZONTAL,
                 length=220,

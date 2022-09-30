@@ -82,6 +82,7 @@ def varX_scara(PosX):
     if ValX==Xmax:
         yinf=0
         ysup=0
+        neg=0
     elif ValX>Xmedio:
         ysup=limites(ValX,1)
         yinf=-limites(ValX,1)  
