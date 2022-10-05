@@ -25,64 +25,10 @@ def fila_vacia(n): #Crear Filas Vacias
         fila = Label(frmdh1)
         fila.grid(column=0, row=(5*j))
 
-
-def matrices_T(angz,dz,angx,ax): #Matriz Homogenea DH
-    #Fila 1
-    r11="{:.5f}".format(mt.cos(angz))
-    r12="{:.5f}".format((-1)*mt.sin(angz)*mt.cos(angx))
-    r13="{:.5f}".format(mt.sin(angz)*mt.sin(angx))
-    r14="{:.5f}".format(ax*mt.cos(angz))
-    #Fila 2
-    r21="{:.5f}".format(mt.sin(angz))
-    r22="{:.5f}".format(mt.cos(angz)*mt.cos(angx)) 
-    r23="{:.5f}".format((-1)*mt.cos(angz)*mt.sin(angx))
-    r24="{:.5f}".format(ax*mt.sin(angz))
-    #Fila 3
-    r31=0
-    r32="{:.5f}".format(mt.sin(angx))
-    r33="{:.5f}".format(mt.cos(angx))
-    r34="{:.5f}".format(dz)
-    #Fila 4
-    r41=0
-    r42=0 
-    r43=0 
-    r44=1
-    matrix=np.array([[r11,r12,r13,r14],[r21,r22,r23,r24],[r31,r32,r33,r34],[r41,r42,r43,r44]],float)
-    return matrix
-
-def calculo(matrices_DH,n): #Calculo de matriz Cinematica Directa
-    MatrizFinal=np.eye(4)
-    for j in range (0,n):
-        MatrizFinal=np.dot(MatrizFinal,matrices_DH[j]) 
-        MatrizFinal=np.round(MatrizFinal,decimals=5)    
-    return MatrizFinal
-
-def M1(n,d1,t2,t3,t4): #Definicion Parametros Scara
-    matrices=[]
-    z=[0, t2, t3,t4]
-    d=[d1,0,0,0]
-    x=[0,0,0,0] 
-    a=[47.3,149.1,148.8,30]     
-    for i in range (0,n):
-        matrices.append(matrices_T((z[i]*mt.pi/180),d[i],x[i],a[i]))
-    final=calculo(matrices,n)
-    return final,matrices
-
-def M2(n,j1,j2,j3): #Definicion Parametros Antropomorfico
-    matrices=[]
-    z=[j1, j2, j3]
-    d=[62.87,0,0]
-    x=[mt.pi/2,0,0] 
-    a=[14.5,67.5,88.28]         
-    for i in range (0,n):
-        matrices.append(matrices_T((z[i]*mt.pi/180),d[i],x[i],a[i]))
-    final=calculo(matrices,n)
-    return final,matrices
-
 #Creacion de variables en masa
 def creacion():
     globals()["txt_edit_yS_var"] = StringVar()
-    for n in range(1,11):
+    for n in range(1,18):
         for i in range(0,4):
             for j in range(0,4):
                 globals()["arr"+str(n)+"_" + str(i) + str(j)]=StringVar()
@@ -100,6 +46,13 @@ def llenado2 (matri): #Llenado Matrices Scara
             for j in range(0,4):                
                 globals()["arr"+ str(n) +"_" + str(i) + str(j)].set(matri[1][n-1][i][j]) 
                 globals()["arr5" +"_" + str(i) + str(j)].set(matri[0][i][j])
+        
+def llenado3 (matri): #Llenado Matrices Scara
+    for n in range(10,16):
+        for i in range(0,4):
+            for j in range(0,4):                
+                globals()["arr"+ str(n) +"_" + str(i) + str(j)].set(matri[1][n-10][i][j]) 
+                globals()["arr16" +"_" + str(i) + str(j)].set(matri[0][i][j])
 
 def Button_IK_Scara_P3R():
     M=Fnc.IK_Scara_P3R(float(txt_edit_xS.get()), float(txt_edit_yS.get()), float(txt_edit_zS.get()), float(txt_edit_phiS.get()))
@@ -125,7 +78,7 @@ def Button_IK_Scara_P3R():
     text4.insert( tk.END,str(M[3]))
     text4Ar.delete("1.0","end")
     text4Ar.insert(tk.END, str(M[6]))
-    llenado2(M1(4, M[0], M[1], M[2], M[3]))
+    llenado2(Fnc.M1(4, M[0], M[1], M[2], M[3]))
 
 def Button_IK_Antropo_3R():
     M=Fnc.IK_Antropo_3R(float(txt_edit_xA.get(1.0, tk.END)), float(txt_edit_yA.get(1.0, tk.END)), float(txt_edit_zA.get(1.0, tk.END)))
@@ -150,7 +103,7 @@ def Button_IK_Antropo_3R():
         text4.insert( tk.END,str(M[3]))
         text4Ar.delete("1.0","end")
         text4Ar.insert(tk.END, str(M[6]))'''
-        llenado1(M2(3, M[0], M[1], M[2]))
+        llenado1(Fnc.M2(3, M[0], M[1], M[2]))
 
 def re_def_SLIDER(IKxS):
 
@@ -195,17 +148,24 @@ def selection_changed(event):
 
 def dato1(band):
     if band==1:
-        mat=M2(3,Aangulo1.get(),Aangulo2.get(),Aangulo3.get())
+        mat=Fnc.M2(3,Aangulo1.get(),Aangulo2.get(),Aangulo3.get())
     elif band==2:
-        mat=M2(3,float(txt_edit_ang4.get(1.0, tk.END)),float(txt_edit_ang5.get(1.0, tk.END)),float(txt_edit_ang6.get(1.0, tk.END)))
+        mat=Fnc.M2(3,float(txt_edit_ang4.get(1.0, tk.END)),float(txt_edit_ang5.get(1.0, tk.END)),float(txt_edit_ang6.get(1.0, tk.END)))
     llenado1(mat)
 
 def dato2(band):
     if band==1:
-        mat2=M1(4,angulo1.get(),angulo2.get(),angulo3.get(),angulo4.get())
+        mat2=Fnc.M1(4,angulo1.get(),angulo2.get(),angulo3.get(),angulo4.get())
     elif band==2:
-        mat2=M1(4,float(txt_edit_ang0.get(1.0, tk.END)),float(txt_edit_ang1.get(1.0, tk.END)),float(txt_edit_ang2.get(1.0, tk.END)),int(txt_edit_ang3.get(1.0, tk.END)))
+        mat2=Fnc.M1(4,float(txt_edit_ang0.get(1.0, tk.END)),float(txt_edit_ang1.get(1.0, tk.END)),float(txt_edit_ang2.get(1.0, tk.END)),int(txt_edit_ang3.get(1.0, tk.END)))
     llenado2(mat2)
+
+# def dato3(band):
+#     if band==1:
+#         mat3=Fnc.M3(6,Rangulo1.get(),Rangulo2.get(),Rangulo3.get(),Rangulo4.get(),Rangulo5.get(),Rangulo6.get())
+#     elif band==2:
+#         mat3=Fnc.M3(6,float(txt_edit_ang7.get(1.0, tk.END)),float(txt_edit_ang8.get(1.0, tk.END)),float(txt_edit_ang9.get(1.0, tk.END)),float(txt_edit_ang10.get(1.0, tk.END))),float(txt_edit_ang11.get(1.0, tk.END)),float(txt_edit_ang12.get(1.0, tk.END))
+#     llenado3(mat3)
 
 #Funciones De Movimiento Scara
 
@@ -297,11 +257,10 @@ def info():
 """
 Modo de uso:\nDesplazar cada slider para mover
 las articulaciones del brazo robotico o digitar el
-valor de lo que se quiere mover para luego presionar
+valor de lo que se desea mover. Luego presionar
 el boton de envio correspondiente, se pretende obtener
-las matrices individuales y totales en tiempo real.\n
-Digitar el valor del efector final y presionar el boton
-de calcular para obtener los distintos valores de juntura.
+las matrices individuales y totales de la cinematica 
+directa en tiempo real.\n
 """)
 
 def info2():
@@ -310,7 +269,7 @@ def info2():
 Modo de uso:\nDeslizar cada slider para darle
 la posicion del efector final, para ello
 se establecieron los limites mecanicos y del
-espacio del trabajo del manipulador; esto mediante
+espacio del trabajo del manipulador; Esto mediante
 la descripcion y planteamiento de una ecuacion de 
 circunferencia.
 """)
@@ -929,6 +888,8 @@ Titulos_pz = Label(frm2A, width=5,text="Pz")
 Titulos_pz.place(relx=1/15,rely=5/10+0.01)
 
 ###############
+
+
 combo = ttk.Combobox(p4,
         state="readonly",
         values=["DK", "IK"]
