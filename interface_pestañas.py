@@ -47,7 +47,7 @@ def llenado2 (matri): #Llenado Matrices Scara
                 globals()["arr"+ str(n) +"_" + str(i) + str(j)].set(matri[1][n-1][i][j]) 
                 globals()["arr5" +"_" + str(i) + str(j)].set(matri[0][i][j])
         
-def llenado3 (matri): #Llenado Matrices Scara
+def llenado3 (matri): #Llenado Matrices Antropomorfico 6R
     for n in range(10,16):
         for i in range(0,4):
             for j in range(0,4):                
@@ -280,7 +280,7 @@ def close():
     board.close()
 
 
-#Envio de datos Scara
+#Envio de datos Scara (P3R)
 def show_values1():
     print("Calculando...")
 
@@ -302,21 +302,49 @@ def show_values1():
 
     dato2(2)
 
-#Envio de datos Antropomorfico
+#Envio de datos Antropomorfico Bioloid (3R)
 def show_values2():
-    #Cuadro_Texto_6
+    #Cuadro_Texto_1
     board.write(b'Ab,')
     board.write(txt_edit_ang4.get(1.0, tk.END).encode())
 
-    #Cuadro_Texto_7
+    #Cuadro_Texto_2
     board.write(b'Abr,')
     board.write(txt_edit_ang5.get(1.0, tk.END).encode())
 
-    #Cuadro_Texto_8
+    #Cuadro_Texto_3
     board.write(b'Aab,')
     board.write(txt_edit_ang6.get(1.0, tk.END).encode())
 
     dato1(2)
+
+# #Envio de datos Antropomorfico Kinova (6R)
+# def show_values3():
+#     #Cuadro_Texto_1
+#     board.write(b'Rb,')
+#     board.write(txt_edit_ang7.get(1.0, tk.END).encode())
+
+#     #Cuadro_Texto_2
+#     board.write(b'Rbr,')
+#     board.write(txt_edit_ang8.get(1.0, tk.END).encode())
+
+#     #Cuadro_Texto_3
+#     board.write(b'Rab,')
+#     board.write(txt_edit_ang9.get(1.0, tk.END).encode())
+
+#     #Cuadro_Texto_4
+#     board.write(b'RM1,')
+#     board.write(txt_edit_ang10.get(1.0, tk.END).encode())
+
+#     #Cuadro_Texto_5
+#     board.write(b'RM2,')
+#     board.write(txt_edit_ang11.get(1.0, tk.END).encode())
+
+#      #Cuadro_Texto_6
+#     board.write(b'RM3,')
+#     board.write(txt_edit_ang12.get(1.0, tk.END).encode())
+
+#     dato3(2)
 
 #VENTANA PRINCIPAL.
 root = tkinter.Tk()
@@ -332,11 +360,11 @@ nb = ttk.Notebook(root)
 nb.pack(fill='both',expand='yes')
 
 #CREAMOS PESTAÑAS
-pI = ttk.Frame(nb)
-p1 = ttk.Frame(nb)
-p2 = ttk.Frame(nb)
-p3 = ttk.Frame(nb)     
-p4 = ttk.Frame(nb)
+pI = ttk.Frame(nb)#Pestaña De Información
+p1 = ttk.Frame(nb)#Pestaña Robot Scara (P3R)
+p2 = ttk.Frame(nb)#Pestaña Robot Antropomorfico Bioloid (3R)
+p3 = ttk.Frame(nb)#Pestaña Robot Antropomorfico Kinova (6R)     
+p4 = ttk.Frame(nb)#Pestaña Jacobiano
 
 #####Pestaña 1#####
 
@@ -906,9 +934,9 @@ frm6Rik.place(rely=0.63, relwidth=1, relheight=0.37)
 frm6Rik.place_forget()
 #AGREGAMOS PESTAÑAS CREADAS
 nb.add(pI,text='Portada')
-nb.add(p1,text='Robot Scara')
-nb.add(p2,text='Robot Antropomorfico (RRR)')
-nb.add(p4,text='Antropomorfico (RRRRRR)')
+nb.add(p1,text='Robot Scara (P3R)')
+nb.add(p2,text='Robot Antropomorfico (3R)')
+nb.add(p4,text='Antropomorfico (6R)')
 nb.add(p3,text='Jacobiano')
 
 root.mainloop()
