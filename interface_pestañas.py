@@ -318,6 +318,25 @@ def close():
     board.write(b'bye\r\n')
     board.close()
 
+def Envio_CAB_IK_Scara():
+    print("envio")
+    board.write(b'Eb,'+"{:.3f}".format(float(text1.get(1.0, tk.END))).encode()+b'\r\n')
+    sleep(0.02)
+    board.write(b'Ebr,'+"{:.3f}".format(float(text2.get(1.0, tk.END))).encode()+b'\r\n')
+    sleep(0.02)
+    board.write(b'Eab,'+"{:.3f}".format(float(text3.get(1.0, tk.END))).encode()+b'\r\n')
+    sleep(0.02)
+    board.write(b'Em,'+"{:.3f}".format(float(text4.get(1.0, tk.END))).encode()+b'\r\n')
+
+def Envio_CAR_IK_Scara():
+    print("envio")
+    board.write(b'Eb,'+"{:.3f}".format(float(text1Ar.get(1.0, tk.END))).encode()+b'\r\n')
+    sleep(0.02)
+    board.write(b'Ebr,'+"{:.3f}".format(float(text2Ar.get(1.0, tk.END))).encode()+b'\r\n')
+    sleep(0.02)
+    board.write(b'Eab,'+"{:.3f}".format(float(text3Ar.get(1.0, tk.END))).encode()+b'\r\n')
+    sleep(0.02)
+    board.write(b'Em,'+"{:.3f}".format(float(text4Ar.get(1.0, tk.END))).encode()+b'\r\n')
 
 #Envio de datos Scara (P3R)
 def show_values1():
@@ -467,7 +486,7 @@ frm1.place(relwidth=1, relheight=0.64)
 angulo1=Scale(frm1,
                 command = servo1,
                 from_=0,
-                to=122.5,
+                to=122,
                 #resolution=0.5,
                 orient = HORIZONTAL,
                 length=266,
@@ -662,7 +681,10 @@ info2_uso.place(relx=0.9, rely=0.5)
 
 #Frame Variables de Juntura (Contenedor)
 frmdh2=LabelFrame(frm2,relief="raised", text='Codo Abajo', labelanchor='n')
-frmdh2.place(relx=0.3, rely=0.1, relwidth=0.22, relheight=0.78)
+frmdh2.place(relx=0.3, rely=0.04, relwidth=0.22, relheight=0.78)
+
+EnvioC_AB_S=Button(frm2, text='Enviar', activebackground='yellow', command=Envio_CAB_IK_Scara)
+EnvioC_AB_S.place(relx=2.5/10+0.1, rely=0.85)
 
 #Variable de Juntura 1
 etiqueta1 = tk.Label(frmdh2, width=5, text="d₁", fg="black", bg="yellow").grid(column=0, row=0)
@@ -695,7 +717,10 @@ text4.grid(row=6, column=1, sticky="nsew")
 ################
 #Frame Variables de Juntura (Contenedor)
 frmdh2Ar=LabelFrame(frm2,relief="raised", text='Codo Arriba', labelanchor='n')
-frmdh2Ar.place(relx=0.6, rely=0.1, relwidth=0.22, relheight=0.78)
+frmdh2Ar.place(relx=0.6, rely=0.04, relwidth=0.22, relheight=0.78)
+
+EnvioC_AR_S=Button(frm2, text='Enviar', activebackground='yellow', command=Envio_CAR_IK_Scara)
+EnvioC_AR_S.place(relx=2.5/10+0.4, rely=0.85)
 
 #Variable de Juntura 1
 etiqueta1 = tk.Label(frmdh2Ar, width=5, text="d₁", fg="black", bg="yellow").grid(column=0, row=0)
