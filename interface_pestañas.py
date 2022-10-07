@@ -156,6 +156,8 @@ def re_def_SLIDER(IKxS):
     if LimitY[2]== 0 :
         checkbox.place_forget()
         globals() ["txt_edit_yS_var"] = txt_edit_yS.get()
+        txt_edit_yS['from_']=str(infe)
+        txt_edit_yS['to']=str(supe)
     else:
         checkbox.place(relx=0.21, rely=0.33)
         if checkbox_value.get():

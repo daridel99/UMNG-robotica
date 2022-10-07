@@ -79,7 +79,7 @@ def varX_scara(PosX):
     Xmin=float(-101.5)
     Xmax=float(375.2)
     Xmedio=float(190.5945)    
-    if ValX==Xmax:
+    if ValX>=Xmax:
         yinf=0
         ysup=0
         neg=0
