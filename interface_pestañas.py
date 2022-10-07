@@ -8,6 +8,7 @@ from tkinter import messagebox
 from tkinter import HORIZONTAL, PhotoImage, StringVar, Widget
 import math as mt
 from ctypes import sizeof
+from turtle import bgcolor
 import numpy as np
 from time import sleep
 from PIL import Image, ImageTk
@@ -27,11 +28,25 @@ def fila_vacia(n): #Crear Filas Vacias
 
 #Creacion de variables en masa
 def creacion():
+
     globals()["txt_edit_yS_var"] = StringVar()
+
     for n in range(1,18):
         for i in range(0,4):
             for j in range(0,4):
                 globals()["arr"+str(n)+"_" + str(i) + str(j)]=StringVar()
+    
+    for i in range(0,4):
+        for j in range(0,6):
+            globals()["jacoS_" + str(i) + str(j)]=StringVar()
+
+    for i in range(0,3):
+        for j in range(0,6):
+            globals()["jacoA_" + str(i) + str(j)]=StringVar()
+
+    for i in range(0,6):
+        for j in range(0,6):
+            globals()["jacoR_" + str(i) + str(j)]=StringVar()
 
 def llenado1 (matri): #Llenado Matrices Antropomorfico
     for n in range(6,9):
@@ -53,6 +68,20 @@ def llenado3 (matri): #Llenado Matrices Antropomorfico 6R
             for j in range(0,4):                
                 globals()["arr"+ str(n) +"_" + str(i) + str(j)].set(matri[1][n-10][i][j]) 
                 globals()["arr16" +"_" + str(i) + str(j)].set(matri[0][i][j])
+
+def llenado_JACO (): #Llenado Matrices JACO
+    for i in range(0,4):
+        for j in range(0,6):                
+            globals()["jacoS_" + str(i) + str(j)].set("matri[1][n-10][i][j]") 
+
+    for i in range(0,3):
+        for j in range(0,6):                
+            globals()["jacoA_" + str(i) + str(j)].set("matri[1][n-10][i][j]") 
+
+    for i in range(0,6):
+        for j in range(0,6):                
+            globals()["jacoR_" + str(i) + str(j)].set("matri[1][n-10][i][j]") 
+
 
 def Button_IK_Scara_P3R():
     M=Fnc.IK_Scara_P3R(float(txt_edit_xS.get()), float(txt_edit_yS.get()), float(txt_edit_zS.get()), float(txt_edit_phiS.get()))
@@ -104,6 +133,10 @@ def Button_IK_Antropo_3R():
         text4Ar.delete("1.0","end")
         text4Ar.insert(tk.END, str(M[6]))'''
         llenado1(Fnc.M2(3, M[0], M[1], M[2]))
+
+def Button_CalcularJACO():
+    print("calcular");
+    llenado_JACO()
 
 def re_def_SLIDER(IKxS):
 
@@ -507,31 +540,31 @@ frmdh1.place(relx=1/4+0.01, relwidth=1, relheight=1)
 #Matriz Link 1
 for r in range(0, 4):
     for c in range(0, 4):
-        cell = Entry(frmdh1, width=13, textvariable=globals()["arr1_" + str(r) + str(c)])
+        cell = Entry(frmdh1, width=13, textvariable=globals()["arr1_" + str(r) + str(c)], state= DISABLED)
         cell.grid(row=r+1, column=c, ipady=4)
 
 #Matriz Link 2
 for r in range(0, 4):
     for c in range(0, 4):
-        cell = Entry(frmdh1, width=13, textvariable=globals()["arr2_" + str(r) + str(c)])
+        cell = Entry(frmdh1, width=13, textvariable=globals()["arr2_" + str(r) + str(c)], state= DISABLED)
         cell.grid(row=r+1, column=c+8, ipady=4)
 
 #Matriz Total
 for r in range(0, 4):
     for c in range(0, 4):
-        cell = Entry(frmdh1, width=13, textvariable=globals()["arr5_" + str(r) + str(c)])
+        cell = Entry(frmdh1, width=13, textvariable=globals()["arr5_" + str(r) + str(c)], state= DISABLED)
         cell.grid(row=r+6, column=c+4, ipady=4)
  
 #Matriz Link 3
 for r in range(0, 4):
     for c in range(0, 4):
-        cell = Entry(frmdh1, width=13, textvariable=globals()["arr3_" + str(r) + str(c)])
+        cell = Entry(frmdh1, width=13, textvariable=globals()["arr3_" + str(r) + str(c)], state= DISABLED)
         cell.grid(row=r+11, column=c, ipady=4)
 
 #Matriz Link 4
 for r in range(0, 4):
     for c in range(0, 4):
-        cell = Entry(frmdh1, width=13, textvariable=globals()["arr4_" + str(r) + str(c)])
+        cell = Entry(frmdh1, width=13, textvariable=globals()["arr4_" + str(r) + str(c)], state= DISABLED)
         cell.grid(row=r+11, column=c+8, ipady=4)
 
 #Boton Envio Cinematica Directa Scara
@@ -786,7 +819,7 @@ frmdh1A.place(relx=0.35, relwidth=0.525, relheight=1)
 #Matriz Link 1
 for r in range(0, 4):
     for c in range(0, 4):
-        cell = Entry(frmdh1A, width=12,  textvariable=globals()["arr6_" + str(r) + str(c)])
+        cell = Entry(frmdh1A, width=12,  textvariable=globals()["arr6_" + str(r) + str(c)], state= DISABLED)
         cell.grid(row=r+1, column=c, ipady=4)
 
 blancoA(0)
@@ -796,7 +829,7 @@ blancoA(5)
 #Matriz Link 2
 for r in range(0, 4):
     for c in range(0, 4):
-        cell = Entry(frmdh1A, width=12,  textvariable=globals()["arr7_" + str(r) + str(c)])
+        cell = Entry(frmdh1A, width=12,  textvariable=globals()["arr7_" + str(r) + str(c)], state= DISABLED)
         cell.grid(row=r+1, column=c+8, ipady=4)
         
 blanco = Label(frmdh1A)
@@ -811,13 +844,13 @@ blanco3.grid(column=0, row=8)
 #Matriz Link 3
 for r in range(0, 4):
     for c in range(0, 4):
-        cell = Entry(frmdh1A, width=12, textvariable=globals()["arr8_" + str(r) + str(c)])
+        cell = Entry(frmdh1A, width=12, textvariable=globals()["arr8_" + str(r) + str(c)], state= DISABLED)
         cell.grid(row=r+9, column=c, ipady=4)
 
 #Matriz Total
 for r in range(0, 4):
     for c in range(0, 4):
-        cell = Entry(frmdh1A, width=12,  textvariable=globals()["arr9_" + str(r) + str(c)])
+        cell = Entry(frmdh1A, width=12,  textvariable=globals()["arr9_" + str(r) + str(c)], state= DISABLED)
         cell.grid(row=r+9, column=c+8, ipady=4)
 
 #Boton Envio Cinematica Directa Antropomorfico
@@ -932,6 +965,48 @@ frm6Rdk.place_forget()
 frm6Rik=LabelFrame(p4,text='IK', labelanchor='n')
 frm6Rik.place(rely=0.63, relwidth=1, relheight=0.37)
 frm6Rik.place_forget()
+
+frmJACO=LabelFrame(p3, labelanchor='n')
+frmJACO.place(relwidth=1, relheight=1)
+
+
+''''''
+blanco = Label(frmJACO, width=10)
+blanco.grid(column=0, row=0)
+blanco = Label(frmJACO, width=10)
+blanco.grid(column=0, row=1)
+#Matriz Jaco S
+for r in range(0, 4):
+    for c in range(0, 6):
+        cell = Entry(frmJACO, width=12,  textvariable=globals()["jacoS_" + str(r) + str(c)], state= DISABLED)
+        cell.grid(row=r+2, column=c+1, ipady=4)
+
+blanco = Label(frmJACO, width=10)
+blanco.grid(column=9, row=0)
+#Matriz Jaco A
+for r in range(0, 3):
+    for c in range(0, 6):
+        cell = Entry(frmJACO, width=12,  textvariable=globals()["jacoA_" + str(r) + str(c)], state= DISABLED)
+        cell.grid(row=r+2, column=c+10, ipady=4)
+
+blanco = Label(frmJACO, width=10)
+blanco.grid(column=0, row=9)
+#Matriz Jaco R
+for r in range(0, 6):
+    for c in range(0, 6):
+        cell = Entry(frmJACO, width=12,  textvariable=globals()["jacoR_" + str(r) + str(c)], state= DISABLED)
+        cell.grid(row=r+10, column=c+6, ipady=4)
+
+#Titulos Scara (Label)
+Titulos_JS = Label(frmJACO, width=15,text="Jacobiano Scara")
+Titulos_JS.place(relx=2/24+0.01,rely=0.005)
+Titulos_JA = Label(frmJACO, width=20,text="Jacobiano Antropomorfico")
+Titulos_JA.place(relx=14/24+0.005,rely=0.005)
+Titulos_JR = Label(frmJACO, width=11,text="Jacobiano 6R")
+Titulos_JR.place(relx=12/18-0.15,rely=7/14+0.03)
+
+CalcularJACO=Button(frmJACO, text='Calcular', activebackground='yellow', command=Button_CalcularJACO, width=12)
+CalcularJACO.place(relx=2.5/10-0.01, rely=0.85, relheight=1/6-0.05)
 #AGREGAMOS PESTAÑAS CREADAS
 nb.add(pI,text='Portada')
 nb.add(p1,text='Robot Scara (P3R)')
