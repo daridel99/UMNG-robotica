@@ -183,3 +183,43 @@ def M3(n,j1,j2,j3,j4,j5,j6): #Definicion Parametros Antropomorfico (6R)
     final=calculo(matrices,n)
     return final,matrices
 
+def Vec(c_ob,matriz_ob):
+    P = []
+    i_f=0
+    while i_f < 3:
+        P.append(matriz_ob[i_f][c_ob])
+        i_f+= 1
+    return P
+
+def R_list(Pi,Pf):
+    resta=list(map(lambda x,y: x-y ,Pi,Pf))
+    return resta
+    
+def JG_S(n,d1,t2,t3,t4):
+    Z0=[0,0,1]
+    P0=[0,0,0]
+    DK=M1(n,d1,t2,t3,t4)
+    Tm_1=np.dot(DK[1][0],DK[1][1])
+    Tm_2=np.dot(Tm_1,DK[1][2])
+    P1=Vec(3,DK[1][0])
+    P2=Vec(3,Tm_1)
+    P3=Vec(3,Tm_2)
+    Pe=Vec(3,DK[0])
+    Z1=Vec(2,DK[1][0])
+    Z2=Vec(2,Tm_1)
+    Z3=Vec(2,Tm_2)    
+    JG=[[Z0,np.cross(Z1,R_list(Pe,P1)),np.cross(Z2,R_list(Pe,P2)),np.cross(Z3,R_list(Pe,P3))],[[0,0,0],Z1,Z2,Z3]]
+    return JG
+
+def JG_A(n,j1,j2,j3):
+    Z0=[0,0,1]
+    P0=[0,0,0]
+    DK=M2(n,j1,j2,j3)
+    Tm_1=np.dot(DK[1][0],DK[1][1])
+    P1=Vec(3,DK[1][0])
+    P2=Vec(3,Tm_1)
+    Pe=Vec(3,DK[0])
+    Z1=Vec(2,DK[1][0])
+    Z2=Vec(2,Tm_1)    
+    JG=[[np.cross(Z0,R_list(Pe,P0)),np.cross(Z1,R_list(Pe,P1)),np.cross(Z2,R_list(Pe,P2))],[Z0,Z1,Z2]] 
+    return JG

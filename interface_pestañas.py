@@ -36,12 +36,12 @@ def creacion():
             for j in range(0,4):
                 globals()["arr"+str(n)+"_" + str(i) + str(j)]=StringVar()
     
-    for i in range(0,4):
-        for j in range(0,6):
+    for i in range(0,6):
+        for j in range(0,4):
             globals()["jacoS_" + str(i) + str(j)]=StringVar()
 
-    for i in range(0,3):
-        for j in range(0,6):
+    for i in range(0,6):
+        for j in range(0,3):
             globals()["jacoA_" + str(i) + str(j)]=StringVar()
 
     for i in range(0,6):
@@ -69,14 +69,18 @@ def llenado3 (matri): #Llenado Matrices Antropomorfico 6R
                 globals()["arr"+ str(n) +"_" + str(i) + str(j)].set(matri[1][n-10][i][j]) 
                 globals()["arr16" +"_" + str(i) + str(j)].set(matri[0][i][j])
 
-def llenado_JACO (): #Llenado Matrices JACO
-    for i in range(0,4):
-        for j in range(0,6):                
-            globals()["jacoS_" + str(i) + str(j)].set("matri[1][n-10][i][j]") 
+def llenado_JACO (JA,JS): #Llenado Matrices JACO
+    for i in range(0,2):
+        i=i*3
+        for j in range(0,4):           
+            for k in range(0,3):                
+                globals()["jacoS_" + str(i+k) + str(j)].set(JS[i-2][j][k]) 
 
-    for i in range(0,3):
-        for j in range(0,6):                
-            globals()["jacoA_" + str(i) + str(j)].set("matri[1][n-10][i][j]") 
+    for i in range(0,2):
+        i=i*3
+        for j in range(0,3): 
+            for k in range(0,3):               
+                globals()["jacoA_" + str(i+k) + str(j)].set(JA[i-2][j][k]) 
 
     for i in range(0,6):
         for j in range(0,6):                
@@ -135,8 +139,9 @@ def Button_IK_Antropo_3R():
         llenado1(Fnc.M2(3, M[0], M[1], M[2]))
 
 def Button_CalcularJACO():
-    print("calcular");
-    llenado_JACO()
+    J_A=Fnc.JG_A(3,Aangulo1.get(),Aangulo2.get(),Aangulo3.get())
+    J_S=Fnc.JG_S(4,angulo1.get(),angulo2.get(),angulo3.get(),angulo4.get())
+    llenado_JACO(J_A,J_S)
 
 def re_def_SLIDER(IKxS):
 
@@ -976,16 +981,16 @@ blanco.grid(column=0, row=0)
 blanco = Label(frmJACO, width=10)
 blanco.grid(column=0, row=1)
 #Matriz Jaco S
-for r in range(0, 4):
-    for c in range(0, 6):
+for r in range(0, 6):
+    for c in range(0, 4):
         cell = Entry(frmJACO, width=12,  textvariable=globals()["jacoS_" + str(r) + str(c)], state= DISABLED)
         cell.grid(row=r+2, column=c+1, ipady=4)
 
 blanco = Label(frmJACO, width=10)
 blanco.grid(column=9, row=0)
 #Matriz Jaco A
-for r in range(0, 3):
-    for c in range(0, 6):
+for r in range(0, 6):
+    for c in range(0, 3):
         cell = Entry(frmJACO, width=12,  textvariable=globals()["jacoA_" + str(r) + str(c)], state= DISABLED)
         cell.grid(row=r+2, column=c+10, ipady=4)
 
