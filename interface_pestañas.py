@@ -209,60 +209,61 @@ def dato2(band):
 
 def servo1(posiciones1):
     #Escritura De Angulo
-    board.write(b'Eb,')
+    #print(b'Eb,'+posiciones1.encode()+b'\r\n')
+    board.write(b'Eb,'+posiciones1.encode()+b'\r\n')
+    #board.write(posiciones1.encode())
+    #board.write(b'\r\n')
     sleep(0.2)
-    board.write(posiciones1.encode())
-    board.write(b'\r\n')
     dato2(1)
 
 def servo2(posiciones2):
     #Escritura De Angulo
-    board.write(b'Ebr,')
+    board.write(b'Ebr,'+posiciones2.encode()+b'\r\n')
     sleep(0.2)
-    board.write(posiciones2.encode())
-    board.write(b'\r\n')
+    #board.write(posiciones2.encode())
+    #board.write(b'\r\n')
     dato2(1)
 
 def servo3(posiciones3):
     #Escritura De Angulo
-    board.write(b'Eab,')
+    board.write(b'Eab,'+posiciones3.encode()+b'\r\n')
     sleep(0.2)
-    board.write(posiciones3.encode())
-    board.write(b'\r\n')
+    #board.write(posiciones3.encode())
+    #board.write(b'\r\n')
     dato2(1)
 
 def servo4(posiciones4):
     #Escritura De Angulo
-    board.write(b'Em,')
+    board.write(b'Em,'+posiciones4.encode()+b'\r\n')
     sleep(0.2)
-    board.write(posiciones4.encode())
-    board.write(b'\r\n')
+    #board.write(posiciones4.encode())
+    #board.write(b'\r\n')
     dato2(1)
 
 #Funciones De Movimiento Antropomorfico
 
 def Aservo1(Aposiciones1):
      #Escritura De Angulo
-    board.write(b'Ab,')
+    board.write(b'Ab,'+Aposiciones1.encode()+b'\r\n')
     sleep(0.2)
-    board.write(Aposiciones1.encode())
-    board.write(b'\r\n')
+    #board.write(Aposiciones1.encode())
+    #board.write(b'\r\n')
     dato1(1)
 
 def Aservo2(Aposiciones2):
     #Escritura De Angulo
-    board.write(b'Abr,')
+    board.write(b'Abr,'+Aposiciones2.encode()+b'\r\n')
     sleep(0.2)
-    board.write(Aposiciones2.encode())
-    board.write(b'\r\n')
+    #board.write(Aposiciones2.encode())
+    #board.write(b'\r\n')
     dato1(1)
 
 def Aservo3(Aposiciones3):
     #Escritura De Angulo
-    board.write(b'Aab,')
+    board.write(b'Aab,'+Aposiciones3.encode()+b'\r\n')
     sleep(0.2)
-    board.write(Aposiciones3.encode())
-    board.write(b'\r\n')
+    #board.write(Aposiciones3.encode())
+    #board.write(b'\r\n')
     dato1(1)
 
 #Gripper
@@ -467,7 +468,7 @@ angulo1=Scale(frm1,
                 command = servo1,
                 from_=0,
                 to=122.5,
-                resolution=0.5,
+                #resolution=0.5,
                 orient = HORIZONTAL,
                 length=266,
                 troughcolor='gray',
@@ -980,6 +981,7 @@ blanco = Label(frmJACO, width=10)
 blanco.grid(column=0, row=0)
 blanco = Label(frmJACO, width=10)
 blanco.grid(column=0, row=1)
+
 #Matriz Jaco S
 for r in range(0, 6):
     for c in range(0, 4):
@@ -988,6 +990,7 @@ for r in range(0, 6):
 
 blanco = Label(frmJACO, width=10)
 blanco.grid(column=9, row=0)
+
 #Matriz Jaco A
 for r in range(0, 6):
     for c in range(0, 3):
@@ -996,6 +999,7 @@ for r in range(0, 6):
 
 blanco = Label(frmJACO, width=10)
 blanco.grid(column=0, row=9)
+
 #Matriz Jaco R
 for r in range(0, 6):
     for c in range(0, 6):
@@ -1008,7 +1012,7 @@ Titulos_JS.place(relx=2/24+0.01,rely=0.005)
 Titulos_JA = Label(frmJACO, width=20,text="Jacobiano Antropomorfico")
 Titulos_JA.place(relx=14/24+0.005,rely=0.005)
 Titulos_JR = Label(frmJACO, width=11,text="Jacobiano 6R")
-Titulos_JR.place(relx=12/18-0.15,rely=7/14+0.03)
+Titulos_JR.place(relx=12/18-0.2,rely=7/14+0.08)
 
 CalcularJACO=Button(frmJACO, text='Calcular', activebackground='yellow', command=Button_CalcularJACO, width=12)
 CalcularJACO.place(relx=2.5/10-0.01, rely=0.85, relheight=1/6-0.05)
