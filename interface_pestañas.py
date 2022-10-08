@@ -1,4 +1,3 @@
-from gc import disable
 import tkinter 
 from tkinter import *
 import tkinter as tk
@@ -6,13 +5,8 @@ from tkinter import ttk
 import tkinter.font as tkFont
 from tkinter import messagebox
 from tkinter import HORIZONTAL, PhotoImage, StringVar, Widget
-import math as mt
-from ctypes import sizeof
-from turtle import bgcolor
-import numpy as np
 from time import sleep
-from PIL import Image, ImageTk
-import numpy
+import numpy as np
 
 import serial, serial.tools.list_ports
 import Fnc
@@ -31,7 +25,7 @@ def creacion():
 
     globals()["txt_edit_yS_var"] = StringVar()
 
-    for n in range(1,18):
+    for n in range(1,17):
         for i in range(0,4):
             for j in range(0,4):
                 globals()["arr"+str(n)+"_" + str(i) + str(j)]=StringVar()
@@ -48,7 +42,7 @@ def creacion():
         for j in range(0,6):
             globals()["jacoR_" + str(i) + str(j)]=StringVar()
 
-def llenado1 (matri): #Llenado Matrices Antropomorfico
+def llenado1 (matri): #Llenado Matrices Antropomórfico (R3)
     for n in range(6,9):
         for i in range(0,4):
             for j in range(0,4):                
@@ -62,7 +56,7 @@ def llenado2 (matri): #Llenado Matrices Scara
                 globals()["arr"+ str(n) +"_" + str(i) + str(j)].set(matri[1][n-1][i][j]) 
                 globals()["arr5" +"_" + str(i) + str(j)].set(matri[0][i][j])
         
-def llenado3 (matri): #Llenado Matrices Antropomorfico 6R
+def llenado3 (matri): #Llenado Matrices Antropomórfico (R6))
     for n in range(10,16):
         for i in range(0,4):
             for j in range(0,4):                
@@ -88,8 +82,8 @@ def llenado_JACO (JA,JS): #Llenado Matrices JACO
 
 
 def Button_IK_Scara_P3R():
+
     M=Fnc.IK_Scara_P3R(float(txt_edit_xS.get()), float(txt_edit_yS.get()), float(txt_edit_zS.get()), float(txt_edit_phiS.get()))
-    #print(M)
 
     if M[7] == 1:
         messagebox.showinfo(title="error",
@@ -114,9 +108,10 @@ def Button_IK_Scara_P3R():
     llenado2(Fnc.M1(4, M[0], M[1], M[2], M[3]))
 
 def Button_IK_Antropo_3R():
+
     M=Fnc.IK_Antropo_3R(float(txt_edit_xA.get(1.0, tk.END)), float(txt_edit_yA.get(1.0, tk.END)), float(txt_edit_zA.get(1.0, tk.END)))
-    #print(M)
-    if numpy.size(M) == 1:
+   
+    if np.size(M) == 1:
         messagebox.showinfo(title="error", message="Varie el valor de Phi")
 
     else:
@@ -139,6 +134,7 @@ def Button_IK_Antropo_3R():
         llenado1(Fnc.M2(3, M[0], M[1], M[2]))
 
 def Button_CalcularJACO():
+
     J_A=Fnc.JG_A(3,Aangulo1.get(),Aangulo2.get(),Aangulo3.get())
     J_S=Fnc.JG_S(4,angulo1.get(),angulo2.get(),angulo3.get(),angulo4.get())
     llenado_JACO(J_A,J_S)
@@ -172,7 +168,6 @@ def re_def_SLIDER(IKxS):
 def re_def_SLIDER_clk():
     re_def_SLIDER(0)
 
-
 def selection_changed(event):
     selection = combo.get()
     if selection == "DK":
@@ -200,14 +195,14 @@ def dato2(band):
         mat2=Fnc.M1(4,float(txt_edit_ang0.get(1.0, tk.END)),float(txt_edit_ang1.get(1.0, tk.END)),float(txt_edit_ang2.get(1.0, tk.END)),int(txt_edit_ang3.get(1.0, tk.END)))
     llenado2(mat2)
 
-# def dato3(band):
-#     if band==1:
-#         mat3=Fnc.M3(6,Rangulo1.get(),Rangulo2.get(),Rangulo3.get(),Rangulo4.get(),Rangulo5.get(),Rangulo6.get())
-#     elif band==2:
-#         mat3=Fnc.M3(6,float(txt_edit_ang7.get(1.0, tk.END)),float(txt_edit_ang8.get(1.0, tk.END)),float(txt_edit_ang9.get(1.0, tk.END)),float(txt_edit_ang10.get(1.0, tk.END))),float(txt_edit_ang11.get(1.0, tk.END)),float(txt_edit_ang12.get(1.0, tk.END))
-#     llenado3(mat3)
+def dato3(band):
+    if band==1:
+        mat3=Fnc.M3(6,Rangulo1.get(),Rangulo2.get(),Rangulo3.get(),Rangulo4.get(),Rangulo5.get(),Rangulo6.get())
+    elif band==2:
+        mat3=Fnc.M3(6,float(txt_edit_ang7.get(1.0, tk.END)),float(txt_edit_ang8.get(1.0, tk.END)),float(txt_edit_ang9.get(1.0, tk.END)),float(txt_edit_ang10.get(1.0, tk.END))),float(txt_edit_ang11.get(1.0, tk.END)),float(txt_edit_ang12.get(1.0, tk.END))
+    llenado3(mat3)
 
-#Funciones De Movimiento Scara
+#Funciones De Movimiento Scara (PR3)
 
 def servo1(posiciones1):
     #Escritura De Angulo
@@ -242,7 +237,7 @@ def servo4(posiciones4):
     #board.write(b'\r\n')
     dato2(1)
 
-#Funciones De Movimiento Antropomorfico
+#Funciones De Movimiento Antropomórfico (R3)
 
 def Aservo1(Aposiciones1):
      #Escritura De Angulo
@@ -267,6 +262,58 @@ def Aservo3(Aposiciones3):
     #board.write(Aposiciones3.encode())
     #board.write(b'\r\n')
     dato1(1)
+
+#Funciones De Movimiento Antropomórfico (R6)
+
+def Rservo1(posiciones1):
+    #Escritura De Angulo
+    #print(b'Eb,'+posiciones1.encode()+b'\r\n')
+    board.write(b'Rb1,'+posiciones1.encode()+b'\r\n')
+    #board.write(posiciones1.encode())
+    #board.write(b'\r\n')
+    sleep(0.2)
+    dato3(1)
+
+def Rservo2(posiciones2):
+    #Escritura De Angulo
+    board.write(b'Rbr1,'+posiciones2.encode()+b'\r\n')
+    sleep(0.2)
+    #board.write(posiciones2.encode())
+    #board.write(b'\r\n')
+    dato3(1)
+
+def Rservo3(posiciones3):
+    #Escritura De Angulo
+    board.write(b'Rbr2,'+posiciones3.encode()+b'\r\n')
+    sleep(0.2)
+    #board.write(posiciones3.encode())
+    #board.write(b'\r\n')
+    dato3(1)
+
+def Rservo4(posiciones4):
+    #Escritura De Angulo
+    board.write(b'Rb2,'+posiciones4.encode()+b'\r\n')
+    sleep(0.2)
+    #board.write(posiciones4.encode())
+    #board.write(b'\r\n')
+    dato3(1)
+
+def Rservo5(posiciones5):
+    #Escritura De Angulo
+    board.write(b'Rab,'+posiciones5.encode()+b'\r\n')
+    sleep(0.2)
+    #board.write(posiciones4.encode())
+    #board.write(b'\r\n')
+    dato3(1)
+
+def Rservo6(posiciones6):
+    #Escritura De Angulo
+    board.write(b'Rm,'+posiciones6.encode()+b'\r\n')
+    sleep(0.2)
+    #board.write(posiciones4.encode())
+    #board.write(b'\r\n')
+    dato3(1)
+
 
 #Gripper
 globals()["clickeo"]=True
@@ -321,7 +368,7 @@ def close():
     board.close()
 
 def Envio_CAB_IK_Scara():
-    print("envio")
+    #print("envio")
     board.write(b'Eb,'+"{:.3f}".format(float(text1.get(1.0, tk.END))).encode()+b'\r\n')
     sleep(0.02)
     board.write(b'Ebr,'+"{:.3f}".format(float(text2.get(1.0, tk.END))).encode()+b'\r\n')
@@ -331,7 +378,7 @@ def Envio_CAB_IK_Scara():
     board.write(b'Em,'+"{:.3f}".format(float(text4.get(1.0, tk.END))).encode()+b'\r\n')
 
 def Envio_CAR_IK_Scara():
-    print("envio")
+    #print("envio")
     board.write(b'Eb,'+"{:.3f}".format(float(text1Ar.get(1.0, tk.END))).encode()+b'\r\n')
     sleep(0.02)
     board.write(b'Ebr,'+"{:.3f}".format(float(text2Ar.get(1.0, tk.END))).encode()+b'\r\n')
@@ -362,7 +409,7 @@ def show_values1():
 
     dato2(2)
 
-#Envio de datos Antropomorfico Bioloid (3R)
+#Envio de datos Antropomórfico Bioloid (3R)
 def show_values2():
     #Cuadro_Texto_1
     board.write(b'Ab,')
@@ -378,33 +425,33 @@ def show_values2():
 
     dato1(2)
 
-# #Envio de datos Antropomorfico Kinova (6R)
-# def show_values3():
-#     #Cuadro_Texto_1
-#     board.write(b'Rb,')
-#     board.write(txt_edit_ang7.get(1.0, tk.END).encode())
+#Envio de datos Antropomorfico Kinova (6R)
+def show_values3():
+    #Cuadro_Texto_1
+    board.write(b'Rb1,')
+    board.write(txt_edit_ang7.get(1.0, tk.END).encode())
 
-#     #Cuadro_Texto_2
-#     board.write(b'Rbr,')
-#     board.write(txt_edit_ang8.get(1.0, tk.END).encode())
+    #Cuadro_Texto_2
+    board.write(b'Rbr1,')
+    board.write(txt_edit_ang8.get(1.0, tk.END).encode())
 
-#     #Cuadro_Texto_3
-#     board.write(b'Rab,')
-#     board.write(txt_edit_ang9.get(1.0, tk.END).encode())
+    #Cuadro_Texto_3
+    board.write(b'Rbr2,')
+    board.write(txt_edit_ang9.get(1.0, tk.END).encode())
 
-#     #Cuadro_Texto_4
-#     board.write(b'RM1,')
-#     board.write(txt_edit_ang10.get(1.0, tk.END).encode())
+    #Cuadro_Texto_4
+    board.write(b'Rb2,')
+    board.write(txt_edit_ang10.get(1.0, tk.END).encode())
 
-#     #Cuadro_Texto_5
-#     board.write(b'RM2,')
-#     board.write(txt_edit_ang11.get(1.0, tk.END).encode())
+    #Cuadro_Texto_5
+    board.write(b'Rab,')
+    board.write(txt_edit_ang11.get(1.0, tk.END).encode())
 
-#      #Cuadro_Texto_6
-#     board.write(b'RM3,')
-#     board.write(txt_edit_ang12.get(1.0, tk.END).encode())
+     #Cuadro_Texto_6
+    board.write(b'Rm,')
+    board.write(txt_edit_ang12.get(1.0, tk.END).encode())
 
-#     dato3(2)
+    dato3(2)
 
 #VENTANA PRINCIPAL.
 root = tkinter.Tk()
@@ -446,7 +493,6 @@ Fernando Llanes - 1802878 \n
 Karla Baron - 1803648 \n 
 Sebastian Niño - 1803558
 """)
-#Santiago Tobar - 1803015 \n
 etiqueta.place(relwidth=0.97,relheight=0.7)
 
 #Logos
@@ -776,7 +822,7 @@ Titulos_pphi = Label(frm2, width=2,text="ϕ")
 Titulos_pphi.place(relx=0.009,rely=8/10+0.05)
 #####Pestaña 3#####
 
-#Frame Manipulador Antropomorfico (Contenedor)
+#Frame Manipulador Antropomorfico R3 (Contenedor)
 frmA=LabelFrame(p2,relief="raised")
 frmA.place(relwidth=1, relheight=1)
 
@@ -981,9 +1027,9 @@ Titulos_py.place(relx=1/15,rely=3/10+0.01)
 Titulos_pz = Label(frm2A, width=5,text="Pz")
 Titulos_pz.place(relx=1/15,rely=5/10+0.01)
 
-###############
+#####Pestaña 4#####
 
-
+#Combo Manipulador Antropomorfico R6 (Ventanas)
 combo = ttk.Combobox(p4,
         state="readonly",
         values=["DK", "IK"]
@@ -991,14 +1037,210 @@ combo = ttk.Combobox(p4,
 combo.bind("<<ComboboxSelected>>", selection_changed)
 combo.place(x=10, y=10)
 
+#Frame Cinematica Directa DK (Contenedor)
 frm6Rdk=LabelFrame(p4,text='DK', labelanchor='n')
 frm6Rdk.place(rely=0.63, relwidth=1, relheight=0.37)
 frm6Rdk.place_forget()
+
+#Base1
+#Slider
+Rangulo1=Scale(frm6Rdk,
+                command = Rservo1,
+                resolution=0.5,
+                from_=0,
+                to=360,
+                orient = HORIZONTAL,
+                length=266,
+                troughcolor='gray',
+                width = 30,
+                cursor='dot',
+                label = 'Rotación Primera Base')
+Rangulo1.place(rely=0)
+#Text_Box
+txt_edit_ang7 = tk.Text(frm6Rdk,width= 6)
+txt_edit_ang7.place(relx=1/5, rely=1/21+0.015, relheight=1/10-0.05)
+txt_edit_ang7.insert(tk.END, "0")
+        
+#Brazo1
+#Slider
+Rangulo2= Scale(frm6Rdk,
+              command = Rservo2,
+              resolution=0.5,
+              from_=0,
+              to=360,
+              orient = HORIZONTAL,
+              length=266,
+              troughcolor='gray',
+              width = 30,
+              cursor='dot',
+              label = 'Rotación Primer Brazo')
+Rangulo2.place(rely=1/7)
+#Text_Box
+txt_edit_ang8 = tk.Text(frm6Rdk, width = 6)
+txt_edit_ang8.place(relx=1/5, rely=4/21+0.015, relheight=1/10-0.05)
+txt_edit_ang8.insert(tk.END, "0")
+
+#Brazo2
+#Slider
+Rangulo3= Scale(frm6Rdk,  
+              command = Rservo3,  
+              resolution=0.5,          
+              from_=0,
+              to=360,
+              orient = HORIZONTAL,
+              length=266,
+              troughcolor='gray',
+              width = 30,
+              cursor='dot',
+              label = 'Rotación Segundo Brazo')
+Rangulo3.place(rely=2/7)
+#Text_Box
+txt_edit_ang9 = tk.Text(frm6Rdk, width = 6)
+txt_edit_ang9.place(relx=1/5, rely=7/21+0.015, relheight=1/10-0.05)
+txt_edit_ang9.insert(tk.END, "0")
+
+#Base2
+#Slider
+Rangulo4= Scale(frm6Rdk,  
+              command = Rservo4,  
+              resolution=0.5,          
+              from_=0,
+              to=360,
+              orient = HORIZONTAL,
+              length=266,
+              troughcolor='gray',
+              width = 30,
+              cursor='dot',
+              label = 'Rotación Segunda Base')
+Rangulo4.place(rely=3/7)
+#Text_Box
+txt_edit_ang10 = tk.Text(frm6Rdk, width = 6)
+txt_edit_ang10.place(relx=1/5, rely=10/21+0.015, relheight=1/10-0.05)
+txt_edit_ang10.insert(tk.END, "0")
+
+#Antebrazo
+#Slider
+Rangulo5= Scale(frm6Rdk,  
+              command = Rservo5,  
+              resolution=0.5,          
+              from_=0,
+              to=360,
+              orient = HORIZONTAL,
+              length=266,
+              troughcolor='gray',
+              width = 30,
+              cursor='dot',
+              label = 'Rotación Antebrazo')
+Rangulo5.place(rely=4/7)
+#Text_Box
+txt_edit_ang11 = tk.Text(frm6Rdk, width = 6)
+txt_edit_ang11.place(relx=1/5, rely=13/21+0.015, relheight=1/10-0.05)
+txt_edit_ang11.insert(tk.END, "0")
+
+#Muñeca
+#Slider
+Rangulo6= Scale(frm6Rdk,  
+              command = Rservo6,  
+              resolution=0.5,          
+              from_=0,
+              to=360,
+              orient = HORIZONTAL,
+              length=266,
+              troughcolor='gray',
+              width = 30,
+              cursor='dot',
+              label = 'Rotación Muñeca')
+Rangulo6.place(rely=5/7)
+#Text_Box
+txt_edit_ang12 = tk.Text(frm6Rdk, width = 6)
+txt_edit_ang12.place(relx=1/5, rely=16/21+0.015, relheight=1/10-0.05)
+txt_edit_ang12.insert(tk.END, "0")
+
+#Frame Matrices Cinematica Directa DK (Contenedor)
+frmdh1R=LabelFrame(frm6Rdk,relief="raised")
+frmdh1R.place(relx=1/4+0.01, relwidth=1, relheight=1)
+
+def blancoR(n):
+    blanco = Label(frmdh1R, width=6)
+    blanco.grid(column=0, row=4+n, ipady=6)
+
+#Matriz Link 1
+for r in range(0, 4):
+    for c in range(0, 4):
+        cell = Entry(frmdh1R, width=13,  textvariable=globals()["arr10_" + str(r) + str(c)], state= DISABLED)
+        cell.grid(row=r+1, column=c, ipady=4)
+
+#Matriz Link 2
+for r in range(0, 4):
+    for c in range(0, 4):
+        cell = Entry(frmdh1R, width=13, textvariable=globals()["arr11_" + str(r) + str(c)], state= DISABLED)
+        cell.grid(row=r+1, column=c+8, ipady=4)
+
+#Matriz Link 3
+for r in range(0, 4):
+    for c in range(0, 4):
+        cell = Entry(frmdh1R, width=13, textvariable=globals()["arr12_" + str(r) + str(c)], state= DISABLED)
+        cell.grid(row=r+6, column=c+4, ipady=4)
+ 
+#Matriz Link 4
+for r in range(0, 4):
+    for c in range(0, 4):
+        cell = Entry(frmdh1R, width=13, textvariable=globals()["arr13_" + str(r) + str(c)], state= DISABLED)
+        cell.grid(row=r+11, column=c, ipady=4)
+
+#Matriz Link 5
+for r in range(0, 4):
+    for c in range(0, 4):
+        cell = Entry(frmdh1R, width=13, textvariable=globals()["arr14_" + str(r) + str(c)], state= DISABLED)
+        cell.grid(row=r+11, column=c+8, ipady=4)
+
+#Matriz Link 6
+for r in range(0, 4):
+    for c in range(0, 4):
+        cell = Entry(frmdh1R, width=13, textvariable=globals()["arr15_" + str(r) + str(c)], state= DISABLED)
+        cell.grid(row=r+16, column=c+4, ipady=4)
+
+blancoR(17)
+
+#Matriz Total
+for r in range(0, 4):
+    for c in range(0, 4):
+        cell = Entry(frmdh1R, width=13, textvariable=globals()["arr16_" + str(r) + str(c)], state= DISABLED)
+        cell.grid(row=r+22, column=c+4, ipady=4)
+
+fila = Label(frmdh1R)
+fila.grid(column=0, row=(0))
+
+#Titulos Antropomórfico (R6) (Label)
+Titulos_l1 = Label(frmdh1R, width=11,text="Link 1")
+Titulos_l1.place(relx=2/24+0.01,rely=0)
+Titulos_l2 = Label(frmdh1R, width=11,text="Link 2")
+Titulos_l2.place(relx=14/24-0.005,rely=0)
+Titulos_l3 = Label(frmdh1R, width=11,text="Link 3")
+Titulos_l3.place(relx=5/15,rely=4/23)
+Titulos_l4 = Label(frmdh1R, width=11,text="Link 4")
+Titulos_l4.place(relx=2/24+0.01,rely=8/23)
+Titulos_l5 = Label(frmdh1R, width=11,text="Link 5")
+Titulos_l5.place(relx=14/24-0.005,rely=8/23)
+Titulos_l6 = Label(frmdh1R, width=11,text="Link 6")
+Titulos_l6.place(relx=5/15,rely=12/23-0.01)
+Titulos_lT = Label(frmdh1R, width=11,text="Total")
+Titulos_lT.place(relx=5/15,rely=17/23)
+
 
 frm6Rik=LabelFrame(p4,text='IK', labelanchor='n')
 frm6Rik.place(rely=0.63, relwidth=1, relheight=0.37)
 frm6Rik.place_forget()
 
+
+
+
+
+
+
+
+
+#Jacobiano
 frmJACO=LabelFrame(p3, labelanchor='n')
 frmJACO.place(relwidth=1, relheight=1)
 
@@ -1033,7 +1275,7 @@ for r in range(0, 6):
         cell = Entry(frmJACO, width=12,  textvariable=globals()["jacoR_" + str(r) + str(c)], state= DISABLED)
         cell.grid(row=r+10, column=c+6, ipady=4)
 
-#Titulos Scara (Label)
+#Titulos Jacobianos (Label)
 Titulos_JS = Label(frmJACO, width=15,text="Jacobiano Scara")
 Titulos_JS.place(relx=2/24+0.01,rely=0.005)
 Titulos_JA = Label(frmJACO, width=20,text="Jacobiano Antropomorfico")
@@ -1043,6 +1285,7 @@ Titulos_JR.place(relx=12/18-0.2,rely=7/14+0.08)
 
 CalcularJACO=Button(frmJACO, text='Calcular', activebackground='yellow', command=Button_CalcularJACO, width=12)
 CalcularJACO.place(relx=2.5/10-0.01, rely=0.85, relheight=1/6-0.05)
+
 #AGREGAMOS PESTAÑAS CREADAS
 nb.add(pI,text='Portada')
 nb.add(p1,text='Robot Scara (P3R)')

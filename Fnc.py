@@ -175,8 +175,8 @@ def M2(n,j1,j2,j3): #Definicion Parametros Antropomorfico (3R)
 def M3(n,j1,j2,j3,j4,j5,j6): #Definicion Parametros Antropomorfico (6R)
     matrices=[]
     z=[j1, j2, j3, j4, j5, j6]
-    d=[115, 30, -20, 245, 57, 105]
-    x=[-mt.pi/2, 0, -mt.pi/2, -mt.pi/2, mt.pi/2, 0] 
+    d=[115, 30, -20, 245, -57, 235]
+    x=[-mt.pi/2, 0, mt.pi/2, mt.pi/2, -mt.pi/2, 0] 
     a=[0, 280, 0, 0, 0, 0]         
     for i in range (0,n):
         matrices.append(matrices_T((z[i]*mt.pi/180),d[i],x[i],a[i]))
