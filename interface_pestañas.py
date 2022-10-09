@@ -11,73 +11,11 @@ import numpy as np
 
 import serial, serial.tools.list_ports
 import Calculos
+import Funciones as Fnc
 
 #Configuracion COM
 board =serial.Serial(port='COM1', baudrate=19200)
 sleep(5) #5 Segundos Para Que Establezca La Comunicacion
-
-def fila_vacia(donde,cuantas,frame,tamaño): #Crear Filas Vacias    
-    for n in range (0,cuantas):
-        fila = Label(frame,width=tamaño)
-        fila.grid(column=0, row=donde+n)
-
-def columna_vacia(donde,cuantas,frame,tamano):
-    for n in range (0,cuantas):
-        blanco = Label(frame, width=tamano)
-        blanco.grid(column=donde+n, row=0)
-
-#Creacion de variables en masa
-def creacion():
-
-    globals()["txt_edit_yS_var"] = StringVar()
-
-    for n in range(1,17):
-        for i in range(0,4):
-            for j in range(0,4):
-                globals()["arr"+str(n)+"_" + str(i) + str(j)]=StringVar()
-    
-    for i in range(0,6):
-        for j in range(0,4):
-            globals()["jacoS_" + str(i) + str(j)]=StringVar()
-
-    for i in range(0,6):
-        for j in range(0,3):
-            globals()["jacoA_" + str(i) + str(j)]=StringVar()
-
-    for i in range(0,6):
-        for j in range(0,6):
-            globals()["jacoR_" + str(i) + str(j)]=StringVar()
-
-def matrices(m,f,k,frame):
-    for r in range(0, 4):
-        for c in range(0, 4):
-            cell = Entry(frame, width=13,  textvariable=globals()["arr" + str(m) + "_" + str(r) + str(c)], state= DISABLED)
-            cell.grid(row=r+f, column=c+k, ipady=4)
-
-def llenado (matri,M,K): #Llenado Matrices Antropomórfico (R3)            
-    for n in range(M,K):
-        for i in range(0,4):
-            for j in range(0,4):                
-                globals()["arr"+ str(n) +"_" + str(i) + str(j)].set(matri[1][n-M][i][j])             
-                globals()["arr"+ str(K) +"_"+ str(i) + str(j)].set(matri[0][i][j]) 
-
-def llenado_JACO (JA,JS): #Llenado Matrices JACO
-    for i in range(0,2):
-        i=i*3
-        for j in range(0,4):           
-            for k in range(0,3):                
-                globals()["jacoS_" + str(i+k) + str(j)].set(JS[i-2][j][k]) 
-
-    for i in range(0,2):
-        i=i*3
-        for j in range(0,3): 
-            for k in range(0,3):               
-                globals()["jacoA_" + str(i+k) + str(j)].set(JA[i-2][j][k]) 
-
-    for i in range(0,6):
-        for j in range(0,6):                
-            globals()["jacoR_" + str(i) + str(j)].set("matri[1][n-10][i][j]") 
-
 
 def Button_IK_Scara_P3R():
 
@@ -103,7 +41,7 @@ def Button_IK_Scara_P3R():
     text4.insert( tk.END,str(M[3]))
     text4Ar.delete("1.0","end")
     text4Ar.insert(tk.END, str(M[6]))
-    llenado(Calculos.M1(4, M[0], M[1], M[2], M[3]),1,5)
+    Fnc.llenado(Calculos.M1(4, M[0], M[1], M[2], M[3]),1,5)
 
 def Button_IK_Antropo_3R():
 
@@ -129,13 +67,14 @@ def Button_IK_Antropo_3R():
         text4.insert( tk.END,str(M[3]))
         text4Ar.delete("1.0","end")
         text4Ar.insert(tk.END, str(M[6]))'''
-        llenado(Calculos.M2(3, M[0], M[1], M[2]),6,9)
+        Fnc.llenado(Calculos.M2(3, M[0], M[1], M[2]),6,9)
 
 def Button_CalcularJACO():
 
     J_A=Calculos.JG_A(3,Aangulo1.get(),Aangulo2.get(),Aangulo3.get())
     J_S=Calculos.JG_S(4,angulo1.get(),angulo2.get(),angulo3.get(),angulo4.get())
-    llenado_JACO(J_A,J_S)
+    J_R=Calculos.JG_R()
+    Fnc.llenado_JACO(J_A,J_S,J_R)
 
 def re_def_SLIDER(IKxS):
 
@@ -184,21 +123,21 @@ def dato1(band):
         mat=Calculos.M2(3,Aangulo1.get(),Aangulo2.get(),Aangulo3.get())
     elif band==2:
         mat=Calculos.M2(3,float(txt_edit_ang4.get(1.0, tk.END)),float(txt_edit_ang5.get(1.0, tk.END)),float(txt_edit_ang6.get(1.0, tk.END)))
-    llenado(mat,6,9)
+    Fnc.llenado(mat,6,9)
 
 def dato2(band):
     if band==1:
         mat2=Calculos.M1(4,angulo1.get(),angulo2.get(),angulo3.get(),angulo4.get())
     elif band==2:
         mat2=Calculos.M1(4,float(txt_edit_ang0.get(1.0, tk.END)),float(txt_edit_ang1.get(1.0, tk.END)),float(txt_edit_ang2.get(1.0, tk.END)),int(txt_edit_ang3.get(1.0, tk.END)))
-    llenado(mat2,1,5)
+    Fnc.llenado(mat2,1,5)
 
 def dato3(band):
     if band==1:
         mat3=Calculos.M3(6,Rangulo1.get(),Rangulo2.get(),Rangulo3.get(),Rangulo4.get(),Rangulo5.get(),Rangulo6.get())
     elif band==2:
         mat3=Calculos.M3(6,float(txt_edit_ang7.get(1.0, tk.END)),float(txt_edit_ang8.get(1.0, tk.END)),float(txt_edit_ang9.get(1.0, tk.END)),float(txt_edit_ang10.get(1.0, tk.END))),float(txt_edit_ang11.get(1.0, tk.END)),float(txt_edit_ang12.get(1.0, tk.END))
-    llenado(mat3,10,16)
+    Fnc.llenado(mat3,10,16)
 
 #Funciones De Movimiento Scara (PR3)
 
@@ -456,7 +395,7 @@ root = tkinter.Tk()
 root.title('Controles de Manipuladores Roboticos')
 #root.iconbitmap('../UMNG-robotica/two-sword.png')
 root.geometry("1320x660")
-creacion()
+Fnc.creacion()
 nombre = StringVar()
 numero = IntVar()
 
@@ -608,11 +547,11 @@ txt_edit_ang3.insert(tk.END, "0")
 frmdh1=LabelFrame(frm1,relief="raised")
 frmdh1.place(relx=1/4+0.01, relwidth=1, relheight=1)
 
-matrices(1,1,0,frmdh1)  #Matriz Link 1
-matrices(2,1,8,frmdh1)  #Matriz Link 2
-matrices(3,11,0,frmdh1) #Matriz Link 3
-matrices(4,11,8,frmdh1) #Matriz Link 4
-matrices(5,6,4,frmdh1)  #Matriz Total
+Fnc.matrices(1,1,0,frmdh1)  #Matriz Link 1
+Fnc.matrices(2,1,8,frmdh1)  #Matriz Link 2
+Fnc.matrices(3,11,0,frmdh1) #Matriz Link 3
+Fnc.matrices(4,11,8,frmdh1) #Matriz Link 4
+Fnc.matrices(5,6,4,frmdh1)  #Matriz Total
 
 #Boton Envio Cinematica Directa Scara
 Envio1=Button(frmdh1, width=10, height=2, text='Envio', activebackground='yellow', command=show_values1)
@@ -712,21 +651,21 @@ etiqueta1 = tk.Label(frmdh2, width=5, text="d₁", fg="black", bg="yellow").grid
 text1 = tk.Text(frmdh2, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
 text1.grid(row=0, column=1, sticky="nsew")
 
-fila_vacia(1,1,frmdh2,10)
+Fnc.fila_vacia(1,1,frmdh2,10)
 
 #Variable de Juntura 2
 etiqueta2 = tk.Label(frmdh2, width=5, text="θ₂", fg="black", bg="yellow").grid(column=0, row=2)
 text2 = tk.Text(frmdh2, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
 text2.grid(row=2, column=1, sticky="ew")
 
-fila_vacia(3,1,frmdh2,10)
+Fnc.fila_vacia(3,1,frmdh2,10)
 
 #Variable de Juntura 3
 etiqueta3 = tk.Label(frmdh2, width=5, text="θ₃", fg="black", bg="yellow").grid(column=0, row=4)
 text3 = tk.Text(frmdh2, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
 text3.grid(row=4, column=1, sticky="nsew")
 
-fila_vacia(5,1,frmdh2,10)
+Fnc.fila_vacia(5,1,frmdh2,10)
 
 #Variable de Juntura 4
 etiqueta4 = tk.Label(frmdh2, width=5, text="θ₄", fg="black", bg="yellow").grid(column=0, row=6)
@@ -746,30 +685,30 @@ etiqueta1 = tk.Label(frmdh2Ar, width=5, text="d₁", fg="black", bg="yellow").gr
 text1Ar = tk.Text(frmdh2Ar, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
 text1Ar.grid(row=0, column=1, sticky="nsew")
 
-fila_vacia(1,1,frmdh2Ar,10)
+Fnc.fila_vacia(1,1,frmdh2Ar,10)
 
 #Variable de Juntura 2
 etiqueta2 = tk.Label(frmdh2Ar, width=5, text="θ₂", fg="black", bg="yellow").grid(column=0, row=2)
 text2Ar = tk.Text(frmdh2Ar, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
 text2Ar.grid(row=2, column=1, sticky="ew")
 
-fila_vacia(3,1,frmdh2Ar,10)
+Fnc.fila_vacia(3,1,frmdh2Ar,10)
 
 #Variable de Juntura 3
 etiqueta3 = tk.Label(frmdh2Ar, width=5, text="θ₃", fg="black", bg="yellow").grid(column=0, row=4)
 text3Ar = tk.Text(frmdh2Ar, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
 text3Ar.grid(row=4, column=1, sticky="nsew")
 
-fila_vacia(5,1,frmdh2Ar,10)
+Fnc.fila_vacia(5,1,frmdh2Ar,10)
 
 #Variable de Juntura 4
 etiqueta4 = tk.Label(frmdh2Ar, width=5, text="θ₄", fg="black", bg="yellow").grid(column=0, row=6)
 text4Ar = tk.Text(frmdh2Ar, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
 text4Ar.grid(row=6, column=1, sticky="nsew")
 
-fila_vacia(0,1,frmdh1,6)
-fila_vacia(5,1,frmdh1,6)
-fila_vacia(10,1,frmdh1,6)
+Fnc.fila_vacia(0,1,frmdh1,6)
+Fnc.fila_vacia(5,1,frmdh1,6)
+Fnc.fila_vacia(10,1,frmdh1,6)
 
 #Titulos Scara (Label)
 Titulos_l1 = Label(frmdh1, width=11,text="Link 1")
@@ -863,13 +802,13 @@ txt_edit_ang6.insert(tk.END, "0")
 frmdh1A=LabelFrame(frm1A,relief="raised")
 frmdh1A.place(relx=0.35, relwidth=0.525, relheight=1)
 
-matrices(6,1,0,frmdh1A)  #Matriz Link 1
-columna_vacia(5,1,frmdh1A,6)
-matrices(7,1,8,frmdh1A) #Matriz Link 2
-columna_vacia(9,1,frmdh1A,6)
-fila_vacia(5,4,frmdh1A,10)
-matrices(8,9,0,frmdh1A) #Matriz Link 3
-matrices(9,9,8,frmdh1A)  #Matriz Total
+Fnc.matrices(6,1,0,frmdh1A)  #Matriz Link 1
+Fnc.columna_vacia(5,1,frmdh1A,6)
+Fnc.matrices(7,1,8,frmdh1A) #Matriz Link 2
+Fnc.columna_vacia(9,1,frmdh1A,6)
+Fnc.fila_vacia(5,4,frmdh1A,10)
+Fnc.matrices(8,9,0,frmdh1A) #Matriz Link 3
+Fnc.matrices(9,9,8,frmdh1A)  #Matriz Total
 
 #Boton Envio Cinematica Directa Antropomorfico
 Envio2=Button(frmdh1A, width=12, height=2, text='Envio', activebackground='yellow', command=show_values2)
@@ -915,14 +854,14 @@ etiqueta2 = tk.Label(frmdh2A, width=5, text="θ₂", fg="black", bg="yellow").gr
 text2A = tk.Text(frmdh2A, padx= 20, pady=2, width=25, height=1, wrap="none", borderwidth=0)
 text2A.grid(row=3, column=1, sticky="nsew")
 
-fila_vacia(2,1,frmdh2A,10)
+Fnc.fila_vacia(2,1,frmdh2A,10)
 
 #Variable de Juntura 3
 etiqueta3 = tk.Label(frmdh2A, width=5, text="θ₃", fg="black", bg="yellow").grid(column=0, row=6)
 text3A = tk.Text(frmdh2A, padx= 20, pady=2, width=25, height=1, wrap="none", borderwidth=0)
 text3A.grid(row=6, column=1, sticky="nsew")
 
-fila_vacia(5,1,frmdh2A,10)
+Fnc.fila_vacia(5,1,frmdh2A,10)
 
 ###############
 frmdh2AAr=LabelFrame(frm2A,relief="raised",text='Codo Arriba',labelanchor='n')
@@ -938,14 +877,14 @@ etiqueta2 = tk.Label(frmdh2AAr, width=5, text="θ₂", fg="black", bg="yellow").
 text2AAr = tk.Text(frmdh2AAr, padx= 20, pady=2, width=25, height=1, wrap="none", borderwidth=0)
 text2AAr.grid(row=3, column=1, sticky="nsew")
 
-fila_vacia(2,1,frmdh2AAr,10)
+Fnc.fila_vacia(2,1,frmdh2AAr,10)
 
 #Variable de Juntura 3
 etiqueta3 = tk.Label(frmdh2AAr, width=5, text="θ₃", fg="black", bg="yellow").grid(column=0, row=6)
 text3AAr = tk.Text(frmdh2AAr, padx= 20, pady=2, width=25, height=1, wrap="none", borderwidth=0)
 text3AAr.grid(row=6, column=1, sticky="nsew")
 
-fila_vacia(5,1,frmdh2AAr,10)
+Fnc.fila_vacia(5,1,frmdh2AAr,10)
 
 #Titulos Antropomorfico (Label)
 Titulos_l1 = Label(frmdh1A, width=11,text="Link 1")
@@ -1096,15 +1035,15 @@ txt_edit_ang12.insert(tk.END, "0")
 frmdh1R=LabelFrame(frm6Rdk,relief="raised")
 frmdh1R.place(relx=1/4+0.01, relwidth=1, relheight=1)
 
-fila_vacia(0,1,frmdh1R,10)
-matrices(10,1,0,frmdh1R)   #Matriz Link 1
-matrices(11,1,8,frmdh1R)   #Matriz Link 2
-matrices(12,5,4,frmdh1R)   #Matriz Link 3
-matrices(13,9,0,frmdh1R)   #Matriz Link 4
-matrices(14,9,8,frmdh1R)   #Matriz Link 5
-matrices(15,13,4,frmdh1R)  #Matriz Link 6
-fila_vacia(17,2,frmdh1R,6) 
-matrices(16,19,4,frmdh1R)  #Matriz Total
+Fnc.fila_vacia(0,1,frmdh1R,10)
+Fnc.matrices(10,1,0,frmdh1R)   #Matriz Link 1
+Fnc.matrices(11,1,8,frmdh1R)   #Matriz Link 2
+Fnc.matrices(12,5,4,frmdh1R)   #Matriz Link 3
+Fnc.matrices(13,9,0,frmdh1R)   #Matriz Link 4
+Fnc.matrices(14,9,8,frmdh1R)   #Matriz Link 5
+Fnc.matrices(15,13,4,frmdh1R)  #Matriz Link 6
+Fnc.fila_vacia(17,2,frmdh1R,6) 
+Fnc.matrices(16,19,4,frmdh1R)  #Matriz Total
 
 #Titulos Antropomórfico (R6) (Label)
 Titulos_l1 = Label(frmdh1R, width=11,text="Link 1")
@@ -1130,29 +1069,12 @@ frm6Rik.place_forget()
 frmJACO=LabelFrame(p3, labelanchor='n')
 frmJACO.place(relwidth=1, relheight=1)
 
-fila_vacia(0,2,frmJACO,10)
-
-#Matriz Jaco S
-for r in range(0, 6):
-    for c in range(0, 4):
-        cell = Entry(frmJACO, width=12,  textvariable=globals()["jacoS_" + str(r) + str(c)], state= DISABLED)
-        cell.grid(row=r+2, column=c+1, ipady=4)
-
-columna_vacia(9,1,frmJACO,10)
-
-#Matriz Jaco A
-for r in range(0, 6):
-    for c in range(0, 3):
-        cell = Entry(frmJACO, width=12,  textvariable=globals()["jacoA_" + str(r) + str(c)], state= DISABLED)
-        cell.grid(row=r+2, column=c+10, ipady=4)
-
-fila_vacia(9,1,frmJACO,10)
-
-#Matriz Jaco R
-for r in range(0, 6):
-    for c in range(0, 6):
-        cell = Entry(frmJACO, width=12,  textvariable=globals()["jacoR_" + str(r) + str(c)], state= DISABLED)
-        cell.grid(row=r+10, column=c+6, ipady=4)
+Fnc.fila_vacia(0,2,frmJACO,10)
+Fnc.matrices_J(2,4,frmJACO,2,1)   #Matriz Jacobiano Scara
+Fnc.columna_vacia(9,1,frmJACO,10)
+Fnc.matrices_J(3,3,frmJACO,2,10)  #Matriz Jacobiano Antropomórfico (R3)
+Fnc.fila_vacia(9,1,frmJACO,10)
+Fnc.matrices_J(1,6,frmJACO,10,6)  #Matriz Jacobiano Antropomórfico (R6)
 
 #Titulos Jacobianos (Label)
 Titulos_JS = Label(frmJACO, width=15,text="Jacobiano Scara")

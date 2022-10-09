@@ -1,5 +1,4 @@
 import math as mt
-from tkinter import StringVar
 import numpy as np
 
 def IK_Scara_P3R(P_X, P_Y, P_Z, phi):
@@ -223,3 +222,7 @@ def JG_A(n,j1,j2,j3):
     Z2=Vec(2,Tm_1)    
     JG=[[np.cross(Z0,R_list(Pe,P0)),np.cross(Z1,R_list(Pe,P1)),np.cross(Z2,R_list(Pe,P2))],[Z0,Z1,Z2]] 
     return JG
+
+def JG_R():
+    JR=[[1,1,1,1,1,1],[1,1,1,1,1,1],[1,1,1,1,1,1],[1,1,1,1,1,1],[1,1,1,1,1,1],[1,1,1,1,1,1]]
+    return JR
