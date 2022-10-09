@@ -10,7 +10,7 @@ def columna_vacia(donde,cuantas,frame,tamano): #Crear Columnas Vacias
         blanco = Label(frame, width=tamano)
         blanco.grid(column=donde+n, row=0)
 
-def creacion(): #Creacion de variables en masa
+def creacion(): #Creacion De Variables En Masa
 
     globals()["txt_edit_yS_var"] = StringVar()
 
@@ -24,7 +24,7 @@ def creacion(): #Creacion de variables en masa
             for j in range(0,int(12/n)):
                 globals()["jaco" + str(n-1) + "_" + str(i) + str(j)]=StringVar()
 
-def matrices(m,f,k,frame): #Creación Matrices Cinematica Directa
+def matrices(m,f,k,frame): #Creación Matrices Cinemática Directa
     for r in range(0, 4):
         for c in range(0, 4):
             cell = Entry(frame, width=13,  textvariable=globals()["arr" + str(m) + "_" + str(r) + str(c)], state= DISABLED)
