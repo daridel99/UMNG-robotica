@@ -98,11 +98,11 @@ def re_def_SLIDER_clk():#Función Para Actualizar Slider Al Clickear el Check_Bo
 def selection_changed(event):#Función Mensaje Para Ventanas Pestaña 4
     selection = combo.get()
     if selection == "DK":
-        frm6Rik.place_forget()
+        FrIKR6.place_forget()
         FrDKR6.place(rely=0.05, relwidth=1, relheight=0.95)
     else:
         FrDKR6.place_forget()
-        frm6Rik.place(rely=0.05, relwidth=1, relheight=0.95)
+        FrIKR6.place(rely=0.05, relwidth=1, relheight=0.95)
     messagebox.showinfo(
         title="Nuevo elemento seleccionado",
         message=selection
@@ -976,7 +976,6 @@ txt_edit_ang12.place(relx=1/5, rely=16/21+0.015, relheight=1/10-0.05)
 txt_edit_ang12.insert(tk.END, "0")
 
 #Frame Matrices (Contenedor)
-
 FrMaR6=LabelFrame(FrDKR6,relief="raised")
 FrMaR6.place(relx=1/4+0.01, relwidth=1, relheight=1)
 
@@ -1009,9 +1008,9 @@ Titulos_lT = Label(FrMaR6, width=11,text="Total")
 Titulos_lT.place(relx=5/15,rely=17/23+0.01)
 
 #Frame Cinemática Inversa Antropomórfico (R6)
-frm6Rik=LabelFrame(p4,text='IK', labelanchor='n')
-frm6Rik.place(rely=0.63, relwidth=1, relheight=0.37)
-frm6Rik.place_forget()
+FrIKR6=LabelFrame(p4,text='IK', labelanchor='n')
+FrIKR6.place(rely=0.63, relwidth=1, relheight=0.37)
+FrIKR6.place_forget()
 
 #####Pestaña 5: Jacobianos#####
 frmJACO=LabelFrame(p3, labelanchor='n')
