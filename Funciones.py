@@ -28,8 +28,8 @@ def creacion(): #Creacion De Variables En Masa
 def matrices(m,f,k,frame): #Creación Matrices Cinemática Directa
     for r in range(0, 4):
         for c in range(0, 4):
-            cell = tk.Label(frame, width=10,  textvariable=globals()["arr" + str(m) + "_" + str(r) + str(c)], bg='white')
-            cell.grid(row=r+f, column=c+k, ipady=4)
+            cell = tk.Label(frame, width=11,  textvariable=globals()["arr" + str(m) + "_" + str(r) + str(c)], bg='white')
+            cell.grid(row=r+f, column=c+k,ipady=3)
 
 def matrices_J(m,grados,frame,f,k): #Creación Matrices Jacobianos
     for r in range(0, 6):
