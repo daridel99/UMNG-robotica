@@ -103,10 +103,10 @@ def selection_changed(event):#Función Mensaje Para Ventanas Pestaña 4
     else:
         FrDKR6.place_forget()
         FrIKR6.place(rely=0.05, relwidth=1, relheight=0.95)
-    messagebox.showinfo(
-        title="Nuevo elemento seleccionado",
-        message=selection
-    )
+    #messagebox.showinfo(
+     #   title="Nuevo elemento seleccionado",
+      #  message=selection
+    #)
 
 def dato1(band):#Función Para Calcular DK Antropomórfico (R3)
     if band==1:
@@ -131,11 +131,8 @@ def dato3(band):#Función Para Calcular DK Antropomórfico (R6)
 
 #Funciones De Sliders Scara (PR3)
 def servo1(posiciones1):
-    #print(b'Eb,'+posiciones1.encode()+b'\r\n')
-    #board.write(posiciones1.encode())
-    #board.write(b'\r\n')
     board.write(b'Eb,'+posiciones1.encode()+b'\r\n')
-    sleep(0.2)
+    #sleep(0.2)
     dato2(1)
 
 def servo2(posiciones2):
@@ -155,8 +152,6 @@ def servo4(posiciones4):
 
 #Funciones De Sliders Antropomórfico (R3)
 def Aservo1(Aposiciones1):
-    #board.write(Aposiciones1.encode())
-    #board.write(b'\r\n')
     board.write(b'Ab,'+Aposiciones1.encode()+b'\r\n')
     sleep(0.2)
     dato1(1)
@@ -173,9 +168,6 @@ def Aservo3(Aposiciones3):
 
 #Funciones De Sliders Antropomórfico (R6)
 def Rservo1(posiciones1):
-    #print(b'Eb,'+posiciones1.encode()+b'\r\n')
-    #board.write(posiciones1.encode())
-    #board.write(b'\r\n')
     board.write(b'Rb1,'+posiciones1.encode()+b'\r\n')
     sleep(0.2)
     dato3(1)
