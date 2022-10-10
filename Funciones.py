@@ -1,4 +1,6 @@
+from cProfile import label
 from tkinter import *
+import tkinter as tk
 
 def fila_vacia(donde,cuantas,frame,tamaño): #Crear Filas Vacias    
     for n in range (0,cuantas):
@@ -11,7 +13,6 @@ def columna_vacia(donde,cuantas,frame,tamano): #Crear Columnas Vacias
         blanco.grid(column=donde+n, row=0)
 
 def creacion(): #Creacion De Variables En Masa
-
     globals()["txt_edit_yS_var"] = StringVar()
 
     for n in range(1,17):
@@ -27,7 +28,7 @@ def creacion(): #Creacion De Variables En Masa
 def matrices(m,f,k,frame): #Creación Matrices Cinemática Directa
     for r in range(0, 4):
         for c in range(0, 4):
-            cell = Entry(frame, width=13,  textvariable=globals()["arr" + str(m) + "_" + str(r) + str(c)], state= DISABLED)
+            cell = tk.Label(frame, width=10,  textvariable=globals()["arr" + str(m) + "_" + str(r) + str(c)], bg='white')
             cell.grid(row=r+f, column=c+k, ipady=4)
 
 def matrices_J(m,grados,frame,f,k): #Creación Matrices Jacobianos
