@@ -64,17 +64,16 @@ def IK_Antropo_3R(P_X, P_Y, P_Z): #Cinematica Inversa Antropomórfico (R3)
     return IK_FINAL
 
 def limites (X,ID): #Ecuaciones Para Limites Mecánicos Scara
-    match ID:
-        case 1:
+    if (ID==1):
             yext1=mt.sqrt((float(327.9))**2-(float(X)-float(47.3))**2) 
             return yext1
-        case 2:     
+    elif (ID==2):    
             yint1=mt.sqrt((float(190.5945))**2-(float(X)-float(47.3))**2)    #Cuando X<Xmedio
             return yint1
-        case 3:
+    elif (ID==3):
             yext2=mt.sqrt((float(178.8))**2-(float(X)-float(47.3))**2)+float(149.1)  #Cuando X<centro
             return yext2
-        case 4:
+    elif (ID==4):
             yint2=-mt.sqrt((float(30))**2-(float(X)+float(101.5))**2)+float(149.1)  #Cuando X<Xmin
             return yint2
 
