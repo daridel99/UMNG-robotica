@@ -45,13 +45,13 @@ def llenado (matri,M,K):  #Llenado Matrices
 
 def llenado_JACO (JA,JS,JR): #Llenado Matrices JACO
     for n in range (3,5):
-        match n-1:
-            case 1:
-                J=JR
-            case 2:
-                J=JS
-            case 3:
-                J=JA
+        s=n-1
+        if (s==1):
+            J=JR
+        elif (s==2):
+            J=JS
+        elif (s==3):
+            J=JA
         for i in range(0,2):
             i=i*3
             for j in range(0,int(12/n)):           
