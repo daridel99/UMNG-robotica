@@ -10,6 +10,7 @@ import numpy as np
 import serial, serial.tools.list_ports
 import Calculos
 import Funciones as Fnc
+from threading import Thread
 
 #Configuracion COM
 board =serial.Serial(port='COM1', baudrate=19200)
@@ -129,70 +130,83 @@ def dato3(band):#Función Para Calcular DK Antropomórfico (R6)
         mat3=Calculos.M3(6,float(txt_edit_ang7.get(1.0, tk.END)),float(txt_edit_ang8.get(1.0, tk.END)),float(txt_edit_ang9.get(1.0, tk.END)),float(txt_edit_ang10.get(1.0, tk.END))),float(txt_edit_ang11.get(1.0, tk.END)),float(txt_edit_ang12.get(1.0, tk.END))
     Fnc.llenado(mat3,10,16)
 
+def contar():
+    while pbr_tarea['value'] < 100:
+        pbr_tarea['value'] += 10
+        sleep(0.02)
+    pbr_tarea['value'] = 0
+
 #Funciones De Sliders Scara (PR3)
 def servo1(posiciones1):
+    Thread(target=contar).start()
     board.write(b'Eb,'+posiciones1.encode()+b'\r\n')
-    #sleep(0.2)
     dato2(1)
+    #
 
 def servo2(posiciones2):
+    Thread(target=contar).start()
     board.write(b'Ebr,'+posiciones2.encode()+b'\r\n')
-    sleep(0.2)
     dato2(1)
 
 def servo3(posiciones3):
+    Thread(target=contar).start()
     board.write(b'Eab,'+posiciones3.encode()+b'\r\n')
-    sleep(0.2)
     dato2(1)
 
 def servo4(posiciones4):
+    Thread(target=contar).start()
     board.write(b'Em,'+posiciones4.encode()+b'\r\n')
-    sleep(0.2)
     dato2(1)
 
 #Funciones De Sliders Antropomórfico (R3)
 def Aservo1(Aposiciones1):
+    #Thread(target=contar).start()
     board.write(b'Ab,'+Aposiciones1.encode()+b'\r\n')
-    sleep(0.2)
     dato1(1)
 
 def Aservo2(Aposiciones2):
+    #Thread(target=contar).start()
     board.write(b'Abr,'+Aposiciones2.encode()+b'\r\n')
-    sleep(0.2)
     dato1(1)
 
 def Aservo3(Aposiciones3):
+    #Thread(target=contar).start()
     board.write(b'Aab,'+Aposiciones3.encode()+b'\r\n')
-    sleep(0.2)
     dato1(1)
 
 #Funciones De Sliders Antropomórfico (R6)
 def Rservo1(posiciones1):
+    #Thread(target=contar).start()
     board.write(b'Rb1,'+posiciones1.encode()+b'\r\n')
     sleep(0.2)
     dato3(1)
 
 def Rservo2(posiciones2):
+    #Thread(target=contar).start()
     board.write(b'Rbr1,'+posiciones2.encode()+b'\r\n')
     sleep(0.2)
     dato3(1)
 
 def Rservo3(posiciones3):
+    #Thread(target=contar).start()
     board.write(b'Rbr2,'+posiciones3.encode()+b'\r\n')
     sleep(0.2)
     dato3(1)
 
 def Rservo4(posiciones4):
+    #Thread(target=contar).start()
     board.write(b'Rb2,'+posiciones4.encode()+b'\r\n')
     sleep(0.2)
     dato3(1)
 
 def Rservo5(posiciones5):
+    #Thread(target=contar).start()
     board.write(b'Rab,'+posiciones5.encode()+b'\r\n')
     sleep(0.2)
     dato3(1)
 
 def Rservo6(posiciones6):
+    #Thread(target=contar).start()
     board.write(b'Rm,'+posiciones6.encode()+b'\r\n')
     sleep(0.2)
     dato3(1)
@@ -233,6 +247,7 @@ directa en tiempo real.\n
 """)
 
 def info2():#Función Información IK
+    #pbr_tarea['value'] = 0
     messagebox.showinfo("Informacion de uso",
 """
 Modo de uso:\nDeslizar cada slider para darle
@@ -249,35 +264,28 @@ def close(): #Cerrar Puerto Serial
 
 def Envio_DK_S():#Función Envio Text-Box DK Scara (P3R)
     #Cuadro_Texto_1
-    board.write(b'Eb,')
-    board.write(txt_edit_ang0.get(1.0, tk.END).encode())    
-
+    board.write(b'Eb,'+txt_edit_ang0.get(1.0, tk.END).encode()+b'\r\n')  
+    sleep(0.02)
     #Cuadro_Texto_2
-    board.write(b'Ebr,')
-    board.write(txt_edit_ang1.get(1.0, tk.END).encode())
-
+    board.write(b'Ebr,'+txt_edit_ang1.get(1.0, tk.END).encode()+b'\r\n')
+    sleep(0.02)
     #Cuadro_Texto_3 
-    board.write(b'Eab,')
-    board.write(txt_edit_ang2.get(1.0, tk.END).encode())
-
+    board.write(b'Eab,'+txt_edit_ang2.get(1.0, tk.END).encode()+b'\r\n')
+    sleep(0.02)
     #Cuadro_Texto_4
-    board.write(b'Em,')
-    board.write(txt_edit_ang3.get(1.0, tk.END).encode())
-
+    board.write(b'Em,'+txt_edit_ang3.get(1.0, tk.END).encode()+b'\r\n')
+    sleep(0.02)
     dato2(2)
 
 def Envio_DK_R3():#Función Envio Text-Box DK Antropomórfico (R3)
     #Cuadro_Texto_1
-    board.write(b'Ab,')
-    board.write(txt_edit_ang4.get(1.0, tk.END).encode())
+    board.write(b'Ab,'+txt_edit_ang4.get(1.0, tk.END).encode()+b'\r\n')
 
     #Cuadro_Texto_2
-    board.write(b'Abr,')
-    board.write(txt_edit_ang5.get(1.0, tk.END).encode())
+    board.write(b'Abr,'+txt_edit_ang5.get(1.0, tk.END).encode()+b'\r\n')
 
     #Cuadro_Texto_3
-    board.write(b'Aab,')
-    board.write(txt_edit_ang6.get(1.0, tk.END).encode())
+    board.write(b'Aab,'+txt_edit_ang6.get(1.0, tk.END).encode()+b'\r\n')
 
     dato1(2)
 
@@ -346,6 +354,8 @@ p2 = ttk.Frame(nb)#Pestaña Robot Antropomorfico Bioloid (3R)
 p3 = ttk.Frame(nb)#Pestaña Robot Antropomorfico Kinova (6R)     
 p4 = ttk.Frame(nb)#Pestaña Jacobiano
 
+######hilo
+#hilo1 = threading.Thread(target=contar)
 #####Pestaña 1: Información#####
 
 #Frame Informacion (Contenedor)
@@ -659,12 +669,15 @@ EnvioC_AB_S.place(relx=2.5/10+0.1, rely=0.85)
 EnvioC_AR_S=Button(FrIKS, text='Enviar', activebackground='yellow', command=Envio_CU_S)
 EnvioC_AR_S.place(relx=2.5/10+0.4, rely=0.85)
 
+pbr_tarea = ttk.Progressbar(FrIKS, length=150, style='black.Horizontal.TProgressbar', maximum=100)
+pbr_tarea['value'] = 0
+pbr_tarea.place(relx=0.85, rely=0.25)
 #Boton Información IK
 info2_uso = Button(FrIKS,
              text="Modo de Uso",
              relief=GROOVE,
              command=info2   )
-info2_uso.place(relx=0.9, rely=0.5)
+info2_uso.place(relx=0.879, rely=0.5)
 
 #####Pestaña 3: Antropomórfico (R3)#####
 
