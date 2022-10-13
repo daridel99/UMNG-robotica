@@ -146,73 +146,67 @@ def servo1(posiciones1):
 def servo2(posiciones2):
     Thread(target=contar).start()
     board.write(b'Ebr,'+posiciones2.encode()+b'\r\n')
-    sleep(0.2)
     dato2(1)
 
 def servo3(posiciones3):
     Thread(target=contar).start()
     board.write(b'Eab,'+posiciones3.encode()+b'\r\n')
-    sleep(0.2)
     dato2(1)
 
 def servo4(posiciones4):
     Thread(target=contar).start()
     board.write(b'Em,'+posiciones4.encode()+b'\r\n')
-    sleep(0.2)
     dato2(1)
 
 #Funciones De Sliders Antropomórfico (R3)
 def Aservo1(Aposiciones1):
-    Thread(target=contar).start()
+    #Thread(target=contar).start()
     board.write(b'Ab,'+Aposiciones1.encode()+b'\r\n')
-    sleep(0.2)
     dato1(1)
 
 def Aservo2(Aposiciones2):
-    Thread(target=contar).start()
+    #Thread(target=contar).start()
     board.write(b'Abr,'+Aposiciones2.encode()+b'\r\n')
-    sleep(0.2)
     dato1(1)
 
 def Aservo3(Aposiciones3):
-    Thread(target=contar).start()
+    #Thread(target=contar).start()
     board.write(b'Aab,'+Aposiciones3.encode()+b'\r\n')
-    sleep(0.2)
     dato1(1)
 
 #Funciones De Sliders Antropomórfico (R6)
 def Rservo1(posiciones1):
-    Thread(target=contar).start()
+    #Thread(target=contar).start()
     board.write(b'Rb1,'+posiciones1.encode()+b'\r\n')
     sleep(0.2)
     dato3(1)
 
 def Rservo2(posiciones2):
-    Thread(target=contar).start()
+    #Thread(target=contar).start()
     board.write(b'Rbr1,'+posiciones2.encode()+b'\r\n')
     sleep(0.2)
     dato3(1)
 
 def Rservo3(posiciones3):
-    Thread(target=contar).start()
+    #Thread(target=contar).start()
     board.write(b'Rbr2,'+posiciones3.encode()+b'\r\n')
     sleep(0.2)
     dato3(1)
 
 def Rservo4(posiciones4):
-    Thread(target=contar).start()
+    #Thread(target=contar).start()
     board.write(b'Rb2,'+posiciones4.encode()+b'\r\n')
     sleep(0.2)
     dato3(1)
 
 def Rservo5(posiciones5):
-    Thread(target=contar).start()
+    #Thread(target=contar).start()
     board.write(b'Rab,'+posiciones5.encode()+b'\r\n')
     sleep(0.2)
     dato3(1)
 
 def Rservo6(posiciones6):
-    Thread(target=contar).start()
+    #Thread(target=contar).start()
     board.write(b'Rm,'+posiciones6.encode()+b'\r\n')
     sleep(0.2)
     dato3(1)
@@ -270,35 +264,31 @@ def close(): #Cerrar Puerto Serial
 
 def Envio_DK_S():#Función Envio Text-Box DK Scara (P3R)
     #Cuadro_Texto_1
-    board.write(b'Eb,')
-    board.write(txt_edit_ang0.get(1.0, tk.END).encode())    
-
+    board.write(b'Eb,'+txt_edit_ang0.get(1.0, tk.END).encode()+b'\r\n')  
+    sleep(0.02)
     #Cuadro_Texto_2
-    board.write(b'Ebr,')
-    board.write(txt_edit_ang1.get(1.0, tk.END).encode())
-
+    board.write(b'Ebr,'+txt_edit_ang1.get(1.0, tk.END).encode()+b'\r\n')
+    sleep(0.02)
     #Cuadro_Texto_3 
-    board.write(b'Eab,')
-    board.write(txt_edit_ang2.get(1.0, tk.END).encode())
-
+    board.write(b'Eab,'+txt_edit_ang2.get(1.0, tk.END).encode()+b'\r\n')
+    sleep(0.02)
     #Cuadro_Texto_4
-    board.write(b'Em,')
-    board.write(txt_edit_ang3.get(1.0, tk.END).encode())
-
+    board.write(b'Em,'+txt_edit_ang3.get(1.0, tk.END).encode()+b'\r\n')
+    sleep(0.02)
     dato2(2)
 
 def Envio_DK_R3():#Función Envio Text-Box DK Antropomórfico (R3)
     #Cuadro_Texto_1
     board.write(b'Ab,')
-    board.write(txt_edit_ang4.get(1.0, tk.END).encode())
+    board.write(txt_edit_ang4.get(1.0, tk.END).encode()+b'\r\n')
 
     #Cuadro_Texto_2
     board.write(b'Abr,')
-    board.write(txt_edit_ang5.get(1.0, tk.END).encode())
+    board.write(txt_edit_ang5.get(1.0, tk.END).encode()+b'\r\n')
 
     #Cuadro_Texto_3
     board.write(b'Aab,')
-    board.write(txt_edit_ang6.get(1.0, tk.END).encode())
+    board.write(txt_edit_ang6.get(1.0, tk.END).encode()+b'\r\n')
 
     dato1(2)
 
