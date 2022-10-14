@@ -265,16 +265,16 @@ def close(): #Cerrar Puerto Serial
 def Envio_DK_S():#Función Envio Text-Box DK Scara (P3R)
     #Cuadro_Texto_1
     board.write(b'Eb,'+txt_edit_ang0.get(1.0, tk.END).encode()+b'\r\n')  
-    sleep(0.02)
+    sleep(0.2)
     #Cuadro_Texto_2
     board.write(b'Ebr,'+txt_edit_ang1.get(1.0, tk.END).encode()+b'\r\n')
-    sleep(0.02)
+    sleep(0.2)
     #Cuadro_Texto_3 
     board.write(b'Eab,'+txt_edit_ang2.get(1.0, tk.END).encode()+b'\r\n')
-    sleep(0.02)
+    sleep(0.2)
     #Cuadro_Texto_4
     board.write(b'Em,'+txt_edit_ang3.get(1.0, tk.END).encode()+b'\r\n')
-    sleep(0.02)
+    sleep(0.2)
     dato2(2)
 
 def Envio_DK_R3():#Función Envio Text-Box DK Antropomórfico (R3)
@@ -317,22 +317,22 @@ def show_values3():#Función Envio Text-Box DK Antropomórfico (R6)
     dato3(2)
 
 def Envio_CD_S(): #Envio Codo Abajo Scara
-    board.write(b'Eb,'+"{:.3f}".format(float(text1.get(1.0, tk.END))).encode()+b'\r\n')
-    sleep(0.02)
-    board.write(b'Ebr,'+"{:.3f}".format(float(text2.get(1.0, tk.END))).encode()+b'\r\n')
-    sleep(0.02)
-    board.write(b'Eab,'+"{:.3f}".format(float(text3.get(1.0, tk.END))).encode()+b'\r\n')
-    sleep(0.02)
-    board.write(b'Em,'+"{:.3f}".format(float(text4.get(1.0, tk.END))).encode()+b'\r\n')
+    board.write(b'Eb,'+"{:.1f}".format(float(text1.get(1.0, tk.END))).encode()+b'\r\n')
+    sleep(0.2)
+    board.write(b'Ebr,'+"{:.1f}".format(float(text2.get(1.0, tk.END))).encode()+b'\r\n')
+    sleep(0.2)
+    board.write(b'Eab,'+"{:.1f}".format(float(text3.get(1.0, tk.END))).encode()+b'\r\n')
+    sleep(0.2)
+    board.write(b'Em,'+"{:.1f}".format(float(text4.get(1.0, tk.END))).encode()+b'\r\n')
 
 def Envio_CU_S():#Envio Codo Arriba Scara
-    board.write(b'Eb,'+"{:.3f}".format(float(text1Ar.get(1.0, tk.END))).encode()+b'\r\n')
-    sleep(0.02)
-    board.write(b'Ebr,'+"{:.3f}".format(float(text2Ar.get(1.0, tk.END))).encode()+b'\r\n')
-    sleep(0.02)
-    board.write(b'Eab,'+"{:.3f}".format(float(text3Ar.get(1.0, tk.END))).encode()+b'\r\n')
-    sleep(0.02)
-    board.write(b'Em,'+"{:.3f}".format(float(text4Ar.get(1.0, tk.END))).encode()+b'\r\n')
+    board.write(b'Eb,'+"{:.1f}".format(float(text1Ar.get(1.0, tk.END))).encode()+b'\r\n')
+    sleep(0.2)
+    board.write(b'Ebr,'+"{:.1f}".format(float(text2Ar.get(1.0, tk.END))).encode()+b'\r\n')
+    sleep(0.2)
+    board.write(b'Eab,'+"{:.1f}".format(float(text3Ar.get(1.0, tk.END))).encode()+b'\r\n')
+    sleep(0.2)
+    board.write(b'Em,'+"{:.1f}".format(float(text4Ar.get(1.0, tk.END))).encode()+b'\r\n')
 
 ##################### VENTANA PRINCIPAL #########################
 root = tkinter.Tk()

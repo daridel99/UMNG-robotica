@@ -46,21 +46,29 @@ def IK_Antropo_3R(P_X, P_Y, P_Z): #Cinematica Inversa Antropomórfico (R3)
     Co=P_Z-d_1#Cateto opuesto, considerando la distancia d1 entre juntura 1-2
     h=np.sqrt(float(Ca)**2+float(Co)**2)
 
-    cost3=(h**2-a_2**2-a_3**2)/(2*a_2*a_3) #Despejando del Teorema del coseno
-    sent3=np.sqrt(1-cost3**2)#Propiedad trigonometrica sen^2+cos^2=1
+    theta_3ab=mt.acos((h**2-a_2**2-a_3**2)/(2*a_2*a_3)) #Despejando del Teorema del coseno
+    #sent3=np.sqrt(1-cost3**2)#Propiedad trigonometrica sen^2+cos^2=1
     
     #Calcularlo por medio de tangente (para todos los posibles valores)
-    theta_3=mt.atan2(sent3,cost3) #Variable De Juntura T3
+    #theta_3ab=mt.atan2(sent3,cost3) #Variable De Juntura T3
 
     alpha=mt.atan2(Co,Ca)#Calculo Alfa
-    Ca2=a_2+a_3*mt.cos(theta_3)#Cateto adyacente
-    Co2=a_3*mt.sin(theta_3)#Cateto opuesto
-    beta=mt.atan2(Co2,Ca2)#Calculo Beta
+    Ca2=a_2+a_3*mt.cos(theta_3ab)#Cateto adyacente
+    Co2=a_3*mt.sin(theta_3ab)#Cateto opuesto
+    beta_ab=mt.atan2(Co2,Ca2)#Calculo Beta
     
-    theta_2=alpha-beta            #Variable De Juntura T2
+    theta_2ab=alpha-beta_ab            #Variable De Juntura T2
     theta_1=mt.atan2(P_Y,P_X)     #Variable De Juntura T1
 
-    IK_FINAL=np.array([theta_1*180/mt.pi, theta_2*180/mt.pi , theta_3*180/mt.pi,theta_1*180/mt.pi, theta_2*180/mt.pi , theta_3*180/mt.pi],float)
+     #Codo ariba
+    theta_3ar=-mt.acos((h**2-a_2**2-a_3**2)/(2*a_2*a_3))  #Variable De Juntura T3 
+    Ca2=a_2+a_3*mt.cos(theta_3ab)#Cateto adyacente
+    Co2=a_3*mt.sin(theta_3ab)#Cateto opuesto
+    beta_ar=mt.atan2(Co2,Ca2)#Calculo Beta     
+    theta_2ar=(alpha+beta_ar)                                #Variable De Juntura T2
+
+
+    IK_FINAL=np.array([theta_1*180/mt.pi, theta_2ab*180/mt.pi , theta_3ab*180/mt.pi, theta_1*180/mt.pi, theta_2ar*180/mt.pi , theta_3ar*180/mt.pi],float)
     return IK_FINAL
 
 def limites (X,ID): #Ecuaciones Para Limites Mecánicos Scara
