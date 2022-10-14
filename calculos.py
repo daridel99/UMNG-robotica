@@ -26,12 +26,17 @@ def IK_Scara_P3R(P_X, P_Y, P_Z, phi): #Cinematica Inversa Scara (PR3)
 
     d_1=P_Z                                                     #Variable De Juntura d1
 
-    if (((theta_3ab or theta_3ar)>mt.pi/2) or ((theta_2ar or theta_2ab)>mt.pi/2) or ((theta_4ar or theta_4ab)>90)) or (((theta_3ab or theta_3ar)<-mt.pi/2) or ((theta_2ar or theta_2ab)<-mt.pi/2) or ((theta_4ar or theta_4ab)<-90)):
-        ind=1    
+    if (((theta_3ab)>mt.pi/2) or ((theta_2ab)>mt.pi/2) or ((theta_4ab)>90)) or (((theta_3ab)<-mt.pi/2) or ((theta_2ab)<-mt.pi/2) or ((theta_4ab)<-90)):
+        indab=1    
     else:
-        ind=0
+        indab=0
 
-    IK_FINAL=np.array([d_1, theta_2ab*180/mt.pi, theta_3ab*180/mt.pi, theta_4ab,  theta_2ar*180/mt.pi,theta_3ar*180/mt.pi, theta_4ar,ind],float)
+    if (((theta_3ar)>mt.pi/2) or ((theta_2ar)>mt.pi/2) or ((theta_4ar)>90)) or (((theta_3ar)<-mt.pi/2) or ((theta_2ar)<-mt.pi/2) or ((theta_4ar)<-90)):
+        indar=1    
+    else:
+        indar=0
+
+    IK_FINAL=np.array([d_1, theta_2ab*180/mt.pi, theta_3ab*180/mt.pi, theta_4ab,  theta_2ar*180/mt.pi,theta_3ar*180/mt.pi, theta_4ar,indar,indab],float)
     return IK_FINAL
 
 def IK_Antropo_3R(P_X, P_Y, P_Z): #Cinematica Inversa Antropomórfico (R3)

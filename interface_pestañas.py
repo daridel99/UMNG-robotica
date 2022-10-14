@@ -19,9 +19,17 @@ sleep(5) #5 Segundos Para Que Establezca La Comunicacion
 def But_IK_S(): #Función Para Calcular Cinematica Inversa Del Scara (PR3)
     M=Calculos.IK_Scara_P3R(float(PX_S.get()), float(PY_S.get()), float(PZ_S.get()), float(Phi_S.get()))
 
-    if M[7] == 1:
+    EnvioC_AB_S.place(relx=2.5/10+0.1, rely=0.85)
+    EnvioC_AR_S.place(relx=2.5/10+0.4, rely=0.85)
+    
+    if M[7] == 1 or M[8] == 1: #indar indab
+        if  M[8] == 1:#indab
+            EnvioC_AB_S.place_forget();
+        if  M[7] == 1:#indar
+            EnvioC_AR_S.place_forget();
         messagebox.showinfo(title="error",
         message="El valor de alguna variable de juntura supera los limites mecanicos. \n \t \t Varie el valor de ϕ  ")
+
 
     text1.delete("1.0","end")
     text1.insert( tk.END,str(M[0]))
@@ -291,32 +299,27 @@ def Envio_DK_R3():#Función Envio Text-Box DK Antropomórfico (R3)
 
 def show_values3():#Función Envio Text-Box DK Antropomórfico (R6)
     #Cuadro_Texto_1
-    board.write(b'Rb1,')
-    board.write(txt_edit_ang7.get(1.0, tk.END).encode())
+    board.write(b'Rb1,'+txt_edit_ang7.get(1.0, tk.END).encode())
 
     #Cuadro_Texto_2
-    board.write(b'Rbr1,')
-    board.write(txt_edit_ang8.get(1.0, tk.END).encode())
+    board.write(b'Rbr1,'+txt_edit_ang8.get(1.0, tk.END).encode()+b'\r\n')
 
     #Cuadro_Texto_3
-    board.write(b'Rbr2,')
-    board.write(txt_edit_ang9.get(1.0, tk.END).encode())
+    board.write(b'Rbr2,'+txt_edit_ang9.get(1.0, tk.END).encode()+b'\r\n')
 
     #Cuadro_Texto_4
-    board.write(b'Rb2,')
-    board.write(txt_edit_ang10.get(1.0, tk.END).encode())
+    board.write(b'Rb2,'+txt_edit_ang10.get(1.0, tk.END).encode()+b'\r\n')
 
     #Cuadro_Texto_5
-    board.write(b'Rab,')
-    board.write(txt_edit_ang11.get(1.0, tk.END).encode())
+    board.write(b'Rab,'+txt_edit_ang11.get(1.0, tk.END).encode()+b'\r\n')
 
     #Cuadro_Texto_6
-    board.write(b'Rm,')
-    board.write(txt_edit_ang12.get(1.0, tk.END).encode())
+    board.write(b'Rm,'+txt_edit_ang12.get(1.0, tk.END).encode()+b'\r\n')
 
     dato3(2)
 
 def Envio_CD_S(): #Envio Codo Abajo Scara
+    #insertar condicion
     board.write(b'Eb,'+"{:.3f}".format(float(text1.get(1.0, tk.END))).encode()+b'\r\n')
     sleep(0.02)
     board.write(b'Ebr,'+"{:.3f}".format(float(text2.get(1.0, tk.END))).encode()+b'\r\n')
@@ -326,6 +329,7 @@ def Envio_CD_S(): #Envio Codo Abajo Scara
     board.write(b'Em,'+"{:.3f}".format(float(text4.get(1.0, tk.END))).encode()+b'\r\n')
 
 def Envio_CU_S():#Envio Codo Arriba Scara
+    #insertar condicion
     board.write(b'Eb,'+"{:.3f}".format(float(text1Ar.get(1.0, tk.END))).encode()+b'\r\n')
     sleep(0.02)
     board.write(b'Ebr,'+"{:.3f}".format(float(text2Ar.get(1.0, tk.END))).encode()+b'\r\n')
