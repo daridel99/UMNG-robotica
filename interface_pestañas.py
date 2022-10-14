@@ -319,7 +319,6 @@ def show_values3():#Función Envio Text-Box DK Antropomórfico (R6)
     dato3(2)
 
 def Envio_CD_S(): #Envio Codo Abajo Scara
-<<<<<<< HEAD
     #insertar condicion
     board.write(b'Eb,'+"{:.3f}".format(float(text1.get(1.0, tk.END))).encode()+b'\r\n')
     sleep(0.02)
@@ -331,14 +330,6 @@ def Envio_CD_S(): #Envio Codo Abajo Scara
 
 def Envio_CU_S():#Envio Codo Arriba Scara
     #insertar condicion
-    board.write(b'Eb,'+"{:.3f}".format(float(text1Ar.get(1.0, tk.END))).encode()+b'\r\n')
-    sleep(0.02)
-    board.write(b'Ebr,'+"{:.3f}".format(float(text2Ar.get(1.0, tk.END))).encode()+b'\r\n')
-    sleep(0.02)
-    board.write(b'Eab,'+"{:.3f}".format(float(text3Ar.get(1.0, tk.END))).encode()+b'\r\n')
-    sleep(0.02)
-    board.write(b'Em,'+"{:.3f}".format(float(text4Ar.get(1.0, tk.END))).encode()+b'\r\n')
-=======
     board.write(b'Eb,'+"{:.1f}".format(float(text1.get(1.0, tk.END))).encode()+b'\r\n')
     sleep(0.2)
     board.write(b'Ebr,'+"{:.1f}".format(float(text2.get(1.0, tk.END))).encode()+b'\r\n')
@@ -355,7 +346,6 @@ def Envio_CU_S():#Envio Codo Arriba Scara
     board.write(b'Eab,'+"{:.1f}".format(float(text3Ar.get(1.0, tk.END))).encode()+b'\r\n')
     sleep(0.2)
     board.write(b'Em,'+"{:.1f}".format(float(text4Ar.get(1.0, tk.END))).encode()+b'\r\n')
->>>>>>> 936593d88433886f5f3f3e2d0ea7fea294163db4
 
 ##################### VENTANA PRINCIPAL #########################
 root = tkinter.Tk()
