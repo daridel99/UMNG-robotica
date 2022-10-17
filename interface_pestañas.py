@@ -53,6 +53,10 @@ def But_IK_R3(): #Función Para Calcular Cinematica Inversa Del Antropomórfico 
     M=Calculos.IK_Antropo_3R(float(txt_edit_xA.get(1.0, tk.END)), float(txt_edit_yA.get(1.0, tk.END)), float(txt_edit_zA.get(1.0, tk.END)))
    
     if np.size(M) == 1:
+        if  M[6] == 1:#indab
+            EnvioC_AB_A.place_forget();
+        if  M[7] == 1:#indar
+            EnvioC_AR_A.place_forget();
         messagebox.showinfo(title="error", message="Varie el valor de Phi")
 
     else:
@@ -317,26 +321,44 @@ def show_values3():#Función Envio Text-Box DK Antropomórfico (R6)
     board.write(b'Rm,'+txt_edit_ang12.get(1.0, tk.END).encode()+b'\r\n')
 
     dato3(2)
+'''        text1A.delete("1.0","end")
+        text1A.insert( tk.END,str(M[0]))
+        text1AAr.delete("1.0","end")
+        text1AAr.insert(tk.END, str(M[0]))
+        text2A.delete("1.0","end")
+        text2A.insert( tk.END,str(M[1]))
+        text2AAr.delete("1.0","end")
+        text2AAr.insert(tk.END, str(M[4]))
+        text3A.delete("1.0","end")
+        text3A.insert( tk.END,str(M[2]))
+        text3AAr.delete("1.0","end")
+        text3AAr.insert(tk.END, str(M[5]))
+        '''
+def Envio_CD_A(): #Envio Codo Abajo antro
+    #insertar condicion
+    board.write(b'Ab,'+"{:.1f}".format(float(text1A.get(1.0, tk.END))).encode()+b'\r\n')
+    sleep(0.02)
+    board.write(b'Abr,'+"{:.1f}".format(float(text2A.get(1.0, tk.END))).encode()+b'\r\n')
+    sleep(0.02)
+    board.write(b'Aab,'+"{:.1f}".format(float(text3A.get(1.0, tk.END))).encode()+b'\r\n')
 
 def Envio_CD_S(): #Envio Codo Abajo Scara
     #insertar condicion
-    board.write(b'Eb,'+"{:.3f}".format(float(text1.get(1.0, tk.END))).encode()+b'\r\n')
-    sleep(0.02)
-    board.write(b'Ebr,'+"{:.3f}".format(float(text2.get(1.0, tk.END))).encode()+b'\r\n')
-    sleep(0.02)
-    board.write(b'Eab,'+"{:.3f}".format(float(text3.get(1.0, tk.END))).encode()+b'\r\n')
-    sleep(0.02)
-    board.write(b'Em,'+"{:.3f}".format(float(text4.get(1.0, tk.END))).encode()+b'\r\n')
-
-def Envio_CU_S():#Envio Codo Arriba Scara
-    #insertar condicion
     board.write(b'Eb,'+"{:.1f}".format(float(text1.get(1.0, tk.END))).encode()+b'\r\n')
-    sleep(0.2)
+    sleep(0.02)
     board.write(b'Ebr,'+"{:.1f}".format(float(text2.get(1.0, tk.END))).encode()+b'\r\n')
-    sleep(0.2)
+    sleep(0.02)
     board.write(b'Eab,'+"{:.1f}".format(float(text3.get(1.0, tk.END))).encode()+b'\r\n')
-    sleep(0.2)
+    sleep(0.02)
     board.write(b'Em,'+"{:.1f}".format(float(text4.get(1.0, tk.END))).encode()+b'\r\n')
+
+def Envio_CU_A():#Envio Codo Arriba antro
+    #insertar condicion
+    board.write(b'Ab,'+"{:.1f}".format(float(text1AAr.get(1.0, tk.END))).encode()+b'\r\n')
+    sleep(0.2)
+    board.write(b'Abr,'+"{:.1f}".format(float(text2AAr.get(1.0, tk.END))).encode()+b'\r\n')
+    sleep(0.2)
+    board.write(b'Aab,'+"{:.1f}".format(float(text3AAr.get(1.0, tk.END))).encode()+b'\r\n')
 
 def Envio_CU_S():#Envio Codo Arriba Scara
     board.write(b'Eb,'+"{:.1f}".format(float(text1Ar.get(1.0, tk.END))).encode()+b'\r\n')
@@ -798,6 +820,14 @@ txt_edit_zA.insert(tk.END, "0")
 #Boton Calcular Cinematica Inversa Antropomórfico (R3)      
 Calcular2=Button(FrIKR3, text='Calcular', activebackground='yellow',command=But_IK_R3)
 Calcular2.place(relx=1/10-0.01, rely=7/10+0.01, relheight=1/6-0.05)
+
+#Boton Envio Codo Abajo
+EnvioC_AB_A=Button(FrIKR3, text='Enviar', activebackground='yellow', command=Envio_CD_A)
+EnvioC_AB_A.place(relx=2.5/10+0.1, rely=0.85)
+
+#Boton Envio Codo Arriba
+EnvioC_AR_A=Button(FrIKR3, text='Enviar', activebackground='yellow', command=Envio_CU_A)#, command=Envio_CU_A
+EnvioC_AR_A.place(relx=2.5/10+0.4, rely=0.85)
 
 #Frame Variables de Juntura Codo Abajo (Contenedor)
 FrR3CD=LabelFrame(FrIKR3,relief="raised",text='Codo Abajo',labelanchor='n')

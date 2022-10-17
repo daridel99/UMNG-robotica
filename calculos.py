@@ -72,8 +72,17 @@ def IK_Antropo_3R(P_X, P_Y, P_Z): #Cinematica Inversa Antropomórfico (R3)
     beta_ar=mt.atan2(Co2,Ca2)#Calculo Beta     
     theta_2ar=(alpha+beta_ar)                                #Variable De Juntura T2
 
+    if (((theta_3ab)>mt.pi) or ((theta_2ab)>mt.pi) or ((theta_1)>mt.pi)) or (((theta_3ab)<-mt.pi) or ((theta_2ab)<-mt.pi) or ((theta_1)<-mt.pi)):
+        indab=1    
+    else:
+        indab=0
 
-    IK_FINAL=np.array([theta_1*180/mt.pi, theta_2ab*180/mt.pi , theta_3ab*180/mt.pi, theta_1*180/mt.pi, theta_2ar*180/mt.pi , theta_3ar*180/mt.pi],float)
+    if (((theta_3ar)>mt.pi/2) or ((theta_2ar)>mt.pi/2) or ((theta_1)>mt.pi)) or (((theta_3ar)<-mt.pi) or ((theta_2ar)<-mt.pi) or ((theta_1)<-mt.pi)):
+        indar=1    
+    else:
+        indar=0
+    
+    IK_FINAL=np.array([theta_1*180/mt.pi, theta_2ab*180/mt.pi , theta_3ab*180/mt.pi, theta_1*180/mt.pi, theta_2ar*180/mt.pi , theta_3ar*180/mt.pi],indar,indab,float)    
     return IK_FINAL
 
 def limites (X,ID): #Ecuaciones Para Limites Mecánicos Scara
