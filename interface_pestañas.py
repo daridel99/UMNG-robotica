@@ -150,8 +150,14 @@ def contar():
 
 #Funciones De Sliders Scara (PR3)
 def servo1(posiciones1):
-    Thread(target=contar).start()
-    board.write(b'Eb,'+posiciones1.encode()+b'\r\n')
+    if board.isOpen():
+        #pbr_tarea["background"]='green'
+        pbr_tarea['value'] = 0
+        Thread(target=contar).start()
+        board.write(b'Eb,'+posiciones1.encode()+b'\r\n')
+    else:
+        pbr_tarea['value'] = 100
+        pbr_tarea.configure(style='red.Horizontal.TProgressbar')
     dato2(1)
     #
 
@@ -271,8 +277,9 @@ circunferencia.
 """)
 
 def close(): #Cerrar Puerto Serial
-    board.write(b'bye\r\n')
+    #board.write(b'bye\r\n')
     board.close()
+    root.destroy()
 
 def Envio_DK_S():#Función Envio Text-Box DK Scara (P3R)
     #Cuadro_Texto_1
@@ -704,7 +711,11 @@ EnvioC_AB_S.place(relx=2.5/10+0.1, rely=0.85)
 EnvioC_AR_S=Button(FrIKS, text='Enviar', activebackground='yellow', command=Envio_CU_S)
 EnvioC_AR_S.place(relx=2.5/10+0.4, rely=0.85)
 
-pbr_tarea = ttk.Progressbar(FrIKS, length=150, style='black.Horizontal.TProgressbar', maximum=100)
+s = ttk.Style()
+s.theme_use('alt')
+s.configure("red.Horizontal.TProgressbar", background='red')
+s.configure("green.Horizontal.TProgressbar", background='green')
+pbr_tarea = ttk.Progressbar(FrIKS, length=150, style='green.Horizontal.TProgressbar', maximum=100)
 pbr_tarea['value'] = 0
 pbr_tarea.place(relx=0.85, rely=0.25)
 #Boton Información IK
