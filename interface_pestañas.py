@@ -16,7 +16,7 @@ from threading import Thread
 board =serial.Serial(port='COM1', baudrate=19200)
 sleep(5) #5 Segundos Para Que Establezca La Comunicacion
 
-def But_IK_S(): #Función Para Calcular Cinematica Inversa Del Scara (PR3)
+def But_IK_S(): #Función Para Calcular Cinematica Inversa Del antro (PR3)
     M=Calculos.IK_Scara_P3R(float(PX_S.get()), float(PY_S.get()), float(PZ_S.get()), float(Phi_S.get()))
 
     EnvioC_AB_S.place(relx=2.5/10+0.1, rely=0.85)
@@ -50,33 +50,35 @@ def But_IK_S(): #Función Para Calcular Cinematica Inversa Del Scara (PR3)
     Fnc.llenado(Calculos.M1(4, M[0], M[1], M[2], M[3]),1,5)
 
 def But_IK_R3(): #Función Para Calcular Cinematica Inversa Del Antropomórfico (R3)
-    M=Calculos.IK_Antropo_3R(float(txt_edit_xA.get(1.0, tk.END)), float(txt_edit_yA.get(1.0, tk.END)), float(txt_edit_zA.get(1.0, tk.END)))
+
+    M=Calculos.IK_Antropo_3R(float(txt_edit_xA.get("1.0", END)), float(txt_edit_yA.get("1.0", END)),float( txt_edit_zA.get("1.0",END)))
    
-    if np.size(M) == 1:
+    if M[7] == 1 or M[6] == 1: #indar indab
         if  M[6] == 1:#indab
             EnvioC_AB_A.place_forget();
         if  M[7] == 1:#indar
             EnvioC_AR_A.place_forget();
-        messagebox.showinfo(title="error", message="Varie el valor de Phi")
+        messagebox.showinfo(title="error", message="Varie los valores introducidos")
 
-    else:
-        text1A.delete("1.0","end")
-        text1A.insert( tk.END,str(M[0]))
-        text1AAr.delete("1.0","end")
-        text1AAr.insert(tk.END, str(M[0]))
-        text2A.delete("1.0","end")
-        text2A.insert( tk.END,str(M[1]))
-        text2AAr.delete("1.0","end")
-        text2AAr.insert(tk.END, str(M[4]))
-        text3A.delete("1.0","end")
-        text3A.insert( tk.END,str(M[2]))
-        text3AAr.delete("1.0","end")
-        text3AAr.insert(tk.END, str(M[5]))
-        '''text4.delete("1.0","end")
-        text4.insert( tk.END,str(M[3]))
-        text4Ar.delete("1.0","end")
-        text4Ar.insert(tk.END, str(M[6]))'''
-        Fnc.llenado(Calculos.M2(3, M[0], M[1], M[2]),6,9)
+    text1A.delete("1.0","end")
+    text1A.insert( tk.END,str(M[0]))
+    text1AAr.delete("1.0","end")
+    text1AAr.insert(tk.END, str(M[0]))
+    text2A.delete("1.0","end")
+    text2A.insert( tk.END,str(M[1]))
+    text2AAr.delete("1.0","end")
+    text2AAr.insert(tk.END, str(M[4]))
+    text3A.delete("1.0","end")
+    text3A.insert( tk.END,str(M[2]))
+    text3AAr.delete("1.0","end")
+    text3AAr.insert(tk.END, str(M[5]))
+    '''
+    text4.delete("1.0","end")
+    text4.insert( tk.END,str(M[3]))
+    text4Ar.delete("1.0","end")
+    text4Ar.insert(tk.END, str(M[6]))
+    '''
+    Fnc.llenado(Calculos.M2(3, M[0], M[1], M[2]),6,9)
 
 def Button_CalcularJACO(): #Función Para Calcular Jacobianos 
     J_A=Calculos.JG_A(3,Aangulo1.get(),Aangulo2.get(),Aangulo3.get())

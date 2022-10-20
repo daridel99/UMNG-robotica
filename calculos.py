@@ -48,7 +48,7 @@ def IK_Antropo_3R(P_X, P_Y, P_Z): #Cinematica Inversa Antropomórfico (R3)
 
     r=np.sqrt(float(P_X)**2+float(P_Y)**2)#Hipotenusa del triangulo generado desde origen al punto W en el plano XY
     Ca=r-a_1#Cateto adyacente, considerando la distancia a1 entre juntura 1-2
-    Co=P_Z-d_1#Cateto opuesto, considerando la distancia d1 entre juntura 1-2
+    Co=float(P_Z)-d_1#Cateto opuesto, considerando la distancia d1 entre juntura 1-2
     h=np.sqrt(float(Ca)**2+float(Co)**2)
 
     theta_3ab=mt.acos((h**2-a_2**2-a_3**2)/(2*a_2*a_3)) #Despejando del Teorema del coseno
@@ -82,7 +82,8 @@ def IK_Antropo_3R(P_X, P_Y, P_Z): #Cinematica Inversa Antropomórfico (R3)
     else:
         indar=0
     
-    IK_FINAL=np.array([theta_1*180/mt.pi, theta_2ab*180/mt.pi , theta_3ab*180/mt.pi, theta_1*180/mt.pi, theta_2ar*180/mt.pi , theta_3ar*180/mt.pi],indar,indab,float)    
+    IK_FINAL=np.array([theta_1*180/mt.pi, theta_2ab*180/mt.pi , theta_3ab*180/mt.pi, theta_1*180/mt.pi, theta_2ar*180/mt.pi , theta_3ar*180/mt.pi,indar,indab],float)    
+    print(str(IK_FINAL))
     return IK_FINAL
 
 def limites (X,ID): #Ecuaciones Para Limites Mecánicos Scara
