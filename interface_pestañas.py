@@ -51,8 +51,12 @@ def But_IK_S(): #Función Para Calcular Cinematica Inversa Del antro (PR3)
 
 def But_IK_R3(): #Función Para Calcular Cinematica Inversa Del Antropomórfico (R3)
 
-    M=Calculos.IK_Antropo_3R(float(txt_edit_xA.get("1.0", END)), float(txt_edit_yA.get("1.0", END)),float( txt_edit_zA.get("1.0",END)))
-   
+    M=Calculos.IK_Antropo_3R(float(txt_edit_xA.get()), float(txt_edit_yA.get()),float( txt_edit_zA.get()))
+    #Boton Envio Codo Abajo
+    EnvioC_AB_A.place(relx=2.5/10+0.1, rely=0.85)
+    #Boton Envio Codo Arriba
+    EnvioC_AR_A.place(relx=2.5/10+0.4, rely=0.85)
+
     if M[7] == 1 or M[6] == 1: #indar indab
         if  M[6] == 1:#indab
             EnvioC_AB_A.place_forget();
@@ -816,19 +820,52 @@ FrIKR3=LabelFrame(FrR3,text='IK', labelanchor='n')
 FrIKR3.place(rely=0.65, relwidth=1, relheight=0.35)
 
 #Text_Box Px
-txt_edit_xA = tk.Text(FrIKR3, width=8, height=1)
-txt_edit_xA.place(relx=1/10,rely=1/10+0.01)
-txt_edit_xA.insert(tk.END, "0")
+txt_edit_xA = Scale(FrIKR3,
+                #command = servo1,
+                from_=-90,
+                to=90,
+                resolution=0.5,
+                orient = HORIZONTAL,
+                length=180,
+                troughcolor='gray',
+                width = 20,
+                cursor='dot',
+                #label = 'Desplazamiento Base',
+                )#tk.Text(FrIKR3, width=8, height=1)
+txt_edit_xA.place(relx=1/10,rely=1/10-0.1)
+#txt_edit_xA.insert(tk.END, "0")
         
 #Text_Box Py
-txt_edit_yA = tk.Text(FrIKR3, width = 8, height=1)
-txt_edit_yA.place(relx=1/10, rely=3/10+0.01)
-txt_edit_yA.insert(tk.END, "0")
+txt_edit_yA = Scale(FrIKR3,
+                #command = servo1,
+                from_=-90,
+                to=90,
+                resolution=0.5,
+                orient = HORIZONTAL,
+                length=180,
+                troughcolor='gray',
+                width = 20,
+                cursor='dot',
+                #label = 'Desplazamiento Base',
+                )#tk.Text(FrIKR3, width=8, height=1)#tk.Text(FrIKR3, width = 8, height=1)
+txt_edit_yA.place(relx=1/10, rely=3/10-0.1)
+#txt_edit_yA.insert(tk.END, "0")
 
 #Text_Box Pz
-txt_edit_zA = tk.Text(FrIKR3, width = 8, height=1)
-txt_edit_zA.place(relx=1/10, rely=5/10+0.01)
-txt_edit_zA.insert(tk.END, "0")
+txt_edit_zA = Scale(FrIKR3,
+                #command = servo1,
+                from_=-90,
+                to=90,
+                resolution=0.5,
+                orient = HORIZONTAL,
+                length=180,
+                troughcolor='gray',
+                width = 20,
+                cursor='dot',
+                #label = 'Desplazamiento Base',
+                )#tk.Text(FrIKR3, width=8, height=1)#tk.Text(FrIKR3, width = 8, height=1)
+txt_edit_zA.place(relx=1/10, rely=5/10-0.1)
+#txt_edit_zA.insert(tk.END, "0")
 
 #Boton Calcular Cinematica Inversa Antropomórfico (R3)      
 Calcular2=Button(FrIKR3, text='Calcular', activebackground='yellow',command=But_IK_R3)
