@@ -334,7 +334,7 @@ def show_values3():#Función Envio Text-Box DK Antropomórfico (R6)
     board.write(b'Rm,'+txt_edit_ang12.get(1.0, tk.END).encode()+b'\r\n')
 
     dato3(2)
-'''        text1A.delete("1.0","end")
+'''     text1A.delete("1.0","end")
         text1A.insert( tk.END,str(M[0]))
         text1AAr.delete("1.0","end")
         text1AAr.insert(tk.END, str(M[0]))

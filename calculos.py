@@ -1,5 +1,153 @@
 import math as mt
 import numpy as np
+from sympy import  *
+
+#Encontrar las constantes de la funcion cuadratica
+def pos_vel_as(t1,t2,WF,W,V0,VF):
+
+    a3=symbols('a3')  
+    #print(a3)
+    a2=symbols('a2') 
+    #print(a2)
+    a1=symbols('a1') 
+    #print(a1)
+    a0=symbols('a0') 
+    #print(a0) 
+    #t=symbols('t') 
+    t = t1
+
+    equa1 = Eq(a3*t**3+a2*t**2+a1*t+a0,W)
+    #print(equa1)
+    equa2 = Eq(3*a3*t**2 + 2*a2*t + a1,V0)
+    #print(equa2)
+    #equa3 = Eq(6*a3*t + a2)
+    #print(equa3)
+        
+    aux0=solve([equa1,equa2],a0,a1)
+    #print(aux0.keys())
+    #print(aux0.values())
+    #print(aux0)
+    cont=0
+    a=[0,0,0,0]
+    for data in aux0.values():
+        #print(data)
+        a[cont]=data
+        cont+=1;
+    #print(a)
+    #a0=aux0(0)
+    #a1=aux0(1)
+
+    '''
+    a0 = solve(eval(equa1)==W,a0)
+    a0 = eval(a0)
+    a1 = solve(eval(equa2)==V0,a1)
+    a1=eval(a1)
+    '''
+
+    t = t2
+    aux1 = a3*t**3 + a2*t**2 + a[1]*t + a[0] - WF
+    #aux1 = eval(equa1) - WF
+    aux2 = 3*a3*t**2 + 2*a2*t + a[1] - VF
+    #aux2 = eval(equa2) - VF
+        
+    #[a2 a3] = equationsToMatrix([aux1 aux2],[a2 a3])
+ 
+     
+    aux3 = solve([aux1,aux2],a2,a3)
+    #print(aux3)
+    for data in aux3.values():
+        #print(data)
+        a[cont]=data
+        cont+=1;
+    #print(a)
+    #a2=aux3(0)
+    #a3=aux3(1)
+
+    return np.array(a,float)
+
+print(pos_vel_as(0,5,16,1,0,0))
+
+#Funcion cinematica inverza 
+def CI_MPRR(x1,x2,x3,T):
+
+#Variables simbolicas
+    '''    
+    P_X 
+    P_Y 
+    P_Z 
+    a_1 
+    a_2 
+    a_3 
+    a_4 
+    d_1 
+    '''
+    #Parametros conocidos
+    '''     
+    theta_1=0; #Angulos θ
+    alpha_1=0;
+    alpha_2=0;
+    alpha_3=0;
+    alpha_4=0; #Angulos α
+    d_2=0;
+    d_3=0;
+    d_4=0; #Distancias en z
+    ''' 
+    #Distacias en x
+    a_1=47.3;
+    a_2=149.1;
+    a_3=148.8;
+    a_4=30;
+   
+
+    #Parametros que necesita-ingrezados
+    P_X=x1; #Punto en X
+    P_Y=x2; #Punto en Y
+    P_Z=x3; #Punto en Z
+    
+    phi=34; #Angulo de orientación
+    W=np.array([[P_X],[P_Y],[P_Z]],float) #Vector de Posición ?
+
+    if T==1:
+        # Primera reduccion del manipulador
+        
+        K = np.sqrt((P_X-a_2)**2 + P_Y**2)
+        gama = mt.asin(P_Y/K)
+        
+        # Triangulo interior
+        
+        B1 = mt.acos((a_4**2-K**2-a_3**2)/(-2*K*a_3))
+        theta_1 = gama - B1
+        
+        B2 = mt.acos((K**2-a_3**2-a_4**2)/(-2*a_4*a_3))
+        theta_2 = 180-B2
+        
+        L1=P_Z
+    
+    
+    if T==2:
+        # Primera reduccion del manipulador
+        
+        K = np.sqrt((P_X-a_2)**2 + P_Y**2)
+        gama = mt.asin(P_Y/K)
+        
+        # Triangulo interior
+        
+        B1 = mt.acos((a_4**2-K**2-a_3**2)/(-2*K*a_3))
+        theta_1 = gama + B1
+        
+        B2 = mt.acos((K**2-a_3**2-a_4**2)/(-2*a_4*a_3))
+        theta_2 = -(180-B2)
+        
+        L1=P_Z
+        
+    art=np.array([theta_1,theta_2,L1],float)
+    #m1=art(1)
+    #m2=art(2)
+    #m3=art(3)
+
+    return art
+
+print(CI_MPRR(16,13,12,1))
 
 def IK_Scara_P3R(P_X, P_Y, P_Z, phi): #Cinematica Inversa Scara (PR3)
     #Distacias en x
@@ -52,7 +200,7 @@ def IK_Antropo_3R(P_X, P_Y, P_Z): #Cinematica Inversa Antropomórfico (R3)
     h=np.sqrt(float(Ca)**2+float(Co)**2)
 
     theta_3ab=mt.acos((h**2-a_2**2-a_3**2)/(2*a_2*a_3)) #Despejando del Teorema del coseno
-    #sent3=np.sqrt(1-cost3**2)#Propiedad trigonometrica sen^2+cos^2=1
+    #sent3=np.sqrt(1-cost3**2)#Propiedad trigonometrica sen**2+cos**2=1
     
     #Calcularlo por medio de tangente (para todos los posibles valores)
     #theta_3ab=mt.atan2(sent3,cost3) #Variable De Juntura T3
