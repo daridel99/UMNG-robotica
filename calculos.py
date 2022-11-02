@@ -6,36 +6,26 @@ from sympy import  *
 def pos_vel_as(t1,t2,WF,W,V0,VF):
 
     a3=symbols('a3')  
-    #print(a3)
     a2=symbols('a2') 
-    #print(a2)
     a1=symbols('a1') 
-    #print(a1)
     a0=symbols('a0') 
-    #print(a0) 
-    #t=symbols('t') 
+
     t = t1
 
     equa1 = Eq(a3*t**3+a2*t**2+a1*t+a0,W)
-    #print(equa1)
     equa2 = Eq(3*a3*t**2 + 2*a2*t + a1,V0)
-    #print(equa2)
-    #equa3 = Eq(6*a3*t + a2)
-    #print(equa3)
+
         
     aux0=solve([equa1,equa2],a0,a1)
-    #print(aux0.keys())
-    #print(aux0.values())
-    #print(aux0)
+    print(aux0)
+
     cont=0
-    a=[0,0,0,0]
+    a=np.array([0,0,0,0],float)
+
     for data in aux0.values():
         #print(data)
-        a[cont]=data
+        a[cont]=float(data)
         cont+=1;
-    #print(a)
-    #a0=aux0(0)
-    #a1=aux0(1)
 
     '''
     a0 = solve(eval(equa1)==W,a0)
@@ -54,18 +44,18 @@ def pos_vel_as(t1,t2,WF,W,V0,VF):
  
      
     aux3 = solve([aux1,aux2],a2,a3)
-    #print(aux3)
+    print(aux3.values())
     for data in aux3.values():
-        #print(data)
-        a[cont]=data
+        print(data)
+        a[cont]=float(data)
         cont+=1;
-    #print(a)
+    sal=np.array([a[0],a[1],a[2],a[3]],float)
     #a2=aux3(0)
     #a3=aux3(1)
 
-    return np.array(a,float)
+    return sal
 
-print(pos_vel_as(0,5,16,1,0,0))
+#print(pos_vel_as(0,5,16,1,0,10))
 
 #Funcion cinematica inverza 
 def CI_MPRR(x1,x2,x3,T):
@@ -147,7 +137,7 @@ def CI_MPRR(x1,x2,x3,T):
 
     return art
 
-print(CI_MPRR(16,13,12,1))
+#print(CI_MPRR(16,13,12,1))
 
 def IK_Scara_P3R(P_X, P_Y, P_Z, phi): #Cinematica Inversa Scara (PR3)
     #Distacias en x

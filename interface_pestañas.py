@@ -16,6 +16,8 @@ from threading import Thread
 board =serial.Serial(port='COM1', baudrate=19200)
 sleep(5) #5 Segundos Para Que Establezca La Comunicacion
 
+def data_3D():
+    return 1,1,1,6,7,9,7,2 #xi yi zi xf yf zf tf codo
 def But_IK_S(): #Función Para Calcular Cinematica Inversa Del antro (PR3)
     M=Calculos.IK_Scara_P3R(float(PX_S.get()), float(PY_S.get()), float(PZ_S.get()), float(Phi_S.get()))
 
@@ -401,6 +403,7 @@ p1 = ttk.Frame(nb)#Pestaña Robot Scara (P3R)
 p2 = ttk.Frame(nb)#Pestaña Robot Antropomorfico Bioloid (3R)
 p3 = ttk.Frame(nb)#Pestaña Robot Antropomorfico Kinova (6R)     
 p4 = ttk.Frame(nb)#Pestaña Jacobiano
+p5 = ttk.Frame(nb)#Planeación de trayectorias
 
 ######hilo
 #hilo1 = threading.Thread(target=contar)
@@ -1138,5 +1141,6 @@ nb.add(p1,text='Robot Scara (P3R)')
 nb.add(p2,text='Robot Antropomorfico (3R)')
 nb.add(p4,text='Antropomorfico (6R)')
 nb.add(p3,text='Jacobiano')
+nb.add(p5,text='Planeación de trayectorias')
 
 root.mainloop()

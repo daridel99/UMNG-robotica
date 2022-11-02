@@ -58,3 +58,8 @@ def llenado_JACO (JA,JS,JR): #Llenado Matrices JACO
             for j in range(0,int(12/n)):           
                 for k in range(0,3):                
                     globals()["jaco" + str(n-1) +"_" + str(i+k) + str(j)].set(J[i-2][j][k]) 
+
+def prueba():
+    exec(open("sera.py").read())
+
+#prueba()
