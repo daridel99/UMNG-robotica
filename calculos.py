@@ -3,57 +3,43 @@ import numpy as np
 from sympy import  *
 
 #Encontrar las constantes de la funcion cuadratica
-def pos_vel_as(t1,t2,WF,W,V0,VF):
-
-    a3=symbols('a3')  
-    a2=symbols('a2') 
-    a1=symbols('a1') 
-    a0=symbols('a0') 
-
-    t = t1
-
-    equa1 = Eq(a3*t**3+a2*t**2+a1*t+a0,W)
-    equa2 = Eq(3*a3*t**2 + 2*a2*t + a1,V0)
-
-        
-    aux0=solve([equa1,equa2],a0,a1)
-    print(aux0)
-
-    cont=0
+def Perf_Cuadratica(tf,Qf,Qi):
+    #Parte de reposo y termina en reposo: ti=0
+    Vi=0
+    Vf=0
+    
     a=np.array([0,0,0,0],float)
+    a3=symbols('a3')  
+    a2=symbols('a2')
 
-    for data in aux0.values():
-        #print(data)
-        a[cont]=float(data)
-        cont+=1;
-
+    '''Con las siguientes 3 ecuaciones
+    Q =      a3*t^3 + a2*t^2 + a1*t + a0   (Posición de Juntura)
+    Q.= V =  3*a3*t^2 + 2*a2*t + a1        (Velocidad de Juntura)
+    Q..= α = 6*a3*t + a2                   (Aceleración de Juntura)
+    Calcular los valores de las "a"
     '''
-    a0 = solve(eval(equa1)==W,a0)
-    a0 = eval(a0)
-    a1 = solve(eval(equa2)==V0,a1)
-    a1=eval(a1)
-    '''
+    #Para t=ti: Se pueden calcular a0 y a1 de la ecuación "Q" y "Q."
+    a0 = Qi
+    a1 = Vi
+    a[0]=a0
+    a[1]=a1
+    cont=2
 
-    t = t2
-    aux1 = a3*t**3 + a2*t**2 + a[1]*t + a[0] - WF
-    #aux1 = eval(equa1) - WF
-    aux2 = 3*a3*t**2 + 2*a2*t + a[1] - VF
-    #aux2 = eval(equa2) - VF
-        
-    #[a2 a3] = equationsToMatrix([aux1 aux2],[a2 a3])
- 
-     
-    aux3 = solve([aux1,aux2],a2,a3)
-    print(aux3.values())
-    for data in aux3.values():
-        print(data)
+    #Para t=tf: Se pueden calcular a2 y a3 de la ecuación "Q" y "Q."
+    t = tf
+
+    #Se utilizan variables auxiliares para realizar calculos simbolicos
+    aux1 = a3*t**3 + a2*t**2 + a[1]*t + a[0] - Qf 
+    aux2 = 3*a3*t**2 + 2*a2*t + a[1] - Vf   
+
+    aux3 = solve([aux1,aux2],a2,a3) #Se solucionan en terminos de a2 y a3
+
+    for data in aux3.values():#Ciclo para extraer los valores de a2 y a3 del "Diccionario aux3"
         a[cont]=float(data)
-        cont+=1;
-    sal=np.array([a[0],a[1],a[2],a[3]],float)
-    #a2=aux3(0)
-    #a3=aux3(1)
+        cont+=1
 
-    return sal
+    Const_as=np.array([a[0],a[1],a[2],a[3]],float)
+    return Const_as
 
 #print(pos_vel_as(0,5,16,1,0,10))
 
@@ -139,42 +125,36 @@ def CI_MPRR(x1,x2,x3,T):
 
 #print(CI_MPRR(16,13,12,1))
 
-def IK_Scara_P3R(P_X, P_Y, P_Z, phi): #Cinematica Inversa Scara (PR3)
+def IK_Scara_P3R(P_X, P_Y, P_Z): #Cinematica Inversa Scara (PR3)
     #Distacias en x
     a_1=float(47.3)
     a_2=float(149.1)
     a_3=float(148.8)
-    a_4=float(30)
 
-    EFx=mt.cos(phi*mt.pi/180)*a_4
-    EFy=mt.sin(phi*mt.pi/180)*a_4 #Distancia en "y" entre punto W y Join4
-    Ca=P_X-EFx-a_1    #Cateto Adyacente del triangulo formado en X-Y'
-    Co=P_Y-EFy        #Cateto Opuesto del triangulo formado en X-Y'
+    Ca=P_X-a_1    #Cateto Adyacente del triangulo formado en X-Y'
+    Co=P_Y       #Cateto Opuesto del triangulo formado en X-Y'
     c=np.sqrt(float(Ca)**2+float(Co)**2) 
     alpha=mt.atan2(Co,Ca)
     beta=mt.acos((a_2**(2)+c**(2)-a_3**(2))/(2*a_2*c))
     #Codo abajo
     theta_3ab=mt.acos((c**(2)-a_2**(2)-a_3**(2))/(2*a_2*a_3))   #Variable De Juntura T3
     theta_2ab=(alpha-beta)                                      #Variable De Juntura T2
-    theta_4ab=(phi-(theta_2ab*180/mt.pi)-(theta_3ab*180/mt.pi)) #Variable De Juntura T4
     #Codo ariba
     theta_3ar=-mt.acos((c**(2)-a_2**(2)-a_3**(2))/(2*a_2*a_3))  #Variable De Juntura T3
     theta_2ar=(alpha+beta)                                      #Variable De Juntura T2
-    theta_4ar=(phi-(theta_2ar*180/mt.pi)-(theta_3ar*180/mt.pi)) #Variable De Juntura T4
-
     d_1=P_Z                                                     #Variable De Juntura d1
 
-    if (((theta_3ab)>mt.pi/2) or ((theta_2ab)>mt.pi/2) or ((theta_4ab)>90)) or (((theta_3ab)<-mt.pi/2) or ((theta_2ab)<-mt.pi/2) or ((theta_4ab)<-90)):
+    if (((theta_3ab)>mt.pi/2) or ((theta_2ab)>mt.pi/2)) or (((theta_3ab)<-mt.pi/2) or ((theta_2ab)<-mt.pi/2)):
         indab=1    
     else:
         indab=0
 
-    if (((theta_3ar)>mt.pi/2) or ((theta_2ar)>mt.pi/2) or ((theta_4ar)>90)) or (((theta_3ar)<-mt.pi/2) or ((theta_2ar)<-mt.pi/2) or ((theta_4ar)<-90)):
+    if (((theta_3ar)>mt.pi/2) or ((theta_2ar)>mt.pi/2)) or (((theta_3ar)<-mt.pi/2) or ((theta_2ar)<-mt.pi/2)):
         indar=1    
     else:
         indar=0
 
-    IK_FINAL=np.array([d_1, theta_2ab*180/mt.pi, theta_3ab*180/mt.pi, theta_4ab,  theta_2ar*180/mt.pi,theta_3ar*180/mt.pi, theta_4ar,indar,indab],float)
+    IK_FINAL=np.array([d_1, theta_2ab*180/mt.pi, theta_3ab*180/mt.pi,  theta_2ar*180/mt.pi, theta_3ar*180/mt.pi, indar,indab],float)
     return IK_FINAL
 
 def IK_Antropo_3R(P_X, P_Y, P_Z): #Cinematica Inversa Antropomórfico (R3)
@@ -221,7 +201,6 @@ def IK_Antropo_3R(P_X, P_Y, P_Z): #Cinematica Inversa Antropomórfico (R3)
         indar=0
     
     IK_FINAL=np.array([theta_1*180/mt.pi, theta_2ab*180/mt.pi , theta_3ab*180/mt.pi, theta_1*180/mt.pi, theta_2ar*180/mt.pi , theta_3ar*180/mt.pi,indar,indab],float)    
-    print(str(IK_FINAL))
     return IK_FINAL
 
 def limites (X,ID): #Ecuaciones Para Limites Mecánicos Scara
@@ -299,12 +278,12 @@ def calculo(matrices_DH,n): #Calculo de matriz Cinematica Directa
         MatrizFinal=np.round(MatrizFinal,decimals=5)    
     return MatrizFinal
 
-def M1(n,d1,t2,t3,t4): #Definicion Parametros Scara (PR3)
+def M1(n,d1,t2,t3): #Definicion Parametros Scara (PR3)
     matrices=[]
-    z=[0, t2, t3,t4]
-    d=[d1,0,0,0]
-    x=[0,0,0,0] 
-    a=[47.3,149.1,148.8,30]     
+    z=[0, t2, t3]
+    d=[d1,0,0]
+    x=[0,0,0] 
+    a=[47.3,149.1,148.8]     
     for i in range (0,n):
         matrices.append(matrices_T((z[i]*mt.pi/180),d[i],x[i],a[i]))
     final=calculo(matrices,n)

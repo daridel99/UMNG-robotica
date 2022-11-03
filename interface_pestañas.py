@@ -18,19 +18,19 @@ sleep(5) #5 Segundos Para Que Establezca La Comunicacion
 
 def data_3D():
     return 1,1,1,6,7,9,7,2 #xi yi zi xf yf zf tf codo
-def But_IK_S(): #Función Para Calcular Cinematica Inversa Del antro (PR3)
-    M=Calculos.IK_Scara_P3R(float(PX_S.get()), float(PY_S.get()), float(PZ_S.get()), float(Phi_S.get()))
+def But_IK_S(): #Función Para Calcular Cinematica Inversa Del Scara
+    M=Calculos.IK_Scara_P3R(float(PX_S.get()), float(PY_S.get()), float(PZ_S.get()))
 
     EnvioC_AB_S.place(relx=2.5/10+0.1, rely=0.85)
     EnvioC_AR_S.place(relx=2.5/10+0.4, rely=0.85)
     
-    if M[7] == 1 or M[8] == 1: #indar indab
-        if  M[8] == 1:#indab
-            EnvioC_AB_S.place_forget();
-        if  M[7] == 1:#indar
-            EnvioC_AR_S.place_forget();
+    if M[5] == 1 or M[6] == 1: #indar indab
+        if  M[6] == 1:#indab
+            EnvioC_AB_S.place_forget()
+        if  M[5] == 1:#indar
+            EnvioC_AR_S.place_forget()
         messagebox.showinfo(title="error",
-        message="El valor de alguna variable de juntura supera los limites mecanicos. \n \t \t Varie el valor de ϕ  ")
+        message="Una o ambas soluciones supera los limites mecanicos. \n \t \t Varie el valor del punto")
 
 
     text1.delete("1.0","end")
@@ -40,16 +40,12 @@ def But_IK_S(): #Función Para Calcular Cinematica Inversa Del antro (PR3)
     text2.delete("1.0","end")
     text2.insert( tk.END,str(M[1]))
     text2Ar.delete("1.0","end")
-    text2Ar.insert(tk.END, str(M[4]))
+    text2Ar.insert(tk.END, str(M[3]))
     text3.delete("1.0","end")
     text3.insert( tk.END,str(M[2]))
     text3Ar.delete("1.0","end")
-    text3Ar.insert(tk.END, str(M[5]))
-    text4.delete("1.0","end")
-    text4.insert( tk.END,str(M[3]))
-    text4Ar.delete("1.0","end")
-    text4Ar.insert(tk.END, str(M[6]))
-    Fnc.llenado(Calculos.M1(4, M[0], M[1], M[2], M[3]),1,5)
+    text3Ar.insert(tk.END, str(M[4]))
+    Fnc.llenado(Calculos.M1(3, M[0], M[1], M[2]),1,4)
 
 def But_IK_R3(): #Función Para Calcular Cinematica Inversa Del Antropomórfico (R3)
 
@@ -61,7 +57,7 @@ def But_IK_R3(): #Función Para Calcular Cinematica Inversa Del Antropomórfico 
 
     if M[7] == 1 or M[6] == 1: #indar indab
         if  M[6] == 1:#indab
-            EnvioC_AB_A.place_forget();
+            EnvioC_AB_A.place_forget()
         if  M[7] == 1:#indar
             EnvioC_AR_A.place_forget();
         messagebox.showinfo(title="error", message="Varie los valores introducidos")
@@ -84,17 +80,17 @@ def But_IK_R3(): #Función Para Calcular Cinematica Inversa Del Antropomórfico 
     text4Ar.delete("1.0","end")
     text4Ar.insert(tk.END, str(M[6]))
     '''
-    Fnc.llenado(Calculos.M2(3, M[0], M[1], M[2]),6,9)
+    Fnc.llenado(Calculos.M2(3, M[0], M[1], M[2]),5,8)
 
 def Button_CalcularJACO(): #Función Para Calcular Jacobianos 
     J_A=Calculos.JG_A(3,Aangulo1.get(),Aangulo2.get(),Aangulo3.get())
-    J_S=Calculos.JG_S(4,angulo1.get(),angulo2.get(),angulo3.get(),angulo4.get())
+    J_S=Calculos.JG_S(4,angulo1.get(),angulo2.get(),angulo3.get())
     J_R=Calculos.JG_R()
     Fnc.llenado_JACO(J_A,J_S,J_R)
 
 def re_def_SLIDER(IKxS): #Función Para Redefinir Sliders
     LimitY=Calculos.varX_scara(PX_S.get())
-    PY_S.place(relx=0.035, rely=0.225)
+    PY_S.place(relx=1/10, rely=3/10-0.1)
     supe=LimitY[0]
     infe=LimitY[1]
     PY_S['state']='active'
@@ -105,7 +101,7 @@ def re_def_SLIDER(IKxS): #Función Para Redefinir Sliders
         PY_S['from_']=str(infe)
         PY_S['to']=str(supe)
     else:
-        checkbox.place(relx=0.21, rely=0.33)
+        checkbox.place(relx=0.25, rely=0.3)
         if checkbox_value.get():           
             PY_S['from_']=str(float(-1)*supe)
             PY_S['to']=str(float(-1)*infe)
@@ -134,21 +130,21 @@ def dato1(band):#Función Para Calcular DK Antropomórfico (R3)
         mat=Calculos.M2(3,Aangulo1.get(),Aangulo2.get(),Aangulo3.get())
     elif band==2:
         mat=Calculos.M2(3,float(txt_edit_ang4.get(1.0, tk.END)),float(txt_edit_ang5.get(1.0, tk.END)),float(txt_edit_ang6.get(1.0, tk.END)))
-    Fnc.llenado(mat,6,9)
+    Fnc.llenado(mat,5,8)
 
 def dato2(band):#Función Para Calcular DK Scara (PR3)
     if band==1:
-        mat2=Calculos.M1(4,angulo1.get(),angulo2.get(),angulo3.get(),angulo4.get())
+        mat2=Calculos.M1(3,angulo1.get(),angulo2.get(),angulo3.get())
     elif band==2:
-        mat2=Calculos.M1(4,float(txt_edit_ang0.get(1.0, tk.END)),float(txt_edit_ang1.get(1.0, tk.END)),float(txt_edit_ang2.get(1.0, tk.END)),int(txt_edit_ang3.get(1.0, tk.END)))
-    Fnc.llenado(mat2,1,5)
+        mat2=Calculos.M1(3,float(txt_edit_ang0.get(1.0, tk.END)),float(txt_edit_ang1.get(1.0, tk.END)),float(txt_edit_ang2.get(1.0, tk.END)))
+    Fnc.llenado(mat2,1,4)
 
 def dato3(band):#Función Para Calcular DK Antropomórfico (R6)
     if band==1:
         mat3=Calculos.M3(6,Rangulo1.get(),Rangulo2.get(),Rangulo3.get(),Rangulo4.get(),Rangulo5.get(),Rangulo6.get())
     elif band==2:
         mat3=Calculos.M3(6,float(txt_edit_ang7.get(1.0, tk.END)),float(txt_edit_ang8.get(1.0, tk.END)),float(txt_edit_ang9.get(1.0, tk.END)),float(txt_edit_ang10.get(1.0, tk.END))),float(txt_edit_ang11.get(1.0, tk.END)),float(txt_edit_ang12.get(1.0, tk.END))
-    Fnc.llenado(mat3,10,16)
+    Fnc.llenado(mat3,9,15)
 
 def contar():
     while pbr_tarea['value'] < 100:
@@ -167,7 +163,6 @@ def servo1(posiciones1):
         pbr_tarea['value'] = 100
         pbr_tarea.configure(style='red.Horizontal.TProgressbar')
     dato2(1)
-    #
 
 def servo2(posiciones2):
     Thread(target=contar).start()
@@ -177,11 +172,6 @@ def servo2(posiciones2):
 def servo3(posiciones3):
     Thread(target=contar).start()
     board.write(b'Eab,'+posiciones3.encode()+b'\r\n')
-    dato2(1)
-
-def servo4(posiciones4):
-    Thread(target=contar).start()
-    board.write(b'Em,'+posiciones4.encode()+b'\r\n')
     dato2(1)
 
 #Funciones De Sliders Antropomórfico (R3)
@@ -299,9 +289,6 @@ def Envio_DK_S():#Función Envio Text-Box DK Scara (P3R)
     #Cuadro_Texto_3 
     board.write(b'Eab,'+txt_edit_ang2.get(1.0, tk.END).encode()+b'\r\n')
     sleep(0.2)
-    #Cuadro_Texto_4
-    board.write(b'Em,'+txt_edit_ang3.get(1.0, tk.END).encode()+b'\r\n')
-    sleep(0.2)
     dato2(2)
 
 def Envio_DK_R3():#Función Envio Text-Box DK Antropomórfico (R3)
@@ -349,7 +336,7 @@ def show_values3():#Función Envio Text-Box DK Antropomórfico (R6)
         text3AAr.delete("1.0","end")
         text3AAr.insert(tk.END, str(M[5]))
         '''
-def Envio_CD_A(): #Envio Codo Abajo antro
+def Envio_CD_A(): #Envio Codo Abajo Antropomorfico R3
     #insertar condicion
     board.write(b'Ab,'+"{:.1f}".format(float(text1A.get(1.0, tk.END))).encode()+b'\r\n')
     sleep(0.02)
@@ -364,10 +351,8 @@ def Envio_CD_S(): #Envio Codo Abajo Scara
     board.write(b'Ebr,'+"{:.1f}".format(float(text2.get(1.0, tk.END))).encode()+b'\r\n')
     sleep(0.02)
     board.write(b'Eab,'+"{:.1f}".format(float(text3.get(1.0, tk.END))).encode()+b'\r\n')
-    sleep(0.02)
-    board.write(b'Em,'+"{:.1f}".format(float(text4.get(1.0, tk.END))).encode()+b'\r\n')
 
-def Envio_CU_A():#Envio Codo Arriba antro
+def Envio_CU_A():#Envio Codo Arriba Antropomorfico R3
     #insertar condicion
     board.write(b'Ab,'+"{:.1f}".format(float(text1AAr.get(1.0, tk.END))).encode()+b'\r\n')
     sleep(0.2)
@@ -522,38 +507,18 @@ txt_edit_ang2 = tk.Text(FrDKS, width = 6)
 txt_edit_ang2.place(relx=1/5, rely=7/12+0.011, relheight=1/8-0.045)
 txt_edit_ang2.insert(tk.END, "0")
 
-#Muñeca
-#Slider
-angulo4= Scale(FrDKS,
-              command = servo4,
-              from_=-90,
-              to=90,
-              resolution=0.5,
-              orient = HORIZONTAL,
-              length=266,
-              troughcolor='gray',
-              width = 30,
-              cursor='dot',
-              label = 'Rotación Muñeca'  )
-angulo4.place(rely=3/4)
-#Text_Box
-txt_edit_ang3 = tk.Text(FrDKS, width = 6)
-txt_edit_ang3.place(relx=1/5, rely=10/12+0.011, relheight=1/8-0.045)
-txt_edit_ang3.insert(tk.END, "0")
-
 #Frame Matrices (Contenedor)
 FrMaS=LabelFrame(FrDKS,relief="raised")
-FrMaS.place(relx=1/4+0.01, relwidth=1, relheight=1)
+FrMaS.place(relx=0.35, relwidth=0.525, relheight=1)
 
 Fnc.matrices(1,1,0,FrMaS)  #Matriz Link 1
 Fnc.matrices(2,1,8,FrMaS)  #Matriz Link 2
-Fnc.matrices(3,11,0,FrMaS) #Matriz Link 3
-Fnc.matrices(4,11,8,FrMaS) #Matriz Link 4
-Fnc.matrices(5,6,4,FrMaS)  #Matriz Total
+Fnc.matrices(3,9,0,FrMaS) #Matriz Link 3
+Fnc.matrices(4,9,8,FrMaS)  #Matriz Total
 
 #Frame Cinematica Inversa IK (Contenedor)
 FrIKS=LabelFrame(FrS,text='IK', labelanchor='n')
-FrIKS.place(rely=0.63, relwidth=1, relheight=0.37)
+FrIKS.place(rely=0.65, relwidth=1, relheight=0.35)
 
 #Slider PX
 PX_S =Scale(FrIKS,
@@ -562,12 +527,12 @@ PX_S =Scale(FrIKS,
                 to=375.5,
                 resolution=0.5,
                 orient = HORIZONTAL,
-                length=220,
+                length=180,
                 troughcolor='gray',
-                width = 25,
+                width = 20,
                 cursor='dot'
                 )
-PX_S.place(relx=0.035, rely=1/10-0.125)
+PX_S.place(relx=1/10,rely=1/10-0.1)
         
 #Slider Py
 PY_S = Scale(FrIKS,
@@ -576,13 +541,13 @@ PY_S = Scale(FrIKS,
                 to=122.5,
                 resolution=0.5,
                 orient = HORIZONTAL,
-                length=220,
+                length=180,
                 troughcolor='gray',
-                width = 25,
+                width = 20,
                 cursor='dot',
                 digits=5,
                 )
-PY_S.place(relx=0.035, rely=0.225)
+PY_S.place(relx=1/10, rely=3/10-0.1)
 
 #Slider Pz
 PZ_S =Scale(FrIKS,
@@ -591,25 +556,12 @@ PZ_S =Scale(FrIKS,
                 to=122.5,
                 resolution=0.5,
                 orient = HORIZONTAL,
-                length=220,
+                length=180,
                 troughcolor='gray',
-                width = 25,
+                width = 20,
                 cursor='dot'
                 )
-PZ_S.place(relx=0.035, rely=0.48)
-
-#Slider Phi
-Phi_S = Scale(FrIKS,
-                from_=-270,
-                to=270,
-                resolution=0.5,
-                orient = HORIZONTAL,
-                length=220,
-                troughcolor='gray',
-                width = 25,
-                cursor='dot'
-                )
-Phi_S.place(relx=0.035, rely=0.75)
+PZ_S.place(relx=1/10, rely=5/10-0.1)
 
 #CheckBox Para Valores Negativos
 checkbox_value = BooleanVar()
@@ -617,100 +569,85 @@ checkbox = ttk.Checkbutton(FrIKS,
                            text="-", 
                            variable=checkbox_value, 
                            command = re_def_SLIDER_clk)
-checkbox.place(relx=0.21, rely=0.33)
+checkbox.place(relx=0.25, rely=0.3)
 
 #Frame Variables de Juntura Codo Abajo (Contenedor)
 FrSCD=LabelFrame(FrIKS,relief="raised", text='Codo Abajo', labelanchor='n')
-FrSCD.place(relx=0.3, rely=0.04, relwidth=0.22, relheight=0.78)
+FrSCD.place(relx=0.3, rely=0.1, relwidth=0.25, relheight=0.7)
 
 #Variable de Juntura 1
 etiqueta1 = tk.Label(FrSCD, width=5, text="d₁", fg="black", bg="yellow").grid(column=0, row=0)
-text1 = tk.Text(FrSCD, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
+text1 = tk.Text(FrSCD, padx= 20, pady=2, width=25, height=1, wrap="none", borderwidth=0)
 text1.grid(row=0, column=1, sticky="nsew")
 
 #Variable de Juntura 2
 etiqueta2 = tk.Label(FrSCD, width=5, text="θ₂", fg="black", bg="yellow").grid(column=0, row=2)
-text2 = tk.Text(FrSCD, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
+text2 = tk.Text(FrSCD, padx= 20, pady=2, width=25, height=1, wrap="none", borderwidth=0)
 text2.grid(row=2, column=1, sticky="ew")
 
 #Variable de Juntura 3
 etiqueta3 = tk.Label(FrSCD, width=5, text="θ₃", fg="black", bg="yellow").grid(column=0, row=4)
-text3 = tk.Text(FrSCD, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
+text3 = tk.Text(FrSCD, padx= 20, pady=2, width=25, height=1, wrap="none", borderwidth=0)
 text3.grid(row=4, column=1, sticky="nsew")
-
-#Variable de Juntura 4
-etiqueta4 = tk.Label(FrSCD, width=5, text="θ₄", fg="black", bg="yellow").grid(column=0, row=6)
-text4 = tk.Text(FrSCD, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
-text4.grid(row=6, column=1, sticky="nsew")
 
 #Frame Variables de Juntura Codo Arriba(Contenedor)
 FrSCU=LabelFrame(FrIKS,relief="raised", text='Codo Arriba', labelanchor='n')
-FrSCU.place(relx=0.6, rely=0.04, relwidth=0.22, relheight=0.78)
+FrSCU.place(relx=0.6, rely=0.1, relwidth=0.25, relheight=0.7)
 
 #Variable de Juntura 1
 etiqueta1 = tk.Label(FrSCU, width=5, text="d₁", fg="black", bg="yellow").grid(column=0, row=0)
-text1Ar = tk.Text(FrSCU, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
+text1Ar = tk.Text(FrSCU, padx= 20, pady=2, width=25, height=1, wrap="none", borderwidth=0)
 text1Ar.grid(row=0, column=1, sticky="nsew")
 
 #Variable de Juntura 2
 etiqueta2 = tk.Label(FrSCU, width=5, text="θ₂", fg="black", bg="yellow").grid(column=0, row=2)
-text2Ar = tk.Text(FrSCU, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
+text2Ar = tk.Text(FrSCU, padx= 20, pady=2, width=25, height=1, wrap="none", borderwidth=0)
 text2Ar.grid(row=2, column=1, sticky="ew")
 
 #Variable de Juntura 3
 etiqueta3 = tk.Label(FrSCU, width=5, text="θ₃", fg="black", bg="yellow").grid(column=0, row=4)
-text3Ar = tk.Text(FrSCU, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
+text3Ar = tk.Text(FrSCU, padx= 20, pady=2, width=25, height=1, wrap="none", borderwidth=0)
 text3Ar.grid(row=4, column=1, sticky="nsew")
-
-#Variable de Juntura 4
-etiqueta4 = tk.Label(FrSCU, width=5, text="θ₄", fg="black", bg="yellow").grid(column=0, row=6)
-text4Ar = tk.Text(FrSCU, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
-text4Ar.grid(row=6, column=1, sticky="nsew")
 
 #Filas Vacias Para Variables De Juntura
 Fnc.fila_vacia(1,1,FrSCD,10)
 Fnc.fila_vacia(3,1,FrSCD,10)
-Fnc.fila_vacia(5,1,FrSCD,10)
 Fnc.fila_vacia(1,1,FrSCU,10)
 Fnc.fila_vacia(3,1,FrSCU,10)
-Fnc.fila_vacia(5,1,FrSCU,10)
 
 #Filas Vacias Para Matrices
-Fnc.fila_vacia(0,1,FrMaS,6)
-Fnc.fila_vacia(5,1,FrMaS,6)
-Fnc.fila_vacia(10,1,FrMaS,6)
+Fnc.columna_vacia(5,1,FrMaS,6)
+Fnc.columna_vacia(9,1,FrMaS,6)
+Fnc.fila_vacia(5,4,FrMaS,10)
+
 
 #Titulos Scara (Label)
 Titulos_l1 = Label(FrMaS, width=11,text="Link 1")
-Titulos_l1.place(relx=2/24+0.01,rely=0)
+Titulos_l1.place(relx=3/18-0.01,rely=0)
 Titulos_l2 = Label(FrMaS, width=11,text="Link 2")
-Titulos_l2.place(relx=14/24-0.005,rely=0)
+Titulos_l2.place(relx=12/18-0.01,rely=0)
 Titulos_l3 = Label(FrMaS, width=11,text="Link 3")
-Titulos_l3.place(relx=2/24+0.01,rely=10/16)
-Titulos_l4 = Label(FrMaS, width=11,text="Link 4")
-Titulos_l4.place(relx=14/24-0.005,rely=10/16)
+Titulos_l3.place(relx=3/18-0.01,rely=7/14-0.03)
 Titulos_lT = Label(FrMaS, width=11,text="Total")
-Titulos_lT.place(relx=5/15,rely=5/16)
+Titulos_lT.place(relx=12/18-0.01,rely=7/14-0.03)
 Titulos_px = Label(FrIKS, width=2,text="Px")
-Titulos_px.place(relx=0.009,rely=1/10-0.011)
+Titulos_px.place(relx=1/15,rely=1/10+0.01)
 Titulos_py = Label(FrIKS, width=2,text="Py")
-Titulos_py.place(relx=0.009,rely=3/10+0.011)
+Titulos_py.place(relx=1/15,rely=3/10+0.01)
 Titulos_pz = Label(FrIKS, width=2,text="Pz")
-Titulos_pz.place(relx=0.009,rely=6/10-0.012)
-Titulos_pphi = Label(FrIKS, width=2,text="ϕ")
-Titulos_pphi.place(relx=0.009,rely=8/10+0.05)
+Titulos_pz.place(relx=1/15,rely=5/10+0.01)
 
 #Boton Envio DK
-Envio1=Button(FrMaS, width=10, height=2, text='Envio', activebackground='yellow', command=Envio_DK_S)
-Envio1.place(relx=2/6,rely=14/16)
+Envio1=Button(FrMaS, width=12, height=2, text='Envio', activebackground='yellow', command=Envio_DK_S)
+Envio1.place(relx=4/9-0.05,rely=0.83)
 
 #Boton Gripper Scara
-BoA = Button(FrMaS,text="Gripper",command=abrir, bg='green', bd=3, height=2, width=10)
-BoA.place(relx=2/6,rely=11/16)
+BoA = Button(FrDKS,text="Gripper",command=abrir, bg='green', bd=3, height=2, width=10)
+BoA.place(x=110,rely=3/4)
 
 #Boton Calcular IK        
 Calcular1=Button(FrIKS, text='Calcular', activebackground='yellow', command=But_IK_S)
-Calcular1.place(relx=2.5/10-0.01, rely=0.85, relheight=1/6-0.05)
+Calcular1.place(relx=1/10-0.01, rely=7/10+0.01, relheight=1/6-0.05)
 
 #Boton Envio Codo Abajo
 EnvioC_AB_S=Button(FrIKS, text='Enviar', activebackground='yellow', command=Envio_CD_S)
@@ -726,7 +663,7 @@ s.configure("red.Horizontal.TProgressbar", background='red')
 s.configure("green.Horizontal.TProgressbar", background='green')
 pbr_tarea = ttk.Progressbar(FrIKS, length=150, style='green.Horizontal.TProgressbar', maximum=100)
 pbr_tarea['value'] = 0
-pbr_tarea.place(relx=0.85, rely=0.25)
+pbr_tarea.place(relx=0.87, rely=0.25)
 #Boton Información IK
 info2_uso = Button(FrIKS,
              text="Modo de Uso",
@@ -805,10 +742,10 @@ txt_edit_ang6.insert(tk.END, "0")
 FrMaR3=LabelFrame(FrDKR3,relief="raised")
 FrMaR3.place(relx=0.35, relwidth=0.525, relheight=1)
 
-Fnc.matrices(6,1,0,FrMaR3)  #Matriz Link 1
-Fnc.matrices(7,1,8,FrMaR3)  #Matriz Link 2
-Fnc.matrices(8,9,0,FrMaR3)  #Matriz Link 3
-Fnc.matrices(9,9,8,FrMaR3)  #Matriz Total
+Fnc.matrices(5,1,0,FrMaR3)  #Matriz Link 1
+Fnc.matrices(6,1,8,FrMaR3)  #Matriz Link 2
+Fnc.matrices(7,9,0,FrMaR3)  #Matriz Link 3
+Fnc.matrices(8,9,8,FrMaR3)  #Matriz Total
 
 #Boton Envio Cinematica Directa Antropomorfico
 Envio2=Button(FrMaR3, width=12, height=2, text='Envio', activebackground='yellow', command=Envio_DK_R3)
@@ -892,14 +829,14 @@ text1A = tk.Text(FrR3CD, padx= 20, pady=2, width=25, height=1, wrap="none", bord
 text1A.grid(row=0, column=1, sticky="nsew")
 
 #Variable de Juntura 2
-etiqueta2 = tk.Label(FrR3CD, width=5, text="θ₂", fg="black", bg="yellow").grid(column=0, row=3)
+etiqueta2 = tk.Label(FrR3CD, width=5, text="θ₂", fg="black", bg="yellow").grid(column=0, row=2)
 text2A = tk.Text(FrR3CD, padx= 20, pady=2, width=25, height=1, wrap="none", borderwidth=0)
-text2A.grid(row=3, column=1, sticky="nsew")
+text2A.grid(row=2, column=1, sticky="nsew")
 
 #Variable de Juntura 3
-etiqueta3 = tk.Label(FrR3CD, width=5, text="θ₃", fg="black", bg="yellow").grid(column=0, row=6)
+etiqueta3 = tk.Label(FrR3CD, width=5, text="θ₃", fg="black", bg="yellow").grid(column=0, row=4)
 text3A = tk.Text(FrR3CD, padx= 20, pady=2, width=25, height=1, wrap="none", borderwidth=0)
-text3A.grid(row=6, column=1, sticky="nsew")
+text3A.grid(row=4, column=1, sticky="nsew")
 
 #Frame Variables De Juntura Codo Arriba (Contenedor)
 FrR3CU=LabelFrame(FrIKR3,relief="raised",text='Codo Arriba',labelanchor='n')
@@ -911,20 +848,20 @@ text1AAr = tk.Text(FrR3CU, padx= 20, pady=2, width=25, height=1, wrap="none", bo
 text1AAr.grid(row=0, column=1, sticky="nsew")
 
 #Variable de Juntura 2
-etiqueta2 = tk.Label(FrR3CU, width=5, text="θ₂", fg="black", bg="yellow").grid(column=0, row=3)
+etiqueta2 = tk.Label(FrR3CU, width=5, text="θ₂", fg="black", bg="yellow").grid(column=0, row=2)
 text2AAr = tk.Text(FrR3CU, padx= 20, pady=2, width=25, height=1, wrap="none", borderwidth=0)
-text2AAr.grid(row=3, column=1, sticky="nsew")
+text2AAr.grid(row=2, column=1, sticky="nsew")
 
 #Variable de Juntura 3
-etiqueta3 = tk.Label(FrR3CU, width=5, text="θ₃", fg="black", bg="yellow").grid(column=0, row=6)
+etiqueta3 = tk.Label(FrR3CU, width=5, text="θ₃", fg="black", bg="yellow").grid(column=0, row=4)
 text3AAr = tk.Text(FrR3CU, padx= 20, pady=2, width=25, height=1, wrap="none", borderwidth=0)
-text3AAr.grid(row=6, column=1, sticky="nsew")
+text3AAr.grid(row=4, column=1, sticky="nsew")
 
 #Filas Vacias Para Varibales De Juntura
-Fnc.fila_vacia(2,1,FrR3CD,10)
-Fnc.fila_vacia(5,1,FrR3CD,10)
-Fnc.fila_vacia(2,1,FrR3CU,10)
-Fnc.fila_vacia(5,1,FrR3CU,10)
+Fnc.fila_vacia(1,1,FrR3CD,10)
+Fnc.fila_vacia(3,1,FrR3CD,10)
+Fnc.fila_vacia(1,1,FrR3CU,10)
+Fnc.fila_vacia(3,1,FrR3CU,10)
 
 #Filas y Columnas Vacias Para Matrices
 Fnc.columna_vacia(5,1,FrMaR3,6)
@@ -1080,17 +1017,17 @@ txt_edit_ang12.insert(tk.END, "0")
 FrMaR6=LabelFrame(FrDKR6,relief="raised")
 FrMaR6.place(relx=1/4+0.01, relwidth=1, relheight=1)
 
-Fnc.matrices(10,1,0,FrMaR6)   #Matriz Link 1
-Fnc.matrices(11,1,8,FrMaR6)   #Matriz Link 2
-Fnc.matrices(12,5,4,FrMaR6)   #Matriz Link 3
-Fnc.matrices(13,9,0,FrMaR6)   #Matriz Link 4
-Fnc.matrices(14,9,8,FrMaR6)   #Matriz Link 5
-Fnc.matrices(15,13,4,FrMaR6)  #Matriz Link 6
-Fnc.matrices(16,19,4,FrMaR6)  #Matriz Total
+Fnc.matrices(9,1,0,FrMaR6)   #Matriz Link 1
+Fnc.matrices(10,1,8,FrMaR6)   #Matriz Link 2
+Fnc.matrices(11,5,4,FrMaR6)   #Matriz Link 3
+Fnc.matrices(12,9,0,FrMaR6)   #Matriz Link 4
+Fnc.matrices(13,9,8,FrMaR6)   #Matriz Link 5
+Fnc.matrices(14,13,4,FrMaR6)  #Matriz Link 6
+Fnc.matrices(15,19,4,FrMaR6)  #Matriz Total
 
 #Filas Vacias Para Matrices
 Fnc.fila_vacia(0,1,FrMaR6,10)
-Fnc.fila_vacia(17,2,FrMaR6,6) 
+Fnc.fila_vacia(16,2,FrMaR6,6) 
 
 #Titulos Antropomórfico (R6) (Label)
 Titulos_l1 = Label(FrMaR6, width=11,text="Link 1")
@@ -1106,7 +1043,7 @@ Titulos_l5.place(relx=14/24-0.005,rely=8/23)
 Titulos_l6 = Label(FrMaR6, width=11,text="Link 6")
 Titulos_l6.place(relx=5/15,rely=12/23-0.01)
 Titulos_lT = Label(FrMaR6, width=11,text="Total")
-Titulos_lT.place(relx=5/15,rely=17/23+0.01)
+Titulos_lT.place(relx=5/15,rely=17/23-0.01)
 
 #Frame Cinemática Inversa Antropomórfico (R6)
 FrIKR6=LabelFrame(p4,text='IK', labelanchor='n')

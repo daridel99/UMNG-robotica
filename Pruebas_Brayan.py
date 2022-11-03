@@ -1,465 +1,364 @@
-#IMPORTAMOS "tkinter"
-from tkinter import *
-import tkinter
-from tkinter import ttk
-import tkinter.font as tkFont
 import math as mt
-from tkinter import HORIZONTAL, PhotoImage, StringVar, Widget
-from ctypes import sizeof
-import tkinter  as tk
-from tkinter import *
-from turtle import end_fill
 import numpy as np
-from time import sleep
-from tkinter import messagebox
-from PIL import Image, ImageTk
-import serial, serial.tools.list_ports
-from tkinter import ttk
+from sympy import  *
 
-#Info
-def info():
-    messagebox.showinfo("Informacion de uso",
-"""
-Modo de uso:\nDesplazar cada slider para mover
-las articulaciones del brazo robotico o digitar el
-valor de lo que se quiere mover para luego presionar
-el boton de envio correspondiente, se pretende obtener
-las matrices individuales y totales en tiempo real.\n
-Digitar el valor del efector final y presionar el boton
-de calcular para obtener los distintos valores de juntura.
-""")
+#Encontrar las constantes de la funcion cuadratica
+def Perf_Cuadratica(tf,Qf,Qi):
+    #Parte de reposo y termina en reposo: ti=0
+    Vi=0
+    Vf=0
+    
+    a=np.array([0,0,0,0],float)
+    a3=symbols('a3')  
+    a2=symbols('a2')
 
-def show_values1():
-    print("Calculando...")
+    '''Con las siguientes 3 ecuaciones
+    Q =      a3*t^3 + a2*t^2 + a1*t + a0   (Posición de Juntura)
+    Q.= V =  3*a3*t^2 + 2*a2*t + a1        (Velocidad de Juntura)
+    Q..= α = 6*a3*t + a2                   (Aceleración de Juntura)
+    Calcular los valores de las "a"
+    '''
+    #Para t=ti: Se pueden calcular a0 y a1 de la ecuación "Q" y "Q."
+    a0 = Qi
+    a1 = Vi
+    a[0]=a0
+    a[1]=a1
+    cont=2
 
-#VENTANA PRINCIPAL.
-root = tkinter.Tk()
-root.title('Controles de Manipuladores Roboticos')
-root.geometry("1366x768")
-nombre = StringVar()
-numero = IntVar()
+    #Para t=tf: Se pueden calcular a2 y a3 de la ecuación "Q" y "Q."
+    t = tf
 
-#INCLUIMOS PANEL PARA LAS PESTAÑAS.
-nb = ttk.Notebook(root)
-nb.pack(fill='both',expand='yes')
+    #Se utilizan variables auxiliares para realizar calculos simbolicos
+    aux1 = a3*t**3 + a2*t**2 + a[1]*t + a[0] - Qf 
+    aux2 = 3*a3*t**2 + 2*a2*t + a[1] - Vf   
 
-#CREAMOS PESTAÑAS
-pI = ttk.Frame(nb)
-p1 = ttk.Frame(nb)
-p2 = ttk.Frame(nb)   
+    aux3 = solve([aux1,aux2],a2,a3) #Se solucionan en terminos de a2 y a3
 
-####################### pestaña 1
+    for data in aux3.values():#Ciclo para extraer los valores de a2 y a3 del "Diccionario aux3"
+        a[cont]=float(data)
+        cont+=1
 
-#Frame Informacion (Contenedor)
-fontStyle_T = tkFont.Font(family="Lucida Grande", size=12)
-fi=LabelFrame(pI, 
-text='Interfaz Grafica Para Controlar Manipuladores Roboticos', 
-labelanchor='n', 
-font=fontStyle_T)
-fi.place(relwidth=1, relheight=1)
+    Const_as=np.array([a[0],a[1],a[2],a[3]],float)
+    return Const_as
 
-var= StringVar()
-fontStyle = tkFont.Font(family="Lucida Grande", size=15)
-etiqueta = Label(fi, textvariable=var , relief=FLAT , pady=10, font=fontStyle)
-var.set("""
-Dario Delgado - 1802992 \n 
-Brayan Ulloa - 1802861 \n 
-Santiago Tobar - 1803015 \n
-Fernando Llanes - 1802878 \n
-Karla Baron - 1803648 \n 
-Sebastian Niño - 1803558
-""")
-etiqueta.place(relwidth=0.97,relheight=0.7)
+#print(pos_vel_as(0,5,16,1,0,10))
 
-#Logos
-img= PhotoImage(file='./LOGOUMNG.png')
-img_zoom=img.zoom(2)
-widget = Label(fi, image=img_zoom)
-widget.place(relwidth=0.3,relheight=0.6)
+#Funcion cinematica inverza 
+def CI_MPRR(x1,x2,x3,T):
 
-img1= PhotoImage(file='./icon.png')
-img1_zoom=img1.zoom(2)
-widget1 = Label(fi, image=img1_zoom)
-widget1.place(x=1050, y=150)
+#Variables simbolicas
+    '''    
+    P_X 
+    P_Y 
+    P_Z 
+    a_1 
+    a_2 
+    a_3 
+    a_4 
+    d_1 
+    '''
+    #Parametros conocidos
+    '''     
+    theta_1=0; #Angulos θ
+    alpha_1=0;
+    alpha_2=0;
+    alpha_3=0;
+    alpha_4=0; #Angulos α
+    d_2=0;
+    d_3=0;
+    d_4=0; #Distancias en z
+    ''' 
+    #Distacias en x
+    a_1=47.3;
+    a_2=149.1;
+    a_3=148.8;
+    a_4=30;
+   
 
-#Boton Info
-Binf = Button(fi,
-             text="Modo de uso",
-             relief=GROOVE,
-             command=info   )
-Binf.grid(column=1,row=1)
+    #Parametros que necesita-ingrezados
+    P_X=x1; #Punto en X
+    P_Y=x2; #Punto en Y
+    P_Z=x3; #Punto en Z
+    
+    phi=34; #Angulo de orientación
+    W=np.array([[P_X],[P_Y],[P_Z]],float) #Vector de Posición ?
 
-######################## Pestaña 2
-
-#Frame Manipuladores (Contenedor)
-frm=LabelFrame(p1,relief="raised")
-frm.place(relwidth=1, relheight=1)
-
-#Frame DK Scara (Contenedor)
-frm1=LabelFrame(frm,text='DK', labelanchor='n')
-frm1.place(relwidth=1, relheight=0.64)
-
-#Base
-#Slider
-angulo1=Scale(frm1,
-                from_=0,
-                to=122,
-                orient = HORIZONTAL,
-                length=266,
-                troughcolor='gray',
-                width = 30,
-                cursor='dot',
-                label = 'Desplazamiento Base').place(rely=0)
-#Text_Box
-txt_edit_ang0 = tk.Text(frm1,width=4)
-txt_edit_ang0.place(relx=1/5, rely=1/12+0.01, relheight=1/8-0.045)
-txt_edit_ang0.insert(tk.END, "")
+    if T==1:
+        # Primera reduccion del manipulador
         
-#Brazo
-#Slider
-angulo2= Scale(frm1,
-              from_=0,
-              to=180,
-              orient = HORIZONTAL,
-              length=266,
-              troughcolor='gray',
-              width = 30,
-              cursor='dot',
-              label = 'Rotación Brazo').place(rely=1/4)
-#Text_Box
-txt_edit_ang1 = tk.Text(frm1, width = 4)
-txt_edit_ang1.place(relx=1/5, rely=4/12+0.01, relheight=1/8-0.045)
-txt_edit_ang1.insert(tk.END,"")
-
-#Antebrazo
-#Slider
-angulo3= Scale(frm1,              
-              from_=0,
-              to=180,
-              orient = HORIZONTAL,
-              length=266,
-              troughcolor='gray',
-              width = 30,
-              cursor='dot',
-              label = 'Rotación Codo').place(rely=2/4)
-#Text_Box
-txt_edit_ang2 = tk.Text(frm1, width = 4)
-txt_edit_ang2.place(relx=1/5, rely=7/12+0.011, relheight=1/8-0.045)
-txt_edit_ang2.insert(tk.END, "")
-
-#Muñeca
-#Slider
-angulo4= Scale(frm1,
-              from_=0,
-              to=180,
-              orient = HORIZONTAL,
-              length=266,
-              troughcolor='gray',
-              width = 30,
-              cursor='dot',
-              label = 'Rotación Muñeca').place(rely=3/4)
-#Text_Box
-txt_edit_ang3 = tk.Text(frm1, width = 4)
-txt_edit_ang3.place(relx=1/5, rely=10/12+0.011, relheight=1/8-0.045)
-txt_edit_ang3.insert(tk.END, "")
-
-#Frame Matrices DK Scara (Contenedor)
-frmdh1=LabelFrame(frm1,relief="raised")
-frmdh1.place(relx=1/4+0.02, relwidth=1, relheight=1)
-
-#Matriz Link 1
-for r in range(1, 5):
-    for c in range(0, 4):
-        cell = Entry(frmdh1, width=13)
-        cell.grid(row=r, column=c, ipady=4)
-
-#Matriz Link 2
-for r in range(1, 5):
-    for c in range(8, 12):
-        cell = Entry(frmdh1, width=13)
-        cell.grid(row=r, column=c, ipady=4)
+        K = np.sqrt((P_X-a_2)**2 + P_Y**2)
+        gama = mt.asin(P_Y/K)
         
-#Matriz Total
-for r in range(6, 10):
-    for c in range(4, 8):
-        cell = Entry(frmdh1, width=13)
-        cell.grid(row=r, column=c, ipady=4)
- 
-#Matriz Link 3
-for r in range(11, 15):
-    for c in range(0, 4):
-        cell = Entry(frmdh1, width=13)
-        cell.grid(row=r, column=c, ipady=4)
-
-#Matriz Link 4
-for r in range(11, 15):
-    for c in range(8, 12):
-        cell = Entry(frmdh1, width=13)
-        cell.grid(row=r, column=c, ipady=4)
-
-#Frame IK Scara (Contenedor)
-frm2=LabelFrame(frm,text='IK', labelanchor='n')
-frm2.place(rely=0.65, relwidth=1, relheight=0.35)
-
-#Text_Box
-txt_edit_xS = tk.Text(frm2, width=4,)
-txt_edit_xS.place(relx=1/10,rely=1/10+0.01, relheight=1/6-0.05)
-txt_edit_xS.insert(tk.END, "")
+        # Triangulo interior
         
-#Text_Box
-txt_edit_yS = tk.Text(frm2, width = 4)
-txt_edit_yS.place(relx=1/10, rely=3/10+0.01, relheight=1/6-0.05)
-txt_edit_yS.insert(tk.END, "")
+        B1 = mt.acos((a_4**2-K**2-a_3**2)/(-2*K*a_3))
+        theta_1 = gama - B1
+        
+        B2 = mt.acos((K**2-a_3**2-a_4**2)/(-2*a_4*a_3))
+        theta_2 = 180-B2
+        
+        L1=P_Z
+    
+    
+    if T==2:
+        # Primera reduccion del manipulador
+        
+        K = np.sqrt((P_X-a_2)**2 + P_Y**2)
+        gama = mt.asin(P_Y/K)
+        
+        # Triangulo interior
+        
+        B1 = mt.acos((a_4**2-K**2-a_3**2)/(-2*K*a_3))
+        theta_1 = gama + B1
+        
+        B2 = mt.acos((K**2-a_3**2-a_4**2)/(-2*a_4*a_3))
+        theta_2 = -(180-B2)
+        
+        L1=P_Z
+        
+    art=np.array([theta_1,theta_2,L1],float)
+    #m1=art(1)
+    #m2=art(2)
+    #m3=art(3)
 
-#Text_Box
-txt_edit_zS = tk.Text(frm2, width = 4)
-txt_edit_zS.place(relx=1/10, rely=5/10+0.01, relheight=1/6-0.05)
-txt_edit_zS.insert(tk.END, "")
+    return art
 
-#Boton Calcular        
-Calcular1=Button(frm2, text='Calcular', activebackground='yellow', command=show_values1)
-Calcular1.place(relx=1/10-0.01, rely=7/10+0.01, relheight=1/6-0.05)
+#print(CI_MPRR(16,13,12,1))
 
-#Frame Variables de Juntura (Contenedor)
-frmdh2=LabelFrame(frm2,relief="raised")
-frmdh2.place(relx=0.35, rely=0.15, relwidth=0.42, relheight=0.39)
+def IK_Scara_P3R(P_X, P_Y, P_Z, phi): #Cinematica Inversa Scara (PR3)
+    #Distacias en x
+    a_1=float(47.3)
+    a_2=float(149.1)
+    a_3=float(148.8)
+    a_4=float(30)
 
-#Variable De Juntura 1
-etiqueta1 = tk.Label(frmdh2, text="Link 1", fg="black", bg="yellow").grid(column=0, row=0)
-text1 = tk.Text(frmdh2, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
-textHsb = tk.Scrollbar(frmdh2, orient="horizontal", command=text1.xview)
-text1.configure(xscrollcommand=textHsb.set)
-text1.grid(row=0, column=1, sticky="nsew")
-textHsb.grid(row=1, column=1, sticky="ew")
+    EFx=mt.cos(phi*mt.pi/180)*a_4
+    EFy=mt.sin(phi*mt.pi/180)*a_4 #Distancia en "y" entre punto W y Join4
+    Ca=P_X-EFx-a_1    #Cateto Adyacente del triangulo formado en X-Y'
+    Co=P_Y-EFy        #Cateto Opuesto del triangulo formado en X-Y'
+    c=np.sqrt(float(Ca)**2+float(Co)**2) 
+    alpha=mt.atan2(Co,Ca)
+    beta=mt.acos((a_2**(2)+c**(2)-a_3**(2))/(2*a_2*c))
+    #Codo abajo
+    theta_3ab=mt.acos((c**(2)-a_2**(2)-a_3**(2))/(2*a_2*a_3))   #Variable De Juntura T3
+    theta_2ab=(alpha-beta)                                      #Variable De Juntura T2
+    theta_4ab=(phi-(theta_2ab*180/mt.pi)-(theta_3ab*180/mt.pi)) #Variable De Juntura T4
+    #Codo ariba
+    theta_3ar=-mt.acos((c**(2)-a_2**(2)-a_3**(2))/(2*a_2*a_3))  #Variable De Juntura T3
+    theta_2ar=(alpha+beta)                                      #Variable De Juntura T2
+    theta_4ar=(phi-(theta_2ar*180/mt.pi)-(theta_3ar*180/mt.pi)) #Variable De Juntura T4
 
-#Variable De Juntura 2
-etiqueta2 = tk.Label(frmdh2, text="Link 2", fg="black", bg="yellow").grid(column=0, row=3)
-text2 = tk.Text(frmdh2, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
-textHsb = tk.Scrollbar(frmdh2, orient="horizontal", command=text2.xview)
-text2.configure(xscrollcommand=textHsb.set)
-text2.grid(row=3, column=1, sticky="nsew")
-textHsb.grid(row=4, column=1, sticky="ew")
+    d_1=P_Z                                                     #Variable De Juntura d1
 
-#Espacio En Blanco
-blanco = Label(frmdh2, width=10)
-blanco.grid(column=2, row=0)
-blanco = Label(frmdh2, width=10)
-blanco.grid(column=2, row=1)
+    if (((theta_3ab)>mt.pi/2) or ((theta_2ab)>mt.pi/2) or ((theta_4ab)>90)) or (((theta_3ab)<-mt.pi/2) or ((theta_2ab)<-mt.pi/2) or ((theta_4ab)<-90)):
+        indab=1    
+    else:
+        indab=0
 
-#Variable De Juntura 3
-etiqueta3 = tk.Label(frmdh2, text="Link 3", fg="black", bg="yellow").grid(column=3, row=0)
-text3 = tk.Text(frmdh2, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
-textHsb = tk.Scrollbar(frmdh2, orient="horizontal", command=text3.xview)
-text3.configure(xscrollcommand=textHsb.set)
-text3.grid(row=0, column=4, sticky="nsew")
-textHsb.grid(row=1, column=4, sticky="ew")
+    if (((theta_3ar)>mt.pi/2) or ((theta_2ar)>mt.pi/2) or ((theta_4ar)>90)) or (((theta_3ar)<-mt.pi/2) or ((theta_2ar)<-mt.pi/2) or ((theta_4ar)<-90)):
+        indar=1    
+    else:
+        indar=0
 
-#Variable De Juntura 4
-etiqueta4 = tk.Label(frmdh2, text="Link 4", fg="black", bg="yellow").grid(column=3, row=3)
-text4 = tk.Text(frmdh2, padx= 20, pady=2, width=20, height=1, wrap="none", borderwidth=0)
-textHsb = tk.Scrollbar(frmdh2, orient="horizontal", command=text4.xview)
-text4.configure(xscrollcommand=textHsb.set)
-text4.grid(row=3, column=4, sticky="nsew")
-textHsb.grid(row=4, column=4, sticky="ew")
+    IK_FINAL=np.array([d_1, theta_2ab*180/mt.pi, theta_3ab*180/mt.pi, theta_4ab,  theta_2ar*180/mt.pi,theta_3ar*180/mt.pi, theta_4ar,indar,indab],float)
+    return IK_FINAL
 
-def fila_vacia(n):
+def IK_Antropo_3R(P_X, P_Y, P_Z): #Cinematica Inversa Antropomórfico (R3)
+    #Distacias en x
+    a_1=float(14.5)
+    a_2=float(67.5)
+    a_3=float(88.28)
+    d_1=float(62.87)
+
+    r=np.sqrt(float(P_X)**2+float(P_Y)**2)#Hipotenusa del triangulo generado desde origen al punto W en el plano XY
+    Ca=r-a_1#Cateto adyacente, considerando la distancia a1 entre juntura 1-2
+    Co=float(P_Z)-d_1#Cateto opuesto, considerando la distancia d1 entre juntura 1-2
+    h=np.sqrt(float(Ca)**2+float(Co)**2)
+
+    theta_3ab=mt.acos((h**2-a_2**2-a_3**2)/(2*a_2*a_3)) #Despejando del Teorema del coseno
+    #sent3=np.sqrt(1-cost3**2)#Propiedad trigonometrica sen**2+cos**2=1
+    
+    #Calcularlo por medio de tangente (para todos los posibles valores)
+    #theta_3ab=mt.atan2(sent3,cost3) #Variable De Juntura T3
+
+    alpha=mt.atan2(Co,Ca)#Calculo Alfa
+    Ca2=a_2+a_3*mt.cos(theta_3ab)#Cateto adyacente
+    Co2=a_3*mt.sin(theta_3ab)#Cateto opuesto
+    beta_ab=mt.atan2(Co2,Ca2)#Calculo Beta
+    
+    theta_2ab=alpha-beta_ab            #Variable De Juntura T2
+    theta_1=mt.atan2(P_Y,P_X)     #Variable De Juntura T1
+
+     #Codo ariba
+    theta_3ar=-mt.acos((h**2-a_2**2-a_3**2)/(2*a_2*a_3))  #Variable De Juntura T3 
+    Ca2=a_2+a_3*mt.cos(theta_3ab)#Cateto adyacente
+    Co2=a_3*mt.sin(theta_3ab)#Cateto opuesto
+    beta_ar=mt.atan2(Co2,Ca2)#Calculo Beta     
+    theta_2ar=(alpha+beta_ar)                                #Variable De Juntura T2
+
+    if (((theta_3ab)>mt.pi) or ((theta_2ab)>mt.pi) or ((theta_1)>mt.pi)) or (((theta_3ab)<-mt.pi) or ((theta_2ab)<-mt.pi) or ((theta_1)<-mt.pi)):
+        indab=1    
+    else:
+        indab=0
+
+    if (((theta_3ar)>mt.pi/2) or ((theta_2ar)>mt.pi/2) or ((theta_1)>mt.pi)) or (((theta_3ar)<-mt.pi) or ((theta_2ar)<-mt.pi) or ((theta_1)<-mt.pi)):
+        indar=1    
+    else:
+        indar=0
+    
+    IK_FINAL=np.array([theta_1*180/mt.pi, theta_2ab*180/mt.pi , theta_3ab*180/mt.pi, theta_1*180/mt.pi, theta_2ar*180/mt.pi , theta_3ar*180/mt.pi,indar,indab],float)    
+    print(str(IK_FINAL))
+    return IK_FINAL
+
+def limites (X,ID): #Ecuaciones Para Limites Mecánicos Scara
+    if (ID==1):
+            yext1=mt.sqrt((float(327.9))**2-(float(X)-float(47.3))**2) 
+            return yext1
+    elif (ID==2):    
+            yint1=mt.sqrt((float(190.5945))**2-(float(X)-float(47.3))**2)    #Cuando X<Xmedio
+            return yint1
+    elif (ID==3):
+            yext2=mt.sqrt((float(178.8))**2-(float(X)-float(47.3))**2)+float(149.1)  #Cuando X<centro
+            return yext2
+    elif (ID==4):
+            yint2=-mt.sqrt((float(30))**2-(float(X)+float(101.5))**2)+float(149.1)  #Cuando X<Xmin
+            return yint2
+
+def varX_scara(PosX): #Funcion Para Redefinir Los Valores De Los Sliders (Cinematica Inversa)
+    ValX=float(PosX)
+    centro=float(47.3)
+    Xmin=float(-101.5)
+    Xmax=float(375.2)
+    Xmedio=float(190.5945)    
+    if ValX>=Xmax:
+        yinf=0
+        ysup=0
+        neg=0
+    elif ValX>Xmedio:
+        ysup=limites(ValX,1)
+        yinf=-limites(ValX,1)  
+        neg=0
+    elif (ValX>=centro and ValX<Xmedio):
+        ysup=limites(ValX,1)
+        yinf=limites(ValX,2)
+        neg=1
+    elif (ValX<centro and ValX>Xmin):
+        ysup=limites(ValX,3)
+        yinf=limites(ValX,2)
+        neg=1
+    elif (ValX<=Xmin):
+        ysup=limites(ValX,3)
+        yinf=limites(ValX,4)
+        neg=1
+    else: 
+        print ("No es posible el punto")
+    return ysup,yinf,neg    
+
+def matrices_T(angz,dz,angx,ax): #Matriz Homogenea DH
+    #Fila 1
+    r11="{:.5f}".format(mt.cos(angz))
+    r12="{:.5f}".format((-1)*mt.sin(angz)*mt.cos(angx))
+    r13="{:.5f}".format(mt.sin(angz)*mt.sin(angx))
+    r14="{:.5f}".format(ax*mt.cos(angz))
+    #Fila 2
+    r21="{:.5f}".format(mt.sin(angz))
+    r22="{:.5f}".format(mt.cos(angz)*mt.cos(angx)) 
+    r23="{:.5f}".format((-1)*mt.cos(angz)*mt.sin(angx))
+    r24="{:.5f}".format(ax*mt.sin(angz))
+    #Fila 3
+    r31=0
+    r32="{:.5f}".format(mt.sin(angx))
+    r33="{:.5f}".format(mt.cos(angx))
+    r34="{:.5f}".format(dz)
+    #Fila 4
+    r41=0
+    r42=0 
+    r43=0 
+    r44=1
+    matrix=np.array([[r11,r12,r13,r14],[r21,r22,r23,r24],[r31,r32,r33,r34],[r41,r42,r43,r44]],float)
+    return matrix
+
+def calculo(matrices_DH,n): #Calculo de matriz Cinematica Directa
+    MatrizFinal=np.eye(4)
     for j in range (0,n):
-        fila = Label(frmdh1)
-        fila.grid(column=0, row=(5*j))
-fila_vacia(3)
+        MatrizFinal=np.dot(MatrizFinal,matrices_DH[j]) 
+        MatrizFinal=np.round(MatrizFinal,decimals=5)    
+    return MatrizFinal
 
-# Titulos (Label)
-Titulos_l1 = Label(frmdh1, width=11,text="Link 1")
-Titulos_l1.place(relx=1/11,rely=0)
-Titulos_l2 = Label(frmdh1, width=11,text="Link 2")
-Titulos_l2.place(relx=11/19,rely=0)
-Titulos_l3 = Label(frmdh1, width=11,text="Link 3")
-Titulos_l3.place(relx=1/11,rely=10/17)
-Titulos_l4 = Label(frmdh1, width=11,text="Link 4")
-Titulos_l4.place(relx=11/19,rely=10/17)
-Titulos_lT = Label(frmdh1, width=11,text="Total")
-Titulos_lT.place(relx=5/15,rely=5/17)
-Titulos_px = Label(frm2, width=5,text="Px")
-Titulos_px.place(relx=1/15,rely=1/10+0.01)
-Titulos_py = Label(frm2, width=5,text="Py")
-Titulos_py.place(relx=1/15,rely=3/10+0.01)
-Titulos_pz = Label(frm2, width=5,text="Pz")
-Titulos_pz.place(relx=1/15,rely=5/10+0.01)
+def M1(n,d1,t2,t3,t4): #Definicion Parametros Scara (PR3)
+    matrices=[]
+    z=[0, t2, t3,t4]
+    d=[d1,0,0,0]
+    x=[0,0,0,0] 
+    a=[47.3,149.1,148.8,30]     
+    for i in range (0,n):
+        matrices.append(matrices_T((z[i]*mt.pi/180),d[i],x[i],a[i]))
+    final=calculo(matrices,n)
+    return final,matrices
 
-#Boton Envio
-Envio1=Button(frmdh1, text='Envio', activebackground='yellow', command=show_values1)
-Envio1.grid(column=6,row=15)
+def M2(n,j1,j2,j3): #Definicion Parametros Antropomórfico (R6)
+    matrices=[]
+    z=[j1, j2, j3]
+    d=[62.87,0,0]
+    x=[mt.pi/2,0,0] 
+    a=[14.5,67.5,88.28]         
+    for i in range (0,n):
+        matrices.append(matrices_T((z[i]*mt.pi/180),d[i],x[i],a[i]))
+    final=calculo(matrices,n)
+    return final,matrices
 
-###################### pestaña 3
+def M3(n,j1,j2,j3,j4,j5,j6): #Definicion Parametros Antropomórfico (R6)
+    matrices=[]
+    z=[j1, j2, j3, j4, j5, j6]
+    d=[115, 30, -20, 245, -57, 235]
+    x=[-mt.pi/2, 0, mt.pi/2, mt.pi/2, -mt.pi/2, 0] 
+    a=[0, 280, 0, 0, 0, 0]         
+    for i in range (0,n):
+        matrices.append(matrices_T((z[i]*mt.pi/180),d[i],x[i],a[i]))
+    final=calculo(matrices,n)
+    return final,matrices
 
-#Frame Manipuladores (Contenedor)
-frmA=LabelFrame(p2,relief="raised")
-frmA.place(relwidth=1, relheight=1)
+def Vec(c_ob,matriz_ob): #Funcion Para Extraer Columna Deseada (c_ob)
+    P = []
+    i_f=0
+    while i_f < 3:
+        P.append(matriz_ob[i_f][c_ob])
+        i_f+= 1
+    return P
 
-#Frame Manipulador1 Scara (Contenedor)
-frm1A=LabelFrame(frmA,text='DK', labelanchor='n')
-frm1A.place(relwidth=1, relheight=0.64)
+def R_list(Pi,Pf): #Funcion Para Restar Listas
+    resta=list(map(lambda x,y: x-y ,Pi,Pf))
+    return resta
+    
+def JG_S(n,d1,t2,t3,t4): #Jacobiano Para Scara (PR3)
+    Z0=[0,0,1]
+    P0=[0,0,0]
+    DK=M1(n,d1,t2,t3,t4)
+    Tm_1=np.dot(DK[1][0],DK[1][1])
+    Tm_2=np.dot(Tm_1,DK[1][2])
+    P1=Vec(3,DK[1][0])
+    P2=Vec(3,Tm_1)
+    P3=Vec(3,Tm_2)
+    Pe=Vec(3,DK[0])
+    Z1=Vec(2,DK[1][0])
+    Z2=Vec(2,Tm_1)
+    Z3=Vec(2,Tm_2)    
+    JG=[[Z0,np.cross(Z1,R_list(Pe,P1)),np.cross(Z2,R_list(Pe,P2)),np.cross(Z3,R_list(Pe,P3))],[[0,0,0],Z1,Z2,Z3]]
+    return JG
 
-#Base
-#Slider
-angulo1A=Scale(frm1A,
-                from_=0,
-                to=180,
-                orient = HORIZONTAL,
-                length=300,
-                troughcolor='gray',
-                width = 30,
-                cursor='dot',
-                label = 'Rotación Base',
-                  ).place(rely=0, relwidth=1/5, relheight=0.3)
-#Text_Box
-txt_edit_ang0A = tk.Text(frm1A,width=3)
-txt_edit_ang0A.place(relx=1/5, rely=0.13, relheight=1/8-0.03)
-txt_edit_ang0A.insert(tk.END, "0")
-        
-#Brazo
-#Slider
-angulo2A= Scale(frm1A,
-              from_=0,
-              to=180,
-              orient = HORIZONTAL,
-              length=300,
-              troughcolor='gray',
-              width = 30,
-              cursor='dot',
-              label = 'Rotación Brazo'  
-              ).place(rely=((1/5)+0.05), relwidth=1/5, relheight=0.3)
-#Text_Box
-txt_edit_ang1A = tk.Text(frm1A, width = 3)
-txt_edit_ang1A.place(relx=1/5, rely=2/8+0.13, relheight=1/8-0.03)
-txt_edit_ang1A.insert(tk.END, "0")
+def JG_A(n,j1,j2,j3): #Jacobiano Para Antropomórfico (R3)
+    Z0=[0,0,1]
+    P0=[0,0,0]
+    DK=M2(n,j1,j2,j3)
+    Tm_1=np.dot(DK[1][0],DK[1][1])
+    P1=Vec(3,DK[1][0])
+    P2=Vec(3,Tm_1)
+    Pe=Vec(3,DK[0])
+    Z1=Vec(2,DK[1][0])
+    Z2=Vec(2,Tm_1)    
+    JG=[[np.cross(Z0,R_list(Pe,P0)),np.cross(Z1,R_list(Pe,P1)),np.cross(Z2,R_list(Pe,P2))],[Z0,Z1,Z2]] 
+    return JG
 
-#Antebrazo
-#Slider
-angulo3A= Scale(frm1A,              
-              from_=0,
-              to=180,
-              orient = HORIZONTAL,
-              length=300,
-              troughcolor='gray',
-              width = 30,
-              cursor='dot',
-              label = 'Rotación Codo'  
-              ).place(rely=((3/5)-0.1), relwidth=1/5, relheight=0.3)
-#Text_Box
-txt_edit_ang2A = tk.Text(frm1A, width = 3)
-txt_edit_ang2A.place(relx=1/5, rely=4/8+0.13, relheight=1/8-0.03)
-txt_edit_ang2A.insert(tk.END, "0")
-
-#Frame Manipulador2 Antropomorfico (Contenedor)
-frm2A=LabelFrame(frmA,text='IK', labelanchor='n')
-frm2A.place(rely=0.65, relwidth=1, relheight=0.35)
-
-#Text_Box
-txt_edit_xA = tk.Text(frm2A, width=3)
-txt_edit_xA.place(relx=1/10,rely=1/10+0.01, relheight=1/6-0.05)
-txt_edit_xA.insert(tk.END, "0")
-        
-#Text_Box
-txt_edit_yA = tk.Text(frm2A, width = 3)
-txt_edit_yA.place(relx=1/10, rely=3/10+0.01, relheight=1/6-0.05)
-txt_edit_yA.insert(tk.END, "0")
-
-#Text_Box
-txt_edit_zA = tk.Text(frm2A, width = 3, height=1.8)
-txt_edit_zA.place(relx=1/10, rely=5/10+0.01, relheight=1/6-0.05)
-txt_edit_zA.insert(tk.END, "0")
-        
-Calcular2=Button(frm2A, text='Calcular', activebackground='yellow', command=show_values1)
-Calcular2.place(relx=1/10-0.01, rely=7/10+0.01, relheight=1/6-0.05)
-
-frmdh2A=LabelFrame(frm2A,relief="raised")
-frmdh2A.place(relx=0.4, rely=0.1, relwidth=0.25, relheight=0.8)
-
-etiqueta1 = tk.Label(frmdh2A, text="Link 1", fg="black", bg="yellow").grid(column=0, row=0)
-text1A = tk.Text(frmdh2A, padx= 20, pady=2, width=25, height=1, wrap="none", borderwidth=0)
-textHsb = tk.Scrollbar(frmdh2A, orient="horizontal", command=text1A.xview)
-text1A.configure(xscrollcommand=textHsb.set)
-text1A.grid(row=0, column=1, sticky="nsew")
-textHsb.grid(row=1, column=1, sticky="ew")
-
-etiqueta2 = tk.Label(frmdh2A, text="Link 2", fg="black", bg="yellow").grid(column=0, row=3)
-text2A = tk.Text(frmdh2A, padx= 20, pady=2, width=25, height=1, wrap="none", borderwidth=0)
-textHsb = tk.Scrollbar(frmdh2A, orient="horizontal", command=text2A.xview)
-text2A.configure(xscrollcommand=textHsb.set)
-text2A.grid(row=3, column=1, sticky="nsew")
-textHsb.grid(row=4, column=1, sticky="ew")
-
-blanco = Label(frmdh2A, width=10)
-blanco.grid(column=0, row=2)
-
-etiqueta3 = tk.Label(frmdh2A, text="Link 3", fg="black", bg="yellow").grid(column=0, row=6)
-text3A = tk.Text(frmdh2A, padx= 20, pady=2, width=25, height=1, wrap="none", borderwidth=0)
-textHsb = tk.Scrollbar(frmdh2A, orient="horizontal", command=text3A.xview)
-text3A.configure(xscrollcommand=textHsb.set)
-text3A.grid(row=6, column=1, sticky="nsew")
-textHsb.grid(row=7, column=1, sticky="ew")
-
-blanco = Label(frmdh2A, width=10)
-blanco.grid(column=0, row=5)
-
-def blancoA(n):
-    blanco = Label(frmdh1A, width=6)
-    blanco.grid(column=4+n, row=0)
-
-#Frame Matrices Manipulador 1 Scara (Contenedor)
-frmdh1A=LabelFrame(frm1A,relief="raised")
-frmdh1A.place( relx=0.35, rely=0.01, relwidth=0.53, relheight=0.9)
-
-for r in range(1, 5):
-    for c in range(1, 5):
-        cell = Entry(frmdh1A, width=12)
-        cell.grid(row=r, column=c, ipady=4)
-
-blancoA(0)
-
-blancoA(5)
-
-for r in range(1, 5):
-    for c in range(10, 14):
-        cell = Entry(frmdh1A, width=12)
-        cell.grid(row=r, column=c, ipady=4)
-        
-blanco = Label(frmdh1A, width=10)
-blanco.grid(column=1, row=6)
-
-blanco = Label(frmdh1A, width=10)
-blanco.grid(column=10, row=7)
-blanco = Label(frmdh1A, width=10)
-blanco.grid(column=1, row=14)
-
-for r in range(15, 19):
-    for c in range(1, 5):
-        cell = Entry(frmdh1A, width=12)
-        cell.grid(row=r, column=c, ipady=4)
-
-for r in range(15, 19):
-    for c in range(10, 14):
-        cell = Entry(frmdh1A, width=12)
-        cell.grid(row=r, column=c, ipady=4)
-
-#########################
-Titulos_l1 = Label(frmdh1A, width=10,text="Link 1")
-Titulos_l1.grid(column=2, row=6)
-Titulos_l2 = Label(frmdh1A, width=10,text="Link 2")
-Titulos_l2.grid(column=11, row=6)
-Titulos_l3 = Label(frmdh1A, width=10,text="Link 3")
-Titulos_l3.grid(column=2, row=20)
-Titulos_lT = Label(frmdh1A, width=10,text="Total")
-Titulos_lT.grid(column=11, row=20)
-###########################
-
-Envio2=Button(frmdh1A, text='Envio', activebackground='yellow', command=show_values1)
-Envio2.grid(column=7,row=22)
-
-#AGREGAMOS PESTAÑAS CREADAS
-nb.add(pI,text='Portada')
-nb.add(p1,text='Robot Scara')
-nb.add(p2,text='Robot Antropomorfico (RRR)')
-
-root.mainloop()
+def JG_R(): #Jacobiano Para Antropomórfico (R6) 
+    JR=[[1,1,1,1,1,1],[1,1,1,1,1,1],[1,1,1,1,1,1],[1,1,1,1,1,1],[1,1,1,1,1,1],[1,1,1,1,1,1]]
+    return JR
