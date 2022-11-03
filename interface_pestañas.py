@@ -16,14 +16,44 @@ from threading import Thread
 board =serial.Serial(port='COM1', baudrate=19200)
 sleep(5) #5 Segundos Para Que Establezca La Comunicacion
 
-def data_3D():
-    return 1,1,1,6,7,9,7,2 #xi yi zi xf yf zf tf codo
-def But_IK_S(): #Función Para Calcular Cinematica Inversa Del Scara
-    M=Calculos.IK_Scara_P3R(float(PX_S.get()), float(PY_S.get()), float(PZ_S.get()))
+# def data_3D():
+#     return 1,1,1,6,7,9,7,2 #xi yi zi xf yf zf tf codo
 
+def But_Perfiles():#Funcion Para Calcular La Generación de Trayectorias
+    Vectores=Fnc.Perfil(get.tipe,get.manipulador,get.codo,get.tfinal,get.xini,get.yini,get.ziini,get.xfin,get.yfin,get.zfin,get.resolucion,get.variable)
+    Posq1.plot(Vectores[0])
+    Posq2.plot(Vectores[1])
+    Posq3.plot(Vectores[2])
+    Velq1.plot(Vectores[3])
+    Velq2.plot(Vectores[4])
+    Velq3.plot(Vectores[5])
+    posx=np.array([],float)
+    posy=np.array([],float)
+    posz=np.array([],float)
+    for n in range(0,get.resolucion):
+        if get.manipulador==1:
+            mat=Calculos.M1(3,Vectores[0][n],Vectores[1][n],Vectores[2][n])
+            vect_pos=Calculos.Vec(4,mat[0])
+            posx[n]=vect_pos[0]
+            posy[n]=vect_pos[1]
+            posz[n]=vect_pos[2]
+        else:
+            mat=Calculos.M2(3,Vectores[0][n],Vectores[1][n],Vectores[2][n])
+            vect_pos=Calculos.Vec(4,mat[0])
+            posx[n]=vect_pos[0]
+            posy[n]=vect_pos[1]
+            posz[n]=vect_pos[2]
+    #Enviar (posx,posy,posz) a grafica 3D y graficar.
+    
+def But_IK_S(): #Función Para Calcular Cinematica Inversa Del Scara
+
+    M=Calculos.IK_Scara_P3R(float(PX_S.get()), float(PY_S.get()), float(PZ_S.get()))
+    #Boton Envio Codo Abajo
     EnvioC_AB_S.place(relx=2.5/10+0.1, rely=0.85)
+    #Boton Envio Codo Arriba
     EnvioC_AR_S.place(relx=2.5/10+0.4, rely=0.85)
     
+    #Desabilitación de Botones de Envio Cinematica Inversa
     if M[5] == 1 or M[6] == 1: #indar indab
         if  M[6] == 1:#indab
             EnvioC_AB_S.place_forget()
@@ -32,7 +62,7 @@ def But_IK_S(): #Función Para Calcular Cinematica Inversa Del Scara
         messagebox.showinfo(title="error",
         message="Una o ambas soluciones supera los limites mecanicos. \n \t \t Varie el valor del punto")
 
-
+    #Inserta Valores de Variables de Juntura en La Interfaz (Codo Abajo y Codo Arriba)
     text1.delete("1.0","end")
     text1.insert( tk.END,str(M[0]))
     text1Ar.delete("1.0","end")
@@ -45,7 +75,8 @@ def But_IK_S(): #Función Para Calcular Cinematica Inversa Del Scara
     text3.insert( tk.END,str(M[2]))
     text3Ar.delete("1.0","end")
     text3Ar.insert(tk.END, str(M[4]))
-    Fnc.llenado(Calculos.M1(3, M[0], M[1], M[2]),1,4)
+    #Re-Llenado de Matrices DK (Corroborar que la solución Es Correcta)
+    Fnc.llenado(Calculos.M1(3, M[0], M[1], M[2]),1,4) 
 
 def But_IK_R3(): #Función Para Calcular Cinematica Inversa Del Antropomórfico (R3)
 
@@ -55,13 +86,15 @@ def But_IK_R3(): #Función Para Calcular Cinematica Inversa Del Antropomórfico 
     #Boton Envio Codo Arriba
     EnvioC_AR_A.place(relx=2.5/10+0.4, rely=0.85)
 
-    if M[7] == 1 or M[6] == 1: #indar indab
-        if  M[6] == 1:#indab
+    #Desabilitación de Botones de Envio Cinematica Inversa
+    if M[6] == 1 or M[5] == 1: #indar indab
+        if  M[5] == 1:#indab
             EnvioC_AB_A.place_forget()
-        if  M[7] == 1:#indar
-            EnvioC_AR_A.place_forget();
-        messagebox.showinfo(title="error", message="Varie los valores introducidos")
+        if  M[6] == 1:#indar
+            EnvioC_AR_A.place_forget()
+        messagebox.showinfo(title="error", message="Una o ambas soluciones supera los limites mecanicos. \n \t \t Varie el valor del punto")
 
+     #Inserta Valores de Variables de Juntura en La Interfaz (Codo Abajo y Codo Arriba)
     text1A.delete("1.0","end")
     text1A.insert( tk.END,str(M[0]))
     text1AAr.delete("1.0","end")
@@ -69,18 +102,13 @@ def But_IK_R3(): #Función Para Calcular Cinematica Inversa Del Antropomórfico 
     text2A.delete("1.0","end")
     text2A.insert( tk.END,str(M[1]))
     text2AAr.delete("1.0","end")
-    text2AAr.insert(tk.END, str(M[4]))
+    text2AAr.insert(tk.END, str(M[3]))
     text3A.delete("1.0","end")
     text3A.insert( tk.END,str(M[2]))
     text3AAr.delete("1.0","end")
-    text3AAr.insert(tk.END, str(M[5]))
-    '''
-    text4.delete("1.0","end")
-    text4.insert( tk.END,str(M[3]))
-    text4Ar.delete("1.0","end")
-    text4Ar.insert(tk.END, str(M[6]))
-    '''
-    Fnc.llenado(Calculos.M2(3, M[0], M[1], M[2]),5,8)
+    text3AAr.insert(tk.END, str(M[4]))
+    #Re-Llenado de Matrices DK (Corroborar que la solución Es Correcta)
+    Fnc.llenado(Calculos.M2(3, M[0], M[1], M[2]),5,8) 
 
 def Button_CalcularJACO(): #Función Para Calcular Jacobianos 
     J_A=Calculos.JG_A(3,Aangulo1.get(),Aangulo2.get(),Aangulo3.get())
@@ -366,8 +394,6 @@ def Envio_CU_S():#Envio Codo Arriba Scara
     board.write(b'Ebr,'+"{:.1f}".format(float(text2Ar.get(1.0, tk.END))).encode()+b'\r\n')
     sleep(0.2)
     board.write(b'Eab,'+"{:.1f}".format(float(text3Ar.get(1.0, tk.END))).encode()+b'\r\n')
-    sleep(0.2)
-    board.write(b'Em,'+"{:.1f}".format(float(text4Ar.get(1.0, tk.END))).encode()+b'\r\n')
 
 ##################### VENTANA PRINCIPAL #########################
 root = tkinter.Tk()

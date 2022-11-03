@@ -2,8 +2,26 @@ import math as mt
 import numpy as np
 from sympy import  *
 
-#Encontrar las constantes de la funcion cuadratica
-def Perf_Cuadratica(tf,Qf,Qi):
+def Perf_Cuadra(tf,n,Qf,Qi): #Encontrar Las Posiciones y Velocidades De Juntura Utilizando El Perfil Cuadratrico
+    #Se recalcula un valor para "t" dependiendo la cantidad de puntos deseados (resolución)
+    t = np.arange(0, tf, (tf-0)/(n-1)) 
+
+    for i in range(0,3): #Ciclo de 3 para crear los vectores de las 3 junturas     
+        #Calculo de las constantes "a". (1 Vez para cada juntura)   
+        Cons_a=Constantes_Cuadra(float(tf),float(Qf[i]),float(Qi[i])) 
+        if i==1:
+            Pos_d1= Cons_a[3]*t**3 + Cons_a[2]*t**2 + Cons_a[1]*t + Cons_a[0]  #Vector de Posición Juntura 1 (d1=Desplazamiento Base)
+            Vel_d1 = 3*Cons_a[3]*t**2 + 2*Cons_a[2]*t + Cons_a[1]              #Vector de Velocidad Juntura 1 (d1=Desplazamiento Base)
+        if i==2:
+            Pos_t2 = Cons_a[3]*t**3 + Cons_a[2]*t**2 + Cons_a[1]*t + Cons_a[0] #Vector de Posición Juntura 2 (t2=Angulo Brazo)
+            Vel_t2= 3*Cons_a[3]*t**2 + 2*Cons_a[2]*t + Cons_a[1]               #Vector de Velocidad Juntura 2 (t2=Angulo Brazo)
+        else:
+            Pos_t3 = Cons_a[3]*t**3 + Cons_a[2]*t**2 + Cons_a[1]*t + Cons_a[0] #Vector de Posición Juntura 3 (t3=Angulo AnteBrazo)
+            Vel_t3 = 3*Cons_a[3]*t**2 + 2*Cons_a[2]*t + Cons_a[1]              #Vector de Velocidad Juntura 3 (t3=Angulo AnteBrazo)
+    
+    return Pos_d1,Pos_t2,Pos_t3,Vel_d1,Vel_t2,Vel_t3
+
+def Constantes_Cuadra(tf,Qf,Qi): #Encontrar las constantes de la funcion cuadratica
     #Parte de reposo y termina en reposo: ti=0
     Vi=0
     Vf=0
@@ -40,90 +58,6 @@ def Perf_Cuadratica(tf,Qf,Qi):
 
     Const_as=np.array([a[0],a[1],a[2],a[3]],float)
     return Const_as
-
-#print(pos_vel_as(0,5,16,1,0,10))
-
-#Funcion cinematica inverza 
-def CI_MPRR(x1,x2,x3,T):
-
-#Variables simbolicas
-    '''    
-    P_X 
-    P_Y 
-    P_Z 
-    a_1 
-    a_2 
-    a_3 
-    a_4 
-    d_1 
-    '''
-    #Parametros conocidos
-    '''     
-    theta_1=0; #Angulos θ
-    alpha_1=0;
-    alpha_2=0;
-    alpha_3=0;
-    alpha_4=0; #Angulos α
-    d_2=0;
-    d_3=0;
-    d_4=0; #Distancias en z
-    ''' 
-    #Distacias en x
-    a_1=47.3;
-    a_2=149.1;
-    a_3=148.8;
-    a_4=30;
-   
-
-    #Parametros que necesita-ingrezados
-    P_X=x1; #Punto en X
-    P_Y=x2; #Punto en Y
-    P_Z=x3; #Punto en Z
-    
-    phi=34; #Angulo de orientación
-    W=np.array([[P_X],[P_Y],[P_Z]],float) #Vector de Posición ?
-
-    if T==1:
-        # Primera reduccion del manipulador
-        
-        K = np.sqrt((P_X-a_2)**2 + P_Y**2)
-        gama = mt.asin(P_Y/K)
-        
-        # Triangulo interior
-        
-        B1 = mt.acos((a_4**2-K**2-a_3**2)/(-2*K*a_3))
-        theta_1 = gama - B1
-        
-        B2 = mt.acos((K**2-a_3**2-a_4**2)/(-2*a_4*a_3))
-        theta_2 = 180-B2
-        
-        L1=P_Z
-    
-    
-    if T==2:
-        # Primera reduccion del manipulador
-        
-        K = np.sqrt((P_X-a_2)**2 + P_Y**2)
-        gama = mt.asin(P_Y/K)
-        
-        # Triangulo interior
-        
-        B1 = mt.acos((a_4**2-K**2-a_3**2)/(-2*K*a_3))
-        theta_1 = gama + B1
-        
-        B2 = mt.acos((K**2-a_3**2-a_4**2)/(-2*a_4*a_3))
-        theta_2 = -(180-B2)
-        
-        L1=P_Z
-        
-    art=np.array([theta_1,theta_2,L1],float)
-    #m1=art(1)
-    #m2=art(2)
-    #m3=art(3)
-
-    return art
-
-#print(CI_MPRR(16,13,12,1))
 
 def IK_Scara_P3R(P_X, P_Y, P_Z): #Cinematica Inversa Scara (PR3)
     #Distacias en x
@@ -167,28 +101,26 @@ def IK_Antropo_3R(P_X, P_Y, P_Z): #Cinematica Inversa Antropomórfico (R3)
     r=np.sqrt(float(P_X)**2+float(P_Y)**2)#Hipotenusa del triangulo generado desde origen al punto W en el plano XY
     Ca=r-a_1#Cateto adyacente, considerando la distancia a1 entre juntura 1-2
     Co=float(P_Z)-d_1#Cateto opuesto, considerando la distancia d1 entre juntura 1-2
+    alpha=mt.atan2(Co,Ca)#Calculo Alfa (Para Teorema Del Coseno)
     h=np.sqrt(float(Ca)**2+float(Co)**2)
 
-    theta_3ab=mt.acos((h**2-a_2**2-a_3**2)/(2*a_2*a_3)) #Despejando del Teorema del coseno
-    #sent3=np.sqrt(1-cost3**2)#Propiedad trigonometrica sen**2+cos**2=1
-    
-    #Calcularlo por medio de tangente (para todos los posibles valores)
-    #theta_3ab=mt.atan2(sent3,cost3) #Variable De Juntura T3
-
-    alpha=mt.atan2(Co,Ca)#Calculo Alfa
-    Ca2=a_2+a_3*mt.cos(theta_3ab)#Cateto adyacente
-    Co2=a_3*mt.sin(theta_3ab)#Cateto opuesto
-    beta_ab=mt.atan2(Co2,Ca2)#Calculo Beta
-    
-    theta_2ab=alpha-beta_ab            #Variable De Juntura T2
     theta_1=mt.atan2(P_Y,P_X)     #Variable De Juntura T1
 
-     #Codo ariba
+    #Codo Abajo
+    #Despejando del Teorema del coseno
+    theta_3ab=mt.acos((h**2-a_2**2-a_3**2)/(2*a_2*a_3)) #Variable De Juntura T3
+    Ca2=a_2+a_3*mt.cos(theta_3ab)                       #Cateto adyacente
+    Co2=a_3*mt.sin(theta_3ab)                           #Cateto opuesto
+    beta_ab=mt.atan2(Co2,Ca2)                           #Calculo Beta
+    theta_2ab=alpha-beta_ab                             #Variable De Juntura T2
+    
+    #Codo ariba
+    #Despejando del Teorema del coseno
     theta_3ar=-mt.acos((h**2-a_2**2-a_3**2)/(2*a_2*a_3))  #Variable De Juntura T3 
-    Ca2=a_2+a_3*mt.cos(theta_3ab)#Cateto adyacente
-    Co2=a_3*mt.sin(theta_3ab)#Cateto opuesto
-    beta_ar=mt.atan2(Co2,Ca2)#Calculo Beta     
-    theta_2ar=(alpha+beta_ar)                                #Variable De Juntura T2
+    Ca2=a_2+a_3*mt.cos(theta_3ab)                         #Cateto adyacente
+    Co2=a_3*mt.sin(theta_3ab)                             #Cateto opuesto
+    beta_ar=mt.atan2(Co2,Ca2)                             #Calculo Beta     
+    theta_2ar=(alpha+beta_ar)                             #Variable De Juntura T2
 
     if (((theta_3ab)>mt.pi) or ((theta_2ab)>mt.pi) or ((theta_1)>mt.pi)) or (((theta_3ab)<-mt.pi) or ((theta_2ab)<-mt.pi) or ((theta_1)<-mt.pi)):
         indab=1    
@@ -200,7 +132,7 @@ def IK_Antropo_3R(P_X, P_Y, P_Z): #Cinematica Inversa Antropomórfico (R3)
     else:
         indar=0
     
-    IK_FINAL=np.array([theta_1*180/mt.pi, theta_2ab*180/mt.pi , theta_3ab*180/mt.pi, theta_1*180/mt.pi, theta_2ar*180/mt.pi , theta_3ar*180/mt.pi,indar,indab],float)    
+    IK_FINAL=np.array([theta_1*180/mt.pi, theta_2ab*180/mt.pi , theta_3ab*180/mt.pi, theta_2ar*180/mt.pi , theta_3ar*180/mt.pi,indar,indab],float)    
     return IK_FINAL
 
 def limites (X,ID): #Ecuaciones Para Limites Mecánicos Scara
@@ -352,6 +284,6 @@ def JG_A(n,j1,j2,j3): #Jacobiano Para Antropomórfico (R3)
     JG=[[np.cross(Z0,R_list(Pe,P0)),np.cross(Z1,R_list(Pe,P1)),np.cross(Z2,R_list(Pe,P2))],[Z0,Z1,Z2]] 
     return JG
 
-def JG_R(): #Jacobiano Para Antropomórfico (R6) 
+def JG_R(): #Jacobiano Para Antropomórfico (R6)
     JR=[[1,1,1,1,1,1],[1,1,1,1,1,1],[1,1,1,1,1,1],[1,1,1,1,1,1],[1,1,1,1,1,1],[1,1,1,1,1,1]]
     return JR

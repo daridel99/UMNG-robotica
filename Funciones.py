@@ -1,8 +1,9 @@
 from cProfile import label
 from tkinter import *
 import tkinter as tk
+import Calculos as Cal
 
-def fila_vacia(donde,cuantas,frame,tamaño): #Crear Filas Vacias    
+def fila_vacia(donde,cuantas,frame,tamaño): #Crear Filas Vacias
     for n in range (0,cuantas):
         fila = Label(frame,width=tamaño)
         fila.grid(column=0, row=donde+n)
@@ -37,7 +38,7 @@ def matrices_J(m,grados,frame,f,k): #Creación Matrices Jacobianos
             cell = Entry(frame, width=12,  textvariable=globals()["jaco" + str(m) +"_" + str(r) + str(c)], state= DISABLED)
             cell.grid(row=r+f, column=c+k, ipady=4)
 
-def llenado (matri,M,K):  #Llenado Matrices         
+def llenado (matri,M,K):  #Llenado Matrices
     for n in range(M,K):
         for i in range(0,4):
             for j in range(0,4):                
@@ -58,6 +59,38 @@ def llenado_JACO (JA,JS,JR): #Llenado Matrices JACO
             for j in range(0,int(12/n)):           
                 for k in range(0,3):                
                     globals()["jaco" + str(n-1) +"_" + str(i+k) + str(j)].set(J[i-2][j][k]) 
+
+def Perfil(tipo,mani,codo,tf,xi,yi,zi,xf,yf,zf,resol,var): #Determinar el tipo de Perfil A Utilizar
+    if tipo==1:   #Perfil Cuadratico
+        Qs=Manipulador(mani,codo,xi,yi,zi,xf,yf,zf)
+        perfiles=Cal.Perf_Cuadra(tf,resol,Qs[0],Qs[1])
+    elif tipo==2: #Perfil Trapezoidal Tipo I
+        Qs=Manipulador(mani,codo,xi,yi,zi,xf,yf,zf)
+        perfiles=Cal.Perf_Trape1(tf,resol,Qs[0],Qs[1],var)
+    else:         #Perfil Trapezoidal Tipo II
+        Qs=Manipulador(mani,codo,xi,yi,zi,xf,yf,zf)
+        perfiles=Cal.Perf_Trape2(tf,resol,Qs[0],Qs[1],var)
+    return perfiles       
+        
+def Manipulador(manipu,cod,Pxi,Pyi,Pzi,Pxf,Pyf,Pzf): #Determina el Manipulador a Utilizar
+    if manipu==1:
+        Inversai=Cal.IK_Scara_P3R(Pxi,Pyi,Pzi) #Cinematica Inversa para Punto Inicial
+        Inversaf=Cal.IK_Scara_P3R(Pxf,Pyf,Pzf) #Cinematica Inversa para Punto Final
+        Junturas=Solucion(cod,Inversai,Inversaf)
+    else:
+        Inversai=Cal.IK_Antropo_3R(Pxi,Pyi,Pzi) #Cinematica Inversa para Punto Inicial
+        Inversaf=Cal.IK_Antropo_3R(Pxf,Pyf,Pzf) #Cinematica Inversa para Punto Final
+        Junturas=Solucion(cod,Inversai,Inversaf)
+    return Junturas
+
+def Solucion(sol,Ini,Fin): #Determina la Solución a utilizar (Codo Arriba o Codo Abajo)
+    if sol==1: #Codo Abajo
+        Qi=[Ini[0],Ini[1],Ini[2]] #Toma los valores de las junturas iniciales para Codo Abajo 
+        Qf=[Fin[0],Fin[1],Fin[2]] #Toma los valores de las junturas finales para Codo Abajo 
+    else: #Codo Arriba
+        Qi=[Ini[0],Ini[3],Ini[4]] #Toma los valores de las junturas iniciales para Codo Arriba
+        Qf=[Fin[0],Fin[3],Fin[4]] #Toma los valores de las junturas finales para Codo Arriba
+    return Qi,Qf
 
 def prueba():
     exec(open("sera.py").read())
