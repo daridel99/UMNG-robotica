@@ -15,13 +15,20 @@ from threading import Thread
 #Configuracion COM
 board =serial.Serial(port='COM1', baudrate=19200)
 sleep(5) #5 Segundos Para Que Establezca La Comunicacion
-
-# def data_3D():
-#     return 1,1,1,6,7,9,7,2 #xi yi zi xf yf zf tf codo
+bands=0
+bandr=0
 
 def But_Perfiles():#Funcion Para Calcular La Generación de Trayectorias
-    #Vectores=Fnc.Perfil(get.tipe,get.manipulador,get.codo,get.tfinal,get.xini,get.yini,get.zini,get.xfin,get.yfin,get.zfin,get.resolucion,get.variable)
-    Vectores=Fnc.Perfil(3,1,2,15,0,0,0,80,80,80,50,[6,8,2])
+    mani=elec_manipulador()
+    codo=elec_manipulador()
+    xini=float(P_xi.cget("text"))
+    yini=float(P_yi.cget("text"))
+    zini=float(P_zi.cget("text"))
+    xfin=float(Pl_X.get())
+    yfin=float(Pl_Y.get())
+    zfin=float(Pl_Z.get())
+    #Vectores=Fnc.Perfil(tipe,mani,codo,tfin,xini,yini,zini,xfin,yfin,zfin,get.resolucion,get.variable)
+    Vectores=Fnc.Perfil(3,mani,codo,15,xini,yini,zini,xfin,yfin,zfin,50,[6,8,2])
     if Vectores==1:
         messagebox.showinfo(title="error", message="La magnitud de la velocidad supera la condición. \n \t Varie el los valores de la velocidad crucero")
     elif Vectores==2:
@@ -39,7 +46,7 @@ def But_Perfiles():#Funcion Para Calcular La Generación de Trayectorias
         posy=np.empty(50)
         posz=np.empty(50)
         for n in range(0,50):
-            if 1==1:
+            if mani==1:
                 mat=Calculos.M1(3,Vectores[1][n],Vectores[2][n],Vectores[3][n])
                 vect_pos=Calculos.Vec(3,mat[0])                             
                 posx[n]=vect_pos[0]                                  
@@ -48,15 +55,58 @@ def But_Perfiles():#Funcion Para Calcular La Generación de Trayectorias
             else:
                 mat=Calculos.M2(3,Vectores[1][n],Vectores[2][n],Vectores[3][n])
                 vect_pos=Calculos.Vec(3,mat[0])
-                posx[n]=vect_pos[0]               
-                posy[n]=vect_pos[1]                               
-                posz[n]=vect_pos[2]           
+        posx[n]=vect_pos[0]               
+        posy[n]=vect_pos[1]                               
+        posz[n]=vect_pos[2]           
         #Enviar (posx,posy,posz) a grafica 3D y graficar.
-    print(posx)
-    print(posy)  
-    print(posz)   
+    P_xi.config(text=Pl_X.get())
+    P_yi.config(text=Pl_Y.get())
+    P_zi.config(text=Pl_Z.get())
+    obt_datos_temp(P_xi.cget("text"),P_yi.cget("text"),P_zi.cget("text"),0)
+         
 
-    
+def obt_datos_temp(xtemp,ytemp,ztemp,RW):
+    global bands
+    global bandr
+    global temp_xs
+    global temp_ys
+    global temp_zs
+    global temp_xr
+    global temp_yr
+    global temp_zr
+    if RW==0:
+        selection = Manis.get()
+        if selection == "Scara (PRR)":
+            temp_xs=xtemp 
+            temp_ys=ytemp
+            temp_zs=ztemp 
+            bands=1
+        else:
+            temp_xr=xtemp 
+            temp_yr=ytemp
+            temp_zr=ztemp
+            bandr=1
+    else:
+        selection = Manis.get()               
+        if selection == "Scara (PRR)":
+            if bands==1:
+                P_xi.config(text=temp_xs)
+                P_yi.config(text=temp_ys)
+                P_zi.config(text=temp_zs)                
+            else:
+                P_xi.config(text=345.2) 
+                P_yi.config(text=0)
+                P_zi.config(text=0)
+        else:   
+            if bandr==1:
+                P_xi.config(text=temp_xr)
+                P_yi.config(text=temp_yr)
+                P_zi.config(text=temp_zr)                
+            else:   
+                P_xi.config(text=170.28) 
+                P_yi.config(text=0)
+                P_zi.config(text=62.87)          
+                
 def But_IK_S(): #Función Para Calcular Cinematica Inversa Del Scara
 
     M=Calculos.IK_Scara_P3R(float(PX_S.get()), float(PY_S.get()), float(PZ_S.get()))
@@ -152,7 +202,7 @@ def re_def_SLIDER(IKxS): #Función Para Redefinir Sliders
 def re_def_SLIDER_clk():#Función Para Actualizar Slider Al Clickear el Check_Box
     re_def_SLIDER(0)
 
-def selection_changed(event):#Función Mensaje Para Ventanas Pestaña 4
+def selection_changed(event):#Función Para Elección Pestaña 4
     selection = combo.get()
     if selection == "DK":
         FrIKR6.place_forget()
@@ -160,10 +210,84 @@ def selection_changed(event):#Función Mensaje Para Ventanas Pestaña 4
     else:
         FrDKR6.place_forget()
         FrIKR6.place(rely=0.05, relwidth=1, relheight=0.95)
-    #messagebox.showinfo(
-     #   title="Nuevo elemento seleccionado",
-      #  message=selection
-    #)
+    
+def elec_manipulador():#Funcion Para Elección de Manipulador
+    selection = Manis.get()   
+    if selection == "Scara (PRR)":              
+        return 1
+    else:              
+        return 2
+            
+def elec_codo():#Funcion Para Elección de codo
+    selection = Codos.get()
+    if selection == "Codo Abajo":
+        return 1
+    else:
+        return 2
+
+def redef_sliders(event):#Funcion Para Redefinir Sliders de Calculo de Trayectorias       
+    selection = Manis.get()  
+    obt_datos_temp(0,0,0,1)  
+    if selection == "Scara (PRR)":
+        Pl_X['from_']=-131.5
+        Pl_X['to']=375.5
+        Pl_X.place(relx=1/16+0.025, rely=1/6)
+        Pl_Z['from_']=0
+        Pl_Z['to']=122.5
+        Pl_Z.place(relx=1/16+0.025, rely=0.693)        
+    else:
+        Pl_X['from_']=-90
+        Pl_X['to']=90
+        Pl_X.place(relx=1/16+0.025, rely=1/6)
+        Pl_Y['from_']=-90
+        Pl_Y['to']=90
+        Pl_Y.place(relx=1/16+0.025, rely=3/6-0.07)
+        Pl_Z['from_']=-90
+        Pl_Z['to']=90
+        Pl_Z.place(relx=1/16+0.025, rely=0.693) 
+
+def red_slider_Pl_Y(IKxS):#Funcion Para Redefinir Slider "Pl_Y" para opción "Scara"
+    selection = Manis.get()
+    if selection == "Scara (PRR)":
+        Pl_X['from_']=-131.5
+        Pl_X['to']=375.5
+        Pl_X.place(relx=1/16+0.025, rely=1/6)
+        Pl_Z['from_']=0
+        Pl_Z['to']=122.5
+        Pl_Z.place(relx=1/16+0.025, rely=0.693)
+        LimitY=Calculos.varX_scara(Pl_X.get())  
+        Pl_Y.place(relx=1/16+0.025, rely=3/6-0.07)      
+        supe=LimitY[0]
+        infe=LimitY[1]
+        Pl_Y['state']='active'
+        
+        if LimitY[2]== 0 :
+            checkbox2.place_forget()
+            globals() ["Pl_Y_var"] = Pl_Y.get()
+            Pl_Y['from_']=str(infe)
+            Pl_Y['to']=str(supe)
+        else:
+            checkbox2.place(relx=4/16-0.027, rely=3/6+0.05)
+            if checkbox2_value.get():           
+                Pl_Y['from_']=str(float(-1)*supe)
+                Pl_Y['to']=str(float(-1)*infe)
+            else:           
+                Pl_Y['from_']=str(infe)
+                Pl_Y['to']=str(supe)
+    else:
+        checkbox2.place_forget()
+        Pl_X['from_']=-90
+        Pl_X['to']=90
+        Pl_X.place(relx=1/16+0.025, rely=1/6)
+        Pl_Y['from_']=-90
+        Pl_Y['to']=90
+        Pl_Y.place(relx=1/16+0.025, rely=3/6-0.07)
+        Pl_Z['from_']=-90
+        Pl_Z['to']=90
+        Pl_Z.place(relx=1/16+0.025, rely=0.693) 
+
+def re_def_SLIDER_clk2():#Función Para Actualizar Slider Al Clickear el Check_Box
+    red_slider_Pl_Y(0)
 
 def dato1(band):#Función Para Calcular DK Antropomórfico (R3)
     if band==1:
@@ -401,6 +525,7 @@ root.title('Controles de Manipuladores Roboticos')
 #root.iconbitmap('../UMNG-robotica/two-sword.png')
 root.geometry("1320x660")
 Fnc.creacion()
+
 nombre = StringVar()
 numero = IntVar()
 
@@ -549,8 +674,8 @@ FrIKS.place(rely=0.65, relwidth=1, relheight=0.35)
 #Slider PX
 PX_S =Scale(FrIKS,
                 command = re_def_SLIDER,
-                from_=-131.5,
-                to=375.5,
+                from_=-101.5,
+                to=345.2,
                 resolution=0.5,
                 orient = HORIZONTAL,
                 length=180,
@@ -1099,8 +1224,99 @@ CalcularJACO=Button(frmJACO, text='Calcular', activebackground='yellow', command
 CalcularJACO.place(relx=2.5/10-0.01, rely=0.85, relheight=1/6-0.05)
 
 #####Pestaña 6: Planeación Trayectorias#####
+#Frame Planeación De Trayectorias
 frmPlTr=LabelFrame(p5, labelanchor='n')
 frmPlTr.place(relwidth=1, relheight=1)
+
+#Frame Valores a Ingresar
+frmPTdatos=LabelFrame(frmPlTr, labelanchor='n')
+frmPTdatos.place(relwidth=1, relheight=1/4)
+
+#Creacion de Comboboxes
+#Combobox Elección Manipulador
+Manis = ttk.Combobox(frmPTdatos,
+        state="readonly",
+        values=["Scara (PRR)", "Antropomórfico (RRR)"]
+)
+Manis.bind("<<ComboboxSelected>>", redef_sliders)
+Manis.place(x=0, y=0)
+#Combobox Elección Codo
+Codos = ttk.Combobox(frmPTdatos,
+        state="readonly",
+        values=["Codo Abajo", "Codo Arriba"]
+)
+Codos.place(relx=4/16+0.01, rely=4/6)
+
+#Label (Titulos) Puntos
+P_inicial= tk.Label(frmPTdatos,text="Puntos Iniciales")
+P_inicial.place(relx=0, rely=1/6)
+P_final= tk.Label(frmPTdatos,text="Puntos Finales")
+P_final.place(relx=2/16, rely=0)
+Pl_codo= tk.Label(frmPTdatos,text="Elección Codo")
+Pl_codo.place(relx=4/16+0.03, rely=3/6)
+
+#Labels Puntos Iniciales
+P_xi= tk.Label(frmPTdatos,text="0",borderwidth=1, relief="solid",width=12)
+P_xi.place(relx=0, rely=2/6-0.02)
+P_yi= tk.Label(frmPTdatos,text="0",borderwidth=1, relief="solid",width=12)
+P_yi.place(relx=0, rely=3/6+0.075)
+P_zi= tk.Label(frmPTdatos,text="0",borderwidth=1, relief="solid",width=12)
+P_zi.place(relx=0, rely=0.836)
+
+#Labels (Titulos) Puntos (x,y,z)
+P_x= tk.Label(frmPTdatos,text="Px")
+P_x.place(relx=1/16+0.01, rely=2/6-0.02)
+P_y= tk.Label(frmPTdatos,text="Py")
+P_y.place(relx=1/16+0.01, rely=3/6+0.075)
+P_z= tk.Label(frmPTdatos,text="Pz")
+P_z.place(relx=1/16+0.01, rely=0.836)
+
+#Sliders Puntos Finales Planeación De Trayectorias
+Pl_X= Scale(frmPTdatos,
+                command = red_slider_Pl_Y,
+                resolution=0.5,
+                orient = HORIZONTAL,
+                length=180,
+                troughcolor='gray',
+                width = 20,
+                cursor='dot',
+                )
+Pl_X.place(relx=1/16+0.025, rely=1/6)
+
+Pl_Y= Scale(frmPTdatos,
+                #command = servo1,
+                resolution=0.5,
+                orient = HORIZONTAL,
+                length=180,
+                troughcolor='gray',
+                width = 20,
+                cursor='dot',
+                )
+Pl_Y.place(relx=1/16+0.025, rely=3/6-0.07)
+
+#CheckBox Para Valores Negativos
+checkbox2_value = BooleanVar()
+checkbox2 = ttk.Checkbutton(frmPTdatos, 
+                           text="-", 
+                           variable=checkbox2_value, 
+                           command = re_def_SLIDER_clk2)
+checkbox2.place(relx=4/16-0.027, rely=3/6+0.05)
+
+Pl_Z= Scale(frmPTdatos,
+                #command = servo1,
+                resolution=0.5,
+                orient = HORIZONTAL,
+                length=180,
+                troughcolor='gray',
+                width = 20,
+                cursor='dot',
+                )
+Pl_Z.place(relx=1/16+0.025, rely=0.693)
+
+#Label Información Importante (Parte de Reposo)
+info_ini= tk.Label(frmPTdatos,text="Parte de reposo \r termina en reposo: \r Ti=0; Vi=0; Vf=0",font=("Arial",15),borderwidth=1, relief="solid")
+info_ini.place(relx=4/16, rely=0)
+
 #Boton Planeacion Trayectorias
 Envio1=Button(frmPlTr, width=12, height=2, text='Envio', activebackground='yellow', command=But_Perfiles)
 Envio1.place(relx=4/9-0.05,rely=0.83)

@@ -236,7 +236,7 @@ def varX_scara(PosX): #Funcion Para Redefinir Los Valores De Los Sliders (Cinema
     ValX=float(PosX)
     centro=float(47.3)
     Xmin=float(-101.5)
-    Xmax=float(375.2)
+    Xmax=float(345.2)
     Xmedio=float(190.5945)    
     if ValX>=Xmax:
         yinf=0
