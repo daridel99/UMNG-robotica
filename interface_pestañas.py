@@ -11,6 +11,9 @@ import serial, serial.tools.list_ports
 import Calculos
 import Funciones as Fnc
 from threading import Thread
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib.pyplot as plt
 
 #Configuracion COM
 board =serial.Serial(port='COM1', baudrate=19200)
@@ -43,9 +46,9 @@ def But_Perfiles():#Funcion Para Calcular La Generación de Trayectorias
     elif Vectores==2:
         messagebox.showinfo(title="error", message="La magnitud de la aceleración supera la condición. \n \t Varie el los valores de la aceleración crucero")
     else:  
-        # print(Vectores[1][1])
-        # print(Vectores[2][1])
-        # print(Vectores[3][1])
+        print(Vectores[1][1])
+        print(Vectores[2][1])
+        print(Vectores[3][1])
         # Posq2.plot(Vectores[2])
         # Posq3.plot(Vectores[3])
         # Velq1.plot(Vectores[4])
@@ -67,15 +70,98 @@ def But_Perfiles():#Funcion Para Calcular La Generación de Trayectorias
         posx[n]=vect_pos[0]               
         posy[n]=vect_pos[1]                               
         posz[n]=vect_pos[2]
-        print(posx)           
-        print(posy)
-        print(posz)
+        # print(posx)           
+        # print(posy)
+        # print(posz)
         #Enviar (posx,posy,posz) a grafica 3D y graficar.
+        creacion_graf1(resolucion,Vectores[1][-1],Vectores[1])
+        creacion_graf2(resolucion,Vectores[2][-1],Vectores[2])
+        creacion_graf3(resolucion,Vectores[3][-1],Vectores[3])
+    # creacion_graf1(resolucion,Vectores[1][-1],Vectores[1])
+    # creacion_graf1(resolucion,Vectores[1][-1],Vectores[1])
+    # creacion_graf1(resolucion,Vectores[1][-1],Vectores[1])
     P_xi.config(text=Pl_X.get())
     P_yi.config(text=Pl_Y.get())
     P_zi.config(text=Pl_Z.get())
     obt_datos_temp(P_xi.cget("text"),P_yi.cget("text"),P_zi.cget("text"),0)
          
+
+def creacion_graf1(res,ampl,data):
+    fig1,ax1=plt.subplots(facecolor='#85888A')
+    ax1.set_ylabel('[q]')
+    ax1.set_xlabel('[seg]')
+    plt.title("Posición q1",color='k',size=12,family="Arial")
+    ax1.set_xlim(0, res)
+    ax1.set_ylim(0, ampl)
+    canvas1=FigureCanvasTkAgg(fig1,master=frmGraf)
+    canvas1.get_tk_widget().place(rely=0, relwidth=1/3+0.05, relheight=1/3+0.05)    
+    line1,=ax1.plot([],[],color='k',linestyle='solid',linewidth=2)
+    line1.set_data(range(0, res),data)
+
+def creacion_graf2(res,ampl,data):
+    fig2,ax2=plt.subplots(facecolor='#85888A')
+    ax2.set_ylabel('[q]')
+    ax2.set_xlabel('[seg]')
+    plt.title("Posición q2",color='k',size=12,family="Arial")
+    ax2.set_xlim(0, res)
+    ax2.set_ylim(0, ampl)
+    canvas2=FigureCanvasTkAgg(fig2,master=frmGraf)
+    canvas2.get_tk_widget().place(relx=1/3,rely=0, relwidth=1/3+0.05, relheight=1/3+0.05)    
+    line2,=ax2.plot([],[],color='k',linestyle='solid',linewidth=2)
+    line2.set_data(range(0, res),data)
+
+def creacion_graf3(res,ampl,data):
+    fig3,ax3=plt.subplots(facecolor='#85888A')
+    ax3.set_ylabel('[V]')
+    ax3.set_xlabel('[seg]')
+    plt.title("Posición q3",color='k',size=12,family="Arial")
+    ax3.set_xlim(0, res)
+    ax3.set_ylim(0, ampl)
+    canvas3=FigureCanvasTkAgg(fig3,master=frmGraf)
+    canvas3.get_tk_widget().place(relx=2/3, rely=0, relwidth=1/3+0.05, relheight=1/3+0.05)    
+    line3,=ax3.plot([],[],color='k',linestyle='solid',linewidth=2)
+    line3.set_data(range(0, res),data)
+
+def creacion_graf4(res,ampl,data):
+    fig4,ax4=plt.subplots(facecolor='#B5B2B2')
+    ax4.set_ylabel('[V]')
+    ax4.set_xlabel('[seg]')
+    plt.title("Velocidad q1",color='k',size=12,family="Arial")
+    ax4.set_xlim(0, res)
+    ax4.set_ylim(0, ampl)
+    canvas4=FigureCanvasTkAgg(fig4,master=frmGraf)
+    canvas4.get_tk_widget().place(rely=0, relwidth=1/3+0.05, relheight=1/3+0.05)    
+    line4,=ax4.plot([],[],color='k',linestyle='solid',linewidth=2)
+    line4.set_data(range(0, res),data)
+
+def creacion_graf5(res,ampl,data):
+    fig5,ax5=plt.subplots(facecolor='#B5B2B2')
+    ax5.set_ylabel('[V]')
+    ax5.set_xlabel('[seg]')
+    plt.title("Velocidad q2",color='k',size=12,family="Arial")
+    ax5.set_xlim(0, res)
+    ax5.set_ylim(0, ampl)
+    canvas5=FigureCanvasTkAgg(fig5,master=frmGraf)
+    canvas5.get_tk_widget().place(rely=0, relwidth=1/3+0.05, relheight=1/3+0.05)    
+    line5,=ax5.plot([],[],color='k',linestyle='solid',linewidth=2)
+    line5.set_data(range(0, res),data)
+
+def creacion_graf6(res,ampl,data):
+    fig6,ax6=plt.subplots(facecolor='#B5B2B2')
+    ax6.set_ylabel('[q]')
+    ax6.set_xlabel('[seg]')
+    plt.title("Velocidad q3",color='k',size=12,family="Arial")
+    ax6.set_xlim(0, res)
+    ax6.set_ylim(0, ampl)
+    canvas6=FigureCanvasTkAgg(fig6,master=frmGraf)
+    canvas6.get_tk_widget().place(rely=0, relwidth=1/3+0.05, relheight=1/3+0.05)    
+    line6,=ax6.plot([],[],color='k',linestyle='solid',linewidth=2)
+    line6.set_data(range(0, res),data)
+
+
+
+
+    
 
 def obt_datos_temp(xtemp,ytemp,ztemp,RW):
     global bands
@@ -1477,6 +1563,12 @@ TrapezoidalII = tk.Radiobutton(frmPTdatos,
                            #command = re_def_SLIDER_clk2
                            )
 TrapezoidalII.place(relx=12/16+0.04, rely=0)
+
+#Frame Graficas
+frmGraf=LabelFrame(frmPlTr, labelanchor='n')
+frmGraf.place(rely=1/4, relwidth=1, relheight=1)
+
+
 
 
 #AGREGAMOS PESTAÑAS CREADAS
