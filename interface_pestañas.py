@@ -21,29 +21,34 @@ sleep(5) #5 Segundos Para Que Establezca La Comunicacion
 
 def But_Perfiles():#Funcion Para Calcular La Generación de Trayectorias
     Vectores=Fnc.Perfil(get.tipe,get.manipulador,get.codo,get.tfinal,get.xini,get.yini,get.ziini,get.xfin,get.yfin,get.zfin,get.resolucion,get.variable)
-    Posq1.plot(Vectores[0])
-    Posq2.plot(Vectores[1])
-    Posq3.plot(Vectores[2])
-    Velq1.plot(Vectores[3])
-    Velq2.plot(Vectores[4])
-    Velq3.plot(Vectores[5])
-    posx=np.array([],float)
-    posy=np.array([],float)
-    posz=np.array([],float)
-    for n in range(0,get.resolucion):
-        if get.manipulador==1:
-            mat=Calculos.M1(3,Vectores[0][n],Vectores[1][n],Vectores[2][n])
-            vect_pos=Calculos.Vec(4,mat[0])
-            posx[n]=vect_pos[0]
-            posy[n]=vect_pos[1]
-            posz[n]=vect_pos[2]
-        else:
-            mat=Calculos.M2(3,Vectores[0][n],Vectores[1][n],Vectores[2][n])
-            vect_pos=Calculos.Vec(4,mat[0])
-            posx[n]=vect_pos[0]
-            posy[n]=vect_pos[1]
-            posz[n]=vect_pos[2]
-    #Enviar (posx,posy,posz) a grafica 3D y graficar.
+    if Vectores[0]==1:
+        messagebox.showinfo(title="error", message="La magnitud de la velocidad supera la condición. \n \t Varie el los valores de la velocidad crucero")
+    elif Vectores[0]==2:
+        messagebox.showinfo(title="error", message="La magnitud de la aceleración supera la condición. \n \t Varie el los valores de la aceleración crucero")
+    else:  
+        Posq1.plot(Vectores[1])
+        Posq2.plot(Vectores[2])
+        Posq3.plot(Vectores[3])
+        Velq1.plot(Vectores[4])
+        Velq2.plot(Vectores[5])
+        Velq3.plot(Vectores[6])
+        posx=np.array([],float)
+        posy=np.array([],float)
+        posz=np.array([],float)
+        for n in range(0,get.resolucion):
+            if get.manipulador==1:
+                mat=Calculos.M1(3,Vectores[1][n],Vectores[2][n],Vectores[3][n])
+                vect_pos=Calculos.Vec(4,mat[0])
+                posx[n]=vect_pos[0]
+                posy[n]=vect_pos[1]
+                posz[n]=vect_pos[2]
+            else:
+                mat=Calculos.M2(3,Vectores[1][n],Vectores[2][n],Vectores[3][n])
+                vect_pos=Calculos.Vec(4,mat[0])
+                posx[n]=vect_pos[0]
+                posy[n]=vect_pos[1]
+                posz[n]=vect_pos[2]
+        #Enviar (posx,posy,posz) a grafica 3D y graficar.
     
 def But_IK_S(): #Función Para Calcular Cinematica Inversa Del Scara
 
@@ -351,19 +356,7 @@ def show_values3():#Función Envio Text-Box DK Antropomórfico (R6)
     board.write(b'Rm,'+txt_edit_ang12.get(1.0, tk.END).encode()+b'\r\n')
 
     dato3(2)
-'''     text1A.delete("1.0","end")
-        text1A.insert( tk.END,str(M[0]))
-        text1AAr.delete("1.0","end")
-        text1AAr.insert(tk.END, str(M[0]))
-        text2A.delete("1.0","end")
-        text2A.insert( tk.END,str(M[1]))
-        text2AAr.delete("1.0","end")
-        text2AAr.insert(tk.END, str(M[4]))
-        text3A.delete("1.0","end")
-        text3A.insert( tk.END,str(M[2]))
-        text3AAr.delete("1.0","end")
-        text3AAr.insert(tk.END, str(M[5]))
-        '''
+
 def Envio_CD_A(): #Envio Codo Abajo Antropomorfico R3
     #insertar condicion
     board.write(b'Ab,'+"{:.1f}".format(float(text1A.get(1.0, tk.END))).encode()+b'\r\n')

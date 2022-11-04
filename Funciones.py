@@ -2,6 +2,7 @@ from cProfile import label
 from tkinter import *
 import tkinter as tk
 import Calculos as Cal
+import numpy as np
 
 def fila_vacia(donde,cuantas,frame,tamaño): #Crear Filas Vacias
     for n in range (0,cuantas):
@@ -66,12 +67,12 @@ def Perfil(tipo,mani,codo,tf,xi,yi,zi,xf,yf,zf,resol,var): #Determinar el tipo d
         perfiles=Cal.Perf_Cuadra(tf,resol,Qs[0],Qs[1])
     elif tipo==2: #Perfil Trapezoidal Tipo I
         Qs=Manipulador(mani,codo,xi,yi,zi,xf,yf,zf)
-        perfiles=Cal.Perf_Trape1(tf,resol,Qs[0],Qs[1],var)
+        perfiles=Cal.Perf_Trape(tf,resol,Qs[0],Qs[1],var,1)
     else:         #Perfil Trapezoidal Tipo II
         Qs=Manipulador(mani,codo,xi,yi,zi,xf,yf,zf)
-        perfiles=Cal.Perf_Trape2(tf,resol,Qs[0],Qs[1],var)
+        perfiles=Cal.Perf_Trape(tf,resol,Qs[0],Qs[1],var,2)
     return perfiles       
-        
+
 def Manipulador(manipu,cod,Pxi,Pyi,Pzi,Pxf,Pyf,Pzf): #Determina el Manipulador a Utilizar
     if manipu==1:
         Inversai=Cal.IK_Scara_P3R(Pxi,Pyi,Pzi) #Cinematica Inversa para Punto Inicial
@@ -91,6 +92,15 @@ def Solucion(sol,Ini,Fin): #Determina la Solución a utilizar (Codo Arriba o Cod
         Qi=[Ini[0],Ini[3],Ini[4]] #Toma los valores de las junturas iniciales para Codo Arriba
         Qf=[Fin[0],Fin[3],Fin[4]] #Toma los valores de las junturas finales para Codo Arriba
     return Qi,Qf
+
+def Signo(x): #Determina El signo del numero
+    sgn=np.array([0,0,0],float)
+    for a in range(0,len(x)):
+        if x(a)>=0:
+            sgn[a]=1            
+        else:
+            sgn[a]=-1
+    return sgn
 
 def prueba():
     exec(open("sera.py").read())

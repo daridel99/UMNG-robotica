@@ -1,27 +1,102 @@
 import math as mt
+from turtle import pos
+import Funciones as Fn
 import numpy as np
 from sympy import  *
 
-def Perf_Cuadra(tf,n,Qf,Qi): #Encontrar Las Posiciones y Velocidades De Juntura Utilizando El Perfil Cuadratrico
+def Perf_Cuadra(tf,n,Qi,Qf): #Encontrar Las Posiciones y Velocidades De Juntura Utilizando El Perfil Cuadratrico
     #Se recalcula un valor para "t" dependiendo la cantidad de puntos deseados (resolución)
     t = np.arange(0, tf, (tf-0)/(n-1)) 
-
+    Err=0
     for i in range(0,3): #Ciclo de 3 para crear los vectores de las 3 junturas     
         #Calculo de las constantes "a". (1 Vez para cada juntura)   
         Cons_a=Constantes_Cuadra(float(tf),float(Qf[i]),float(Qi[i])) 
         if i==1:
-            Pos_d1= Cons_a[3]*t**3 + Cons_a[2]*t**2 + Cons_a[1]*t + Cons_a[0]  #Vector de Posición Juntura 1 (d1=Desplazamiento Base)
-            Vel_d1 = 3*Cons_a[3]*t**2 + 2*Cons_a[2]*t + Cons_a[1]              #Vector de Velocidad Juntura 1 (d1=Desplazamiento Base)
+            Pos_q1= Cons_a[3]*t**3 + Cons_a[2]*t**2 + Cons_a[1]*t + Cons_a[0]  #Vector de Posición Juntura 1 (d1=Desplazamiento Base)
+            Vel_q1 = 3*Cons_a[3]*t**2 + 2*Cons_a[2]*t + Cons_a[1]              #Vector de Velocidad Juntura 1 (d1=Desplazamiento Base)
         if i==2:
-            Pos_t2 = Cons_a[3]*t**3 + Cons_a[2]*t**2 + Cons_a[1]*t + Cons_a[0] #Vector de Posición Juntura 2 (t2=Angulo Brazo)
-            Vel_t2= 3*Cons_a[3]*t**2 + 2*Cons_a[2]*t + Cons_a[1]               #Vector de Velocidad Juntura 2 (t2=Angulo Brazo)
+            Pos_q2 = Cons_a[3]*t**3 + Cons_a[2]*t**2 + Cons_a[1]*t + Cons_a[0] #Vector de Posición Juntura 2 (t2=Angulo Brazo)
+            Vel_q2= 3*Cons_a[3]*t**2 + 2*Cons_a[2]*t + Cons_a[1]               #Vector de Velocidad Juntura 2 (t2=Angulo Brazo)
         else:
-            Pos_t3 = Cons_a[3]*t**3 + Cons_a[2]*t**2 + Cons_a[1]*t + Cons_a[0] #Vector de Posición Juntura 3 (t3=Angulo AnteBrazo)
-            Vel_t3 = 3*Cons_a[3]*t**2 + 2*Cons_a[2]*t + Cons_a[1]              #Vector de Velocidad Juntura 3 (t3=Angulo AnteBrazo)
+            Pos_q3 = Cons_a[3]*t**3 + Cons_a[2]*t**2 + Cons_a[1]*t + Cons_a[0] #Vector de Posición Juntura 3 (t3=Angulo AnteBrazo)
+            Vel_q3 = 3*Cons_a[3]*t**2 + 2*Cons_a[2]*t + Cons_a[1]              #Vector de Velocidad Juntura 3 (t3=Angulo AnteBrazo)
     
-    return Pos_d1,Pos_t2,Pos_t3,Vel_d1,Vel_t2,Vel_t3
+    return Err,Pos_q1,Pos_q2,Pos_q3,Vel_q1,Vel_q2,Vel_q3
 
-def Constantes_Cuadra(tf,Qf,Qi): #Encontrar las constantes de la funcion cuadratica
+def Perf_Trape(tf,n,Qi,Qf,vect,tipe): #Encontrar Las Posiciones y Velocidades De Juntura Utilizando El Perfil Trapezoidal
+    Variab=Constantes_Trape(Qi,Qf,tf,vect,tipe)
+    tc=Variab[0]
+    Ac=Variab[1]
+    Err=Variab[2]
+    t = np.arange(0, tf, (tf-0)/(n-1)) 
+    if Err==1:
+        return Err
+    elif Err==2:
+        return Err
+    else:
+        Err=0
+        for i in range (0,3):
+            if i==1:
+                if t<=tc(i):                            #Segmento velocidad LINEAL trapecio inicio
+                    Pos_q1=Qi(i)+(Ac(i)*t**2)/2
+                    Vel_q1=Pos_q1/t
+                elif t<=tf-tc(i):                       #Segmento velocidad CONSTANTE trapecio medio
+                    Pos_q1=Qi(i)+Ac(i)*tc(i)*(t-tc(i)/2)
+                    Vel_q1=Pos_q1/t
+                else:                                   #Segmento velocidad LINEAL trapecio final
+                    Pos_q1=Qf(i)-(Ac(i)*(tf-t)**(2))/2  
+                    Vel_q1=Pos_q1/t
+            if i==2:
+                if t<=tc(i):                            #Segmento velocidad LINEAL trapecio inicio
+                    Pos_q2=Qi(i)+(Ac(i)*t**2)/2
+                    Vel_q2=Pos_q2/t
+                elif t<=tf-tc(i):                       #Segmento velocidad CONSTANTE trapecio medio
+                    Pos_q2=Qi(i)+Ac(i)*tc(i)*(t-tc(i)/2)
+                    Vel_q2=Pos_q2/t
+                else:                                   #Segmento velocidad LINEAL trapecio final
+                    Pos_q2=Qf(i)-(Ac(i)*(tf-t)**(2))/2  
+                    Vel_q2=Pos_q2/t
+            if i==3:
+                if t<=tc(i):                            #Segmento velocidad LINEAL trapecio inicio
+                    Pos_q3=Qi(i)+(Ac(i)*t**2)/2
+                    Vel_q3=Pos_q3/t
+                elif t<=tf-tc(i):                       #Segmento velocidad CONSTANTE trapecio medio
+                    Pos_q3=Qi(i)+Ac(i)*tc(i)*(t-tc(i)/2)
+                    Vel_q3=Pos_q3/t
+                else:                                   #Segmento velocidad LINEAL trapecio final
+                    Pos_q3=Qf(i)-(Ac(i)*(tf-t)**(2))/2  
+                    Vel_q3=Pos_q3/t
+        return Err,Pos_q1,Pos_q2,Pos_q3,Vel_q1,Vel_q2,Vel_q3
+
+def Constantes_Trape(Qi,Qf,tf,Vect,tipe): #Encontrar las constantes "tc y Ac" para el Perfil Trapezoidal
+    if tipe==1: #Si Es Perfil Trapezoidal Tipo I
+        Vc=Vect
+        cond=abs(Qf-Qi)/tf
+        if (2*cond>=Vc) & (Vc>cond):
+            Vc=Fn.Signo(Qf-Qi)*Vc
+            tc=(Qi-Qf+(Vc*tf))/Vc
+            Ac=Vc/tc
+            Error=0            
+        else:
+            tc=0
+            Ac=0
+            Error=1            
+        Variables=[tc,Ac,Error]        
+    else: #Si Es Perfil Trapezoidal Tipo II
+        Ac=Vect
+        cond=4*abs(Qf-Qi)/tf**(2)
+        if Ac>cond:
+            Ac=Fn.Signo(Qf-Qi)*Ac
+            tc=(tf/2)-(0.5*(np.sqrt(((tf^2*Ac)-(4*(Qf-Qi)))/Ac)))
+            Error=0 
+        else:
+            tc=0
+            Ac=0
+            Error=2
+        Variables=[tc,Ac,Error]
+    return Variables
+
+def Constantes_Cuadra(tf,Qf,Qi): #Encontrar las constantes "a" de la funcion cuadratica
     #Parte de reposo y termina en reposo: ti=0
     Vi=0
     Vf=0
