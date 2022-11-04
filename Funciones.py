@@ -75,9 +75,9 @@ def Perfil(tipo,mani,codo,tf,xi,yi,zi,xf,yf,zf,resol,var): #Determinar el tipo d
 
 def Manipulador(manipu,cod,Pxi,Pyi,Pzi,Pxf,Pyf,Pzf): #Determina el Manipulador a Utilizar
     if manipu==1:
-        Inversai=Cal.IK_Scara_P3R(Pxi,Pyi,Pzi) #Cinematica Inversa para Punto Inicial
+        Inversai=Cal.IK_Scara_P3R(Pxi,Pyi,Pzi) #Cinematica Inversa para Punto Inicial        
         Inversaf=Cal.IK_Scara_P3R(Pxf,Pyf,Pzf) #Cinematica Inversa para Punto Final
-        Junturas=Solucion(cod,Inversai,Inversaf)
+        Junturas=Solucion(cod,Inversai,Inversaf)        
     else:
         Inversai=Cal.IK_Antropo_3R(Pxi,Pyi,Pzi) #Cinematica Inversa para Punto Inicial
         Inversaf=Cal.IK_Antropo_3R(Pxf,Pyf,Pzf) #Cinematica Inversa para Punto Final
@@ -94,12 +94,10 @@ def Solucion(sol,Ini,Fin): #Determina la Solución a utilizar (Codo Arriba o Cod
     return Qi,Qf
 
 def Signo(x): #Determina El signo del numero
-    sgn=np.array([0,0,0],float)
-    for a in range(0,len(x)):
-        if x(a)>=0:
-            sgn[a]=1            
-        else:
-            sgn[a]=-1
+    if x>=0:
+        sgn=1            
+    else:
+        sgn=-1
     return sgn
 
 def prueba():

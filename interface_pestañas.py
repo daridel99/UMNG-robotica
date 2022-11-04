@@ -20,35 +20,42 @@ sleep(5) #5 Segundos Para Que Establezca La Comunicacion
 #     return 1,1,1,6,7,9,7,2 #xi yi zi xf yf zf tf codo
 
 def But_Perfiles():#Funcion Para Calcular La Generación de Trayectorias
-    Vectores=Fnc.Perfil(get.tipe,get.manipulador,get.codo,get.tfinal,get.xini,get.yini,get.ziini,get.xfin,get.yfin,get.zfin,get.resolucion,get.variable)
-    if Vectores[0]==1:
+    #Vectores=Fnc.Perfil(get.tipe,get.manipulador,get.codo,get.tfinal,get.xini,get.yini,get.zini,get.xfin,get.yfin,get.zfin,get.resolucion,get.variable)
+    Vectores=Fnc.Perfil(3,1,2,15,0,0,0,80,80,80,50,[6,8,2])
+    if Vectores==1:
         messagebox.showinfo(title="error", message="La magnitud de la velocidad supera la condición. \n \t Varie el los valores de la velocidad crucero")
-    elif Vectores[0]==2:
+    elif Vectores==2:
         messagebox.showinfo(title="error", message="La magnitud de la aceleración supera la condición. \n \t Varie el los valores de la aceleración crucero")
     else:  
-        Posq1.plot(Vectores[1])
-        Posq2.plot(Vectores[2])
-        Posq3.plot(Vectores[3])
-        Velq1.plot(Vectores[4])
-        Velq2.plot(Vectores[5])
-        Velq3.plot(Vectores[6])
-        posx=np.array([],float)
-        posy=np.array([],float)
-        posz=np.array([],float)
-        for n in range(0,get.resolucion):
-            if get.manipulador==1:
+        # print(Vectores[1][1])
+        # print(Vectores[2][1])
+        # print(Vectores[3][1])
+        # Posq2.plot(Vectores[2])
+        # Posq3.plot(Vectores[3])
+        # Velq1.plot(Vectores[4])
+        # Velq2.plot(Vectores[5])
+        # Velq3.plot(Vectores[6])
+        posx=np.empty(50)
+        posy=np.empty(50)
+        posz=np.empty(50)
+        for n in range(0,50):
+            if 1==1:
                 mat=Calculos.M1(3,Vectores[1][n],Vectores[2][n],Vectores[3][n])
-                vect_pos=Calculos.Vec(4,mat[0])
-                posx[n]=vect_pos[0]
-                posy[n]=vect_pos[1]
-                posz[n]=vect_pos[2]
+                vect_pos=Calculos.Vec(3,mat[0])                             
+                posx[n]=vect_pos[0]                                  
+                posy[n]=vect_pos[1]                   
+                posz[n]=vect_pos[2]  
             else:
                 mat=Calculos.M2(3,Vectores[1][n],Vectores[2][n],Vectores[3][n])
-                vect_pos=Calculos.Vec(4,mat[0])
-                posx[n]=vect_pos[0]
-                posy[n]=vect_pos[1]
-                posz[n]=vect_pos[2]
+                vect_pos=Calculos.Vec(3,mat[0])
+                posx[n]=vect_pos[0]               
+                posy[n]=vect_pos[1]                               
+                posz[n]=vect_pos[2]           
         #Enviar (posx,posy,posz) a grafica 3D y graficar.
+    print(posx)
+    print(posy)  
+    print(posz)   
+
     
 def But_IK_S(): #Función Para Calcular Cinematica Inversa Del Scara
 
@@ -1090,6 +1097,13 @@ Titulos_JR.place(relx=12/18-0.2,rely=7/14+0.08)
 
 CalcularJACO=Button(frmJACO, text='Calcular', activebackground='yellow', command=Button_CalcularJACO, width=12)
 CalcularJACO.place(relx=2.5/10-0.01, rely=0.85, relheight=1/6-0.05)
+
+#####Pestaña 6: Planeación Trayectorias#####
+frmPlTr=LabelFrame(p5, labelanchor='n')
+frmPlTr.place(relwidth=1, relheight=1)
+#Boton Planeacion Trayectorias
+Envio1=Button(frmPlTr, width=12, height=2, text='Envio', activebackground='yellow', command=But_Perfiles)
+Envio1.place(relx=4/9-0.05,rely=0.83)
 
 #AGREGAMOS PESTAÑAS CREADAS
 nb.add(pI,text='Portada')
