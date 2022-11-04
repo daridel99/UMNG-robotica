@@ -76,9 +76,9 @@ def But_Perfiles():#Funcion Para Calcular La Generación de Trayectorias
         creacion_graf1(resolucion,Vectores[1][-1],Vectores[1])
         creacion_graf2(resolucion,Vectores[2][-1],Vectores[2])
         creacion_graf3(resolucion,Vectores[3][-1],Vectores[3])
-    # creacion_graf1(resolucion,Vectores[1][-1],Vectores[1])
-    # creacion_graf1(resolucion,Vectores[1][-1],Vectores[1])
-        creacion_graf6(resolucion,Vectores[6][-1],Vectores[6])
+        creacion_graf4(resolucion,Vectores[4][int(resolucion/2)],Vectores[4])
+        creacion_graf5(resolucion,Vectores[5][int(resolucion/2)],Vectores[5])
+        creacion_graf6(resolucion,Vectores[6][int(resolucion/2)],Vectores[6])
     P_xi.config(text=Pl_X.get())
     P_yi.config(text=Pl_Y.get())
     P_zi.config(text=Pl_Z.get())
@@ -129,7 +129,7 @@ def creacion_graf4(res,ampl,data):
     ax4.set_xlim(0, res)
     ax4.set_ylim(0, ampl)
     canvas4=FigureCanvasTkAgg(fig4,master=frmGraf)
-    canvas4.get_tk_widget().place(rely=0, relwidth=1/3+0.05, relheight=1/3+0.05)    
+    canvas4.get_tk_widget().place(rely=1/3+0.04, relwidth=1/3+0.02, relheight=1/3+0.05)    
     line4,=ax4.plot([],[],color='k',linestyle='solid',linewidth=2)
     line4.set_data(range(0, res),data)
 
@@ -141,7 +141,7 @@ def creacion_graf5(res,ampl,data):
     ax5.set_xlim(0, res)
     ax5.set_ylim(0, ampl)
     canvas5=FigureCanvasTkAgg(fig5,master=frmGraf)
-    canvas5.get_tk_widget().place(rely=0, relwidth=1/3+0.05, relheight=1/3+0.05)    
+    canvas5.get_tk_widget().place(relx=1/3, rely=1/3+0.04, relwidth=1/3+0.02, relheight=1/3+0.05)    
     line5,=ax5.plot([],[],color='k',linestyle='solid',linewidth=2)
     line5.set_data(range(0, res),data)
 
@@ -151,16 +151,12 @@ def creacion_graf6(res,ampl,data):
     ax6.set_xlabel('[seg]')
     plt.title("Velocidad q3",color='k',size=12,family="Arial")
     ax6.set_xlim(0, res)
-    ax6.set_ylim(-ampl, ampl)
+    ax6.set_ylim(0, ampl)
     canvas6=FigureCanvasTkAgg(fig6,master=frmGraf)
-    canvas6.get_tk_widget().place(relx=2/3+0.01, rely=1/3, relwidth=1/3+0.02, relheight=1/3+0.05)    
+    canvas6.get_tk_widget().place(relx=2/3+0.01, rely=1/3+0.04, relwidth=1/3+0.02, relheight=1/3+0.05)    
     line6,=ax6.plot([],[],color='k',linestyle='solid',linewidth=2)
     line6.set_data(range(0, res),data)
 
-
-
-
-    
 
 def obt_datos_temp(xtemp,ytemp,ztemp,RW):
     global bands
