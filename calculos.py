@@ -79,7 +79,7 @@ def Constantes_Trape(Qi,Qf,tf,Vect,tipe): #Encontrar las constantes "tc y Ac" pa
     if tipe==1: #Si Es Perfil Trapezoidal Tipo I
         Vc=Vect
         cond=abs(Qf-Qi)/tf
-        #print (cond)
+        print (cond)
         if (2*cond>=Vc) & (Vc>cond):
             Vc=Fn.Signo(Qf-Qi)*Vc
             tc=(Qi-Qf+(Vc*tf))/Vc
@@ -93,6 +93,7 @@ def Constantes_Trape(Qi,Qf,tf,Vect,tipe): #Encontrar las constantes "tc y Ac" pa
     else: #Si Es Perfil Trapezoidal Tipo II
         Ac=Vect
         cond=4*abs(Qf-Qi)/tf**(2)
+        #print (cond)
         if Ac>cond:
             Ac=Fn.Signo(Qf-Qi)*Ac
             tc=(tf/2)-(0.5*(np.sqrt(((tf**(2)*Ac)-(4*(Qf-Qi)))/Ac)))

@@ -28,8 +28,16 @@ def But_Perfiles():#Funcion Para Calcular La Generación de Trayectorias
     yfin=float(Pl_Y.get())
     zfin=float(Pl_Z.get())
     tip=Tipo.get()
-    #Vectores=Fnc.Perfil(tipe,mani,codo,tfin,xini,yini,zini,xfin,yfin,zfin,get.resolucion,get.variable)
-    Vectores=Fnc.Perfil(tip,mani,codo,15,xini,yini,zini,xfin,yfin,zfin,50,[6,8,2])
+    tfin=T_f.get()
+    resolucion=N_p.get()
+    if tip==2:
+        variable=[Vj_1.get(),Vj_2.get(),Vj_3.get()]
+    elif tip==3:
+        variable=[Aj_1.get(),Aj_2.get(),Aj_3.get()]
+    else:
+        variable=[0,0,0]
+    #Vectores=Fnc.Perfil(tipe,mani,codo,tfin,xini,yini,zini,xfin,yfin,zfin,resolucion,get.variable)
+    Vectores=Fnc.Perfil(tip,mani,codo,tfin,xini,yini,zini,xfin,yfin,zfin,resolucion,variable)
     if Vectores==1:
         messagebox.showinfo(title="error", message="La magnitud de la velocidad supera la condición. \n \t Varie el los valores de la velocidad crucero")
     elif Vectores==2:
@@ -43,10 +51,10 @@ def But_Perfiles():#Funcion Para Calcular La Generación de Trayectorias
         # Velq1.plot(Vectores[4])
         # Velq2.plot(Vectores[5])
         # Velq3.plot(Vectores[6])
-        posx=np.empty(50)
-        posy=np.empty(50)
-        posz=np.empty(50)
-        for n in range(0,50):
+        posx=np.empty(resolucion)
+        posy=np.empty(resolucion)
+        posz=np.empty(resolucion)
+        for n in range(0,resolucion):
             if mani==1:
                 mat=Calculos.M1(3,Vectores[1][n],Vectores[2][n],Vectores[3][n])
                 vect_pos=Calculos.Vec(3,mat[0])                             
@@ -58,7 +66,10 @@ def But_Perfiles():#Funcion Para Calcular La Generación de Trayectorias
                 vect_pos=Calculos.Vec(3,mat[0])
         posx[n]=vect_pos[0]               
         posy[n]=vect_pos[1]                               
-        posz[n]=vect_pos[2]           
+        posz[n]=vect_pos[2]
+        print(posx)           
+        print(posy)
+        print(posz)
         #Enviar (posx,posy,posz) a grafica 3D y graficar.
     P_xi.config(text=Pl_X.get())
     P_yi.config(text=Pl_Y.get())
@@ -1248,13 +1259,30 @@ Codos = ttk.Combobox(frmPTdatos,
 )
 Codos.place(relx=4/16+0.01, rely=4/6)
 
-#Label (Titulos) Puntos
+#Label (Titulos) 
 P_inicial= tk.Label(frmPTdatos,text="Puntos Iniciales")
 P_inicial.place(relx=0, rely=1/6)
 P_final= tk.Label(frmPTdatos,text="Puntos Finales")
 P_final.place(relx=2/16, rely=0)
 Pl_codo= tk.Label(frmPTdatos,text="Elección Codo")
 Pl_codo.place(relx=4/16+0.03, rely=3/6)
+S_tf= tk.Label(frmPTdatos,text="Tf")
+S_tf.place(relx=6/16+0.03, rely=1/7+0.12)
+S_Np= tk.Label(frmPTdatos,text="N")
+S_Np.place(relx=6/16+0.03, rely=3/7+0.12)
+S_Vc1= tk.Label(frmPTdatos,text="Vc1")
+S_Vc1.place(relx=9/16+0.02, rely=1/7+0.12)
+S_Vc2= tk.Label(frmPTdatos,text="Vc2")
+S_Vc2.place(relx=9/16+0.02, rely=3/7+0.12)
+S_Vc3= tk.Label(frmPTdatos,text="Vc3")
+S_Vc3.place(relx=9/16+0.02, rely=5/7+0.12)
+S_Ac1= tk.Label(frmPTdatos,text="Ac1")
+S_Ac1.place(relx=12/16+0.02, rely=1/7+0.12)
+S_Ac2= tk.Label(frmPTdatos,text="Ac2")
+S_Ac2.place(relx=12/16+0.02, rely=3/7+0.12)
+S_Ac3= tk.Label(frmPTdatos,text="Ac3")
+S_Ac3.place(relx=12/16+0.02, rely=5/7+0.12)
+
 
 #Labels Puntos Iniciales
 P_xi= tk.Label(frmPTdatos,text="0",borderwidth=1, relief="solid",width=12)
@@ -1314,6 +1342,106 @@ Pl_Z= Scale(frmPTdatos,
                 )
 Pl_Z.place(relx=1/16+0.025, rely=0.693)
 
+T_f= Scale(frmPTdatos,                
+                from_=0,
+                to=40,
+                resolution=0.5,
+                orient = HORIZONTAL,
+                length=180,
+                troughcolor='gray',
+                width = 20,
+                cursor='dot',
+                )
+T_f.place(relx=6/16+0.04, rely=1/8+0.01)
+
+N_p= Scale(frmPTdatos,                
+                from_=0,
+                to=1000,
+                resolution=10,
+                orient = HORIZONTAL,
+                length=180,
+                troughcolor='gray',
+                width = 20,
+                cursor='dot',
+                )
+N_p.place(relx=6/16+0.04, rely=3/8+0.04)
+
+#Boton Planeacion Trayectorias
+Calc_PL=Button(frmPTdatos, width=12, height=2, text='Calculo', activebackground='yellow', command=But_Perfiles)
+Calc_PL.place(relx=6/16+0.04, rely=6/8)
+
+Vj_1= Scale(frmPTdatos,                
+                from_=0,
+                to=100,
+                resolution=0.2,
+                orient = HORIZONTAL,
+                length=180,
+                troughcolor='gray',
+                width = 20,
+                cursor='dot',
+                )
+Vj_1.place(relx=9/16+0.04, rely=1/8+0.01)
+
+Vj_2= Scale(frmPTdatos,                
+                from_=0,
+                to=100,
+                resolution=0.2,
+                orient = HORIZONTAL,
+                length=180,
+                troughcolor='gray',
+                width = 20,
+                cursor='dot',
+                )
+Vj_2.place(relx=9/16+0.04, rely=3/8+0.04)
+
+Vj_3= Scale(frmPTdatos,                
+                from_=0,
+                to=100,
+                resolution=0.2,
+                orient = HORIZONTAL,
+                length=180,
+                troughcolor='gray',
+                width = 20,
+                cursor='dot',
+                )
+Vj_3.place(relx=9/16+0.04, rely=5/8+0.08)
+
+Aj_1= Scale(frmPTdatos,                
+                from_=0,
+                to=100,
+                resolution=0.2,
+                orient = HORIZONTAL,
+                length=180,
+                troughcolor='gray',
+                width = 20,
+                cursor='dot',
+                )
+Aj_1.place(relx=12/16+0.04, rely=1/8+0.01)
+
+Aj_2= Scale(frmPTdatos,                
+                from_=0,
+                to=100,
+                resolution=0.2,
+                orient = HORIZONTAL,
+                length=180,
+                troughcolor='gray',
+                width = 20,
+                cursor='dot',
+                )
+Aj_2.place(relx=12/16+0.04, rely=3/8+0.04)
+
+Aj_3= Scale(frmPTdatos,                
+                from_=0,
+                to=100,
+                resolution=0.2,
+                orient = HORIZONTAL,
+                length=180,
+                troughcolor='gray',
+                width = 20,
+                cursor='dot',
+                )
+Aj_3.place(relx=12/16+0.04, rely=5/8+0.08)
+
 #Label Información Importante (Parte de Reposo)
 info_ini= tk.Label(frmPTdatos,text="Parte de reposo \r termina en reposo: \r Ti=0; Vi=0; Vf=0",font=("Arial",15),borderwidth=1, relief="solid")
 info_ini.place(relx=4/16, rely=0)
@@ -1328,7 +1456,7 @@ Cuadratico = tk.Radiobutton(frmPTdatos,
                            width=15,
                            #command = re_def_SLIDER_clk2
                            )
-Cuadratico.place(relx=6/16+0.02, rely=0)
+Cuadratico.place(relx=6/16+0.04, rely=0)
 
 TrapezoidalI = tk.Radiobutton(frmPTdatos,
                            text="Perfil Trapezoidal I",                     
@@ -1338,7 +1466,7 @@ TrapezoidalI = tk.Radiobutton(frmPTdatos,
                            width=15,
                            #command = re_def_SLIDER_clk2
                            )
-TrapezoidalI.place(relx=9/16+0.02, rely=0)
+TrapezoidalI.place(relx=9/16+0.04, rely=0)
 
 TrapezoidalII = tk.Radiobutton(frmPTdatos,
                            text="Perfil Trapezoidal II",                     
@@ -1348,11 +1476,8 @@ TrapezoidalII = tk.Radiobutton(frmPTdatos,
                            width=15,
                            #command = re_def_SLIDER_clk2
                            )
-TrapezoidalII.place(relx=12/16+0.02, rely=0)
+TrapezoidalII.place(relx=12/16+0.04, rely=0)
 
-#Boton Planeacion Trayectorias
-Envio1=Button(frmPlTr, width=12, height=2, text='Envio', activebackground='yellow', command=But_Perfiles)
-Envio1.place(relx=4/9-0.05,rely=0.83)
 
 #AGREGAMOS PESTAÑAS CREADAS
 nb.add(pI,text='Portada')
