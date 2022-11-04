@@ -46,9 +46,8 @@ def But_Perfiles():#Funcion Para Calcular La Generación de Trayectorias
     elif Vectores==2:
         messagebox.showinfo(title="error", message="La magnitud de la aceleración supera la condición. \n \t Varie el los valores de la aceleración crucero")
     else:  
-        print(Vectores[1][1])
-        print(Vectores[2][1])
-        print(Vectores[3][1])
+        print(Vectores[6])
+        
         # Posq2.plot(Vectores[2])
         # Posq3.plot(Vectores[3])
         # Velq1.plot(Vectores[4])
@@ -79,7 +78,7 @@ def But_Perfiles():#Funcion Para Calcular La Generación de Trayectorias
         creacion_graf3(resolucion,Vectores[3][-1],Vectores[3])
     # creacion_graf1(resolucion,Vectores[1][-1],Vectores[1])
     # creacion_graf1(resolucion,Vectores[1][-1],Vectores[1])
-    # creacion_graf1(resolucion,Vectores[1][-1],Vectores[1])
+        creacion_graf6(resolucion,Vectores[6][-1],Vectores[6])
     P_xi.config(text=Pl_X.get())
     P_yi.config(text=Pl_Y.get())
     P_zi.config(text=Pl_Z.get())
@@ -94,7 +93,7 @@ def creacion_graf1(res,ampl,data):
     ax1.set_xlim(0, res)
     ax1.set_ylim(0, ampl)
     canvas1=FigureCanvasTkAgg(fig1,master=frmGraf)
-    canvas1.get_tk_widget().place(rely=0, relwidth=1/3+0.05, relheight=1/3+0.05)    
+    canvas1.get_tk_widget().place(rely=0, relwidth=1/3+0.02, relheight=1/3+0.05)    
     line1,=ax1.plot([],[],color='k',linestyle='solid',linewidth=2)
     line1.set_data(range(0, res),data)
 
@@ -106,19 +105,19 @@ def creacion_graf2(res,ampl,data):
     ax2.set_xlim(0, res)
     ax2.set_ylim(0, ampl)
     canvas2=FigureCanvasTkAgg(fig2,master=frmGraf)
-    canvas2.get_tk_widget().place(relx=1/3,rely=0, relwidth=1/3+0.05, relheight=1/3+0.05)    
+    canvas2.get_tk_widget().place(relx=1/3,rely=0, relwidth=1/3+0.02, relheight=1/3+0.05)    
     line2,=ax2.plot([],[],color='k',linestyle='solid',linewidth=2)
     line2.set_data(range(0, res),data)
 
 def creacion_graf3(res,ampl,data):
-    fig3,ax3=plt.subplots(facecolor='#85888A')
-    ax3.set_ylabel('[V]')
+    fig3,ax3=plt.subplots(facecolor='#85888A')   
+    ax3.set_ylabel('[q]')
     ax3.set_xlabel('[seg]')
     plt.title("Posición q3",color='k',size=12,family="Arial")
     ax3.set_xlim(0, res)
     ax3.set_ylim(0, ampl)
     canvas3=FigureCanvasTkAgg(fig3,master=frmGraf)
-    canvas3.get_tk_widget().place(relx=2/3, rely=0, relwidth=1/3+0.05, relheight=1/3+0.05)    
+    canvas3.get_tk_widget().place(relx=2/3+0.01, rely=0, relwidth=1/3+0.02, relheight=1/3+0.05)    
     line3,=ax3.plot([],[],color='k',linestyle='solid',linewidth=2)
     line3.set_data(range(0, res),data)
 
@@ -148,13 +147,13 @@ def creacion_graf5(res,ampl,data):
 
 def creacion_graf6(res,ampl,data):
     fig6,ax6=plt.subplots(facecolor='#B5B2B2')
-    ax6.set_ylabel('[q]')
+    ax6.set_ylabel('[V]')
     ax6.set_xlabel('[seg]')
     plt.title("Velocidad q3",color='k',size=12,family="Arial")
     ax6.set_xlim(0, res)
-    ax6.set_ylim(0, ampl)
+    ax6.set_ylim(-ampl, ampl)
     canvas6=FigureCanvasTkAgg(fig6,master=frmGraf)
-    canvas6.get_tk_widget().place(rely=0, relwidth=1/3+0.05, relheight=1/3+0.05)    
+    canvas6.get_tk_widget().place(relx=2/3+0.01, rely=1/3, relwidth=1/3+0.02, relheight=1/3+0.05)    
     line6,=ax6.plot([],[],color='k',linestyle='solid',linewidth=2)
     line6.set_data(range(0, res),data)
 
