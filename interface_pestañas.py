@@ -27,8 +27,9 @@ def But_Perfiles():#Funcion Para Calcular La Generación de Trayectorias
     xfin=float(Pl_X.get())
     yfin=float(Pl_Y.get())
     zfin=float(Pl_Z.get())
+    tip=Tipo.get()
     #Vectores=Fnc.Perfil(tipe,mani,codo,tfin,xini,yini,zini,xfin,yfin,zfin,get.resolucion,get.variable)
-    Vectores=Fnc.Perfil(3,mani,codo,15,xini,yini,zini,xfin,yfin,zfin,50,[6,8,2])
+    Vectores=Fnc.Perfil(tip,mani,codo,15,xini,yini,zini,xfin,yfin,zfin,50,[6,8,2])
     if Vectores==1:
         messagebox.showinfo(title="error", message="La magnitud de la velocidad supera la condición. \n \t Varie el los valores de la velocidad crucero")
     elif Vectores==2:
@@ -1316,6 +1317,38 @@ Pl_Z.place(relx=1/16+0.025, rely=0.693)
 #Label Información Importante (Parte de Reposo)
 info_ini= tk.Label(frmPTdatos,text="Parte de reposo \r termina en reposo: \r Ti=0; Vi=0; Vf=0",font=("Arial",15),borderwidth=1, relief="solid")
 info_ini.place(relx=4/16, rely=0)
+
+#CheckBox Para Tipos
+Tipo = IntVar()
+Cuadratico = tk.Radiobutton(frmPTdatos,
+                           text="Perfil Cuadratico",                     
+                           font=("Arial",12),
+                           value=1,
+                           variable=Tipo,
+                           width=15,
+                           #command = re_def_SLIDER_clk2
+                           )
+Cuadratico.place(relx=6/16+0.02, rely=0)
+
+TrapezoidalI = tk.Radiobutton(frmPTdatos,
+                           text="Perfil Trapezoidal I",                     
+                           font=("Arial",12),
+                           value=2,
+                           variable=Tipo,
+                           width=15,
+                           #command = re_def_SLIDER_clk2
+                           )
+TrapezoidalI.place(relx=9/16+0.02, rely=0)
+
+TrapezoidalII = tk.Radiobutton(frmPTdatos,
+                           text="Perfil Trapezoidal II",                     
+                           font=("Arial",12),
+                           value=3,
+                           variable=Tipo,
+                           width=15,
+                           #command = re_def_SLIDER_clk2
+                           )
+TrapezoidalII.place(relx=12/16+0.02, rely=0)
 
 #Boton Planeacion Trayectorias
 Envio1=Button(frmPlTr, width=12, height=2, text='Envio', activebackground='yellow', command=But_Perfiles)
