@@ -26,12 +26,39 @@ sleep(5) #5 Segundos Para Que Establezca La Comunicacion
 bands=0
 bandr=0
 
+def ocultar():
+    print(Tipo.get())
+
+    if Tipo.get()==1:
+        Vj_1['state'] = 'disabled';
+        Vj_2['state'] = 'disabled';
+        Vj_3['state'] = 'disabled';
+        Aj_1['state'] = 'disabled';
+        Aj_2['state'] = 'disabled';
+        Aj_3['state'] = 'disabled';
+    
+    if Tipo.get()==2:
+        Vj_1['state'] = 'normal';
+        Vj_2['state'] = 'normal';
+        Vj_3['state'] = 'normal';
+        Aj_1['state'] = 'disabled';
+        Aj_2['state'] = 'disabled';
+        Aj_3['state'] = 'disabled';
+    
+    if Tipo.get()==3:
+        Aj_1['state'] = 'normal';
+        Aj_2['state'] = 'normal';
+        Aj_3['state'] = 'normal';
+        Vj_1['state'] = 'disabled';
+        Vj_2['state'] = 'disabled';
+        Vj_3['state'] = 'disabled';
+    
 def plot_3d(pos_final_x, pos_final_y, pos_final_z):
 
     root_3d = tkinter.Tk()
-    root_3d.wm_title("Embedding in Tk")
+    root_3d.wm_title("Plot 3D Efector Final")
 
-    fig = Figure(figsize=(5, 4), dpi=100)
+    fig = Figure(figsize=(5, 5), dpi=100)
 
     canvas = FigureCanvasTkAgg(fig, master=root_3d)  # A tk.DrawingArea.
     canvas.draw()
@@ -66,17 +93,11 @@ def But_Perfiles():#Funcion Para Calcular La Generación de Trayectorias
     #Vectores=Fnc.Perfil(tipe,mani,codo,tfin,xini,yini,zini,xfin,yfin,zfin,resolucion,get.variable)
     Vectores=Fnc.Perfil(tip,mani,codo,tfin,xini,yini,zini,xfin,yfin,zfin,resolucion,variable)
     if Vectores==1:
-        messagebox.showinfo(title="error", message="La magnitud de la velocidad supera la condición. \n \t Varie el los valores de la velocidad crucero")
+        messagebox.showinfo(title="error", message="La magnitud de la velocidad supera la condición. \n \t Varie el los valores de la velocidad crucero ")
     elif Vectores==2:
         messagebox.showinfo(title="error", message="La magnitud de la aceleración supera la condición. \n \t Varie el los valores de la aceleración crucero")
     else:  
-        print(Vectores[6])
-        
-        # Posq2.plot(Vectores[2])
-        # Posq3.plot(Vectores[3])
-        # Velq1.plot(Vectores[4])
-        # Velq2.plot(Vectores[5])
-        # Velq3.plot(Vectores[6])
+        #print(Vectores[6])
         posx=np.empty(resolucion)
         posy=np.empty(resolucion)
         posz=np.empty(resolucion)
@@ -90,56 +111,52 @@ def But_Perfiles():#Funcion Para Calcular La Generación de Trayectorias
             else:
                 mat=Calculos.M2(3,Vectores[1][n],Vectores[2][n],Vectores[3][n])
                 vect_pos=Calculos.Vec(3,mat[0])
-        posx[n]=vect_pos[0]               
-        posy[n]=vect_pos[1]                               
-        posz[n]=vect_pos[2]
-        # print(posx)           
-        # print(posy)
-        # print(posz)
-        #Enviar (posx,posy,posz) a grafica 3D y graficar.
-        creacion_graf1(resolucion,Vectores[1][-1],Vectores[1])
-        creacion_graf2(resolucion,Vectores[2][-1],Vectores[2])
-        creacion_graf3(resolucion,Vectores[3][-1],Vectores[3])
+                posx[n]=vect_pos[0]               
+                posy[n]=vect_pos[1]                               
+                posz[n]=vect_pos[2]
+        creacion_graf1(resolucion,int(Vectores[1][0]),int(Vectores[1][-1]),Vectores[1])
+        creacion_graf2(resolucion,int(Vectores[2][0]),int(Vectores[2][-1]),Vectores[2])
+        creacion_graf3(resolucion,int(Vectores[3][0]),int(Vectores[3][-1]),Vectores[3])
         creacion_graf4(resolucion,Vectores[4][int(resolucion/2)],Vectores[4])
         creacion_graf5(resolucion,Vectores[5][int(resolucion/2)],Vectores[5])
         creacion_graf6(resolucion,Vectores[6][int(resolucion/2)],Vectores[6])
-    P_xi.config(text=Pl_X.get())
-    P_yi.config(text=Pl_Y.get())
-    P_zi.config(text=Pl_Z.get())
-    obt_datos_temp(P_xi.cget("text"),P_yi.cget("text"),P_zi.cget("text"),0)
-    plot_3d(posx,posy,posz)
-
-def creacion_graf1(res,ampl,data):
+        P_xi.config(text=Pl_X.get())
+        P_yi.config(text=Pl_Y.get())
+        P_zi.config(text=Pl_Z.get())
+        obt_datos_temp(P_xi.cget("text"),P_yi.cget("text"),P_zi.cget("text"),0)
+        plot_3d(posx,posy,posz)
+    
+def creacion_graf1(res,ampin,ampl,data):
     fig1,ax1=plt.subplots(facecolor='#85888A')
     ax1.set_ylabel('[q]')
     ax1.set_xlabel('[seg]')
     plt.title("Posición q1",color='k',size=12,family="Arial")
     ax1.set_xlim(0, res)
-    ax1.set_ylim(0, ampl)
+    ax1.set_ylim(ampin, ampl+0.5)
     canvas1=FigureCanvasTkAgg(fig1,master=frmGraf)
     canvas1.get_tk_widget().place(rely=0, relwidth=1/3+0.02, relheight=1/3+0.05)    
     line1,=ax1.plot([],[],color='k',linestyle='solid',linewidth=2)
     line1.set_data(range(0, res),data)
 
-def creacion_graf2(res,ampl,data):
+def creacion_graf2(res,ampin,ampl,data):
     fig2,ax2=plt.subplots(facecolor='#85888A')
     ax2.set_ylabel('[q]')
     ax2.set_xlabel('[seg]')
     plt.title("Posición q2",color='k',size=12,family="Arial")
     ax2.set_xlim(0, res)
-    ax2.set_ylim(0, ampl)
+    ax2.set_ylim(ampin, ampl+0.5)
     canvas2=FigureCanvasTkAgg(fig2,master=frmGraf)
     canvas2.get_tk_widget().place(relx=1/3,rely=0, relwidth=1/3+0.02, relheight=1/3+0.05)    
     line2,=ax2.plot([],[],color='k',linestyle='solid',linewidth=2)
     line2.set_data(range(0, res),data)
 
-def creacion_graf3(res,ampl,data):
+def creacion_graf3(res,ampin,ampl,data):
     fig3,ax3=plt.subplots(facecolor='#85888A')   
     ax3.set_ylabel('[q]')
     ax3.set_xlabel('[seg]')
     plt.title("Posición q3",color='k',size=12,family="Arial")
     ax3.set_xlim(0, res)
-    ax3.set_ylim(0, ampl)
+    ax3.set_ylim(ampin, ampl+0.5)
     canvas3=FigureCanvasTkAgg(fig3,master=frmGraf)
     canvas3.get_tk_widget().place(relx=2/3+0.01, rely=0, relwidth=1/3+0.02, relheight=1/3+0.05)    
     line3,=ax3.plot([],[],color='k',linestyle='solid',linewidth=2)
@@ -151,7 +168,7 @@ def creacion_graf4(res,ampl,data):
     ax4.set_xlabel('[seg]')
     plt.title("Velocidad q1",color='k',size=12,family="Arial")
     ax4.set_xlim(0, res)
-    ax4.set_ylim(0, ampl)
+    ax4.set_ylim(0, ampl+0.5)
     canvas4=FigureCanvasTkAgg(fig4,master=frmGraf)
     canvas4.get_tk_widget().place(rely=1/3+0.04, relwidth=1/3+0.02, relheight=1/3+0.05)    
     line4,=ax4.plot([],[],color='k',linestyle='solid',linewidth=2)
@@ -163,7 +180,7 @@ def creacion_graf5(res,ampl,data):
     ax5.set_xlabel('[seg]')
     plt.title("Velocidad q2",color='k',size=12,family="Arial")
     ax5.set_xlim(0, res)
-    ax5.set_ylim(0, ampl)
+    ax5.set_ylim(0, ampl+0.5)
     canvas5=FigureCanvasTkAgg(fig5,master=frmGraf)
     canvas5.get_tk_widget().place(relx=1/3, rely=1/3+0.04, relwidth=1/3+0.02, relheight=1/3+0.05)    
     line5,=ax5.plot([],[],color='k',linestyle='solid',linewidth=2)
@@ -175,7 +192,7 @@ def creacion_graf6(res,ampl,data):
     ax6.set_xlabel('[seg]')
     plt.title("Velocidad q3",color='k',size=12,family="Arial")
     ax6.set_xlim(0, res)
-    ax6.set_ylim(0, ampl)
+    ax6.set_ylim(0, ampl+0.5)
     canvas6=FigureCanvasTkAgg(fig6,master=frmGraf)
     canvas6.get_tk_widget().place(relx=2/3+0.01, rely=1/3+0.04, relwidth=1/3+0.02, relheight=1/3+0.05)    
     line6,=ax6.plot([],[],color='k',linestyle='solid',linewidth=2)
@@ -1448,7 +1465,7 @@ Pl_Z= Scale(frmPTdatos,
 Pl_Z.place(relx=1/16+0.025, rely=0.693)
 
 T_f= Scale(frmPTdatos,                
-                from_=0,
+                from_=0.1,
                 to=40,
                 resolution=0.5,
                 orient = HORIZONTAL,
@@ -1559,7 +1576,7 @@ Cuadratico = tk.Radiobutton(frmPTdatos,
                            value=1,
                            variable=Tipo,
                            width=15,
-                           #command = re_def_SLIDER_clk2
+                           command = ocultar
                            )
 Cuadratico.place(relx=6/16+0.04, rely=0)
 
@@ -1569,7 +1586,7 @@ TrapezoidalI = tk.Radiobutton(frmPTdatos,
                            value=2,
                            variable=Tipo,
                            width=15,
-                           #command = re_def_SLIDER_clk2
+                           command = ocultar
                            )
 TrapezoidalI.place(relx=9/16+0.04, rely=0)
 
@@ -1579,7 +1596,7 @@ TrapezoidalII = tk.Radiobutton(frmPTdatos,
                            value=3,
                            variable=Tipo,
                            width=15,
-                           #command = re_def_SLIDER_clk2
+                           command = ocultar
                            )
 TrapezoidalII.place(relx=12/16+0.04, rely=0)
 
