@@ -51,8 +51,8 @@ ax = fig.add_subplot(111, projection="3d")
 
 data=interface_pestañas.data_3D()
 
-
-ax.plot(pos_final_x, pos_final_y, pos_final_z)
+def plot_3D(pos_final_x, pos_final_y, pos_final_z):
+    ax.plot(pos_final_x, pos_final_y, pos_final_z)
 
 toolbar = NavigationToolbar2Tk(canvas, root)
 toolbar.update()

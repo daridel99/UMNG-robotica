@@ -9,17 +9,41 @@ from time import sleep
 import numpy as np
 import serial, serial.tools.list_ports
 import Calculos
+import sera
 import Funciones as Fnc
 from threading import Thread
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib.backends.backend_tkagg import (
+                                    FigureCanvasTkAgg, NavigationToolbar2Tk)
+from matplotlib.figure import Figure
 
 #Configuracion COM
 board =serial.Serial(port='COM1', baudrate=19200)
 sleep(5) #5 Segundos Para Que Establezca La Comunicacion
 bands=0
 bandr=0
+
+def plot_3d(pos_final_x, pos_final_y, pos_final_z):
+
+    root_3d = tkinter.Tk()
+    root_3d.wm_title("Embedding in Tk")
+
+    fig = Figure(figsize=(5, 4), dpi=100)
+
+    canvas = FigureCanvasTkAgg(fig, master=root_3d)  # A tk.DrawingArea.
+    canvas.draw()
+    ax = fig.add_subplot(111, projection="3d")
+    #data=interface_pestañas.data_3D()
+
+    ax.plot(pos_final_x, pos_final_y, pos_final_z)
+
+    toolbar = NavigationToolbar2Tk(canvas, root_3d)
+    toolbar.update()
+    canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
+    tkinter.mainloop()
 
 def But_Perfiles():#Funcion Para Calcular La Generación de Trayectorias
     mani=elec_manipulador()
@@ -83,7 +107,7 @@ def But_Perfiles():#Funcion Para Calcular La Generación de Trayectorias
     P_yi.config(text=Pl_Y.get())
     P_zi.config(text=Pl_Z.get())
     obt_datos_temp(P_xi.cget("text"),P_yi.cget("text"),P_zi.cget("text"),0)
-         
+    plot_3d(posx,posy,posz)
 
 def creacion_graf1(res,ampl,data):
     fig1,ax1=plt.subplots(facecolor='#85888A')
