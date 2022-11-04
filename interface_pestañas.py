@@ -16,6 +16,7 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+from datetime import datetime
 from matplotlib.backends.backend_tkagg import (
                                     FigureCanvasTkAgg, NavigationToolbar2Tk)
 from matplotlib.figure import Figure
@@ -92,10 +93,11 @@ def But_Perfiles():#Funcion Para Calcular La Generación de Trayectorias
         variable=[0,0,0]
     #Vectores=Fnc.Perfil(tipe,mani,codo,tfin,xini,yini,zini,xfin,yfin,zfin,resolucion,get.variable)
     Vectores=Fnc.Perfil(tip,mani,codo,tfin,xini,yini,zini,xfin,yfin,zfin,resolucion,variable)
-    if Vectores==1:
-        messagebox.showinfo(title="error", message="La magnitud de la velocidad supera la condición. \n \t Varie el los valores de la velocidad crucero ")
-    elif Vectores==2:
-        messagebox.showinfo(title="error", message="La magnitud de la aceleración supera la condición. \n \t Varie el los valores de la aceleración crucero")
+    if Vectores[0]==1:
+        messagebox.showinfo(title="error", message="La magnitud de la velocidad supera la condición. \n Varie el los valores de la velocidad crucero ")
+        Vj_1.set(Vectores[1]+0.5)
+    elif Vectores[0]==2:
+        messagebox.showinfo(title="error", message="La magnitud de la aceleración supera la condición. \n Varie el los valores de la aceleración crucero")
     else:  
         #print(Vectores[6])
         posx=np.empty(resolucion)
@@ -114,89 +116,102 @@ def But_Perfiles():#Funcion Para Calcular La Generación de Trayectorias
                 posx[n]=vect_pos[0]               
                 posy[n]=vect_pos[1]                               
                 posz[n]=vect_pos[2]
-        creacion_graf1(resolucion,int(Vectores[1][0]),int(Vectores[1][-1]),Vectores[1])
-        creacion_graf2(resolucion,int(Vectores[2][0]),int(Vectores[2][-1]),Vectores[2])
-        creacion_graf3(resolucion,int(Vectores[3][0]),int(Vectores[3][-1]),Vectores[3])
-        creacion_graf4(resolucion,Vectores[4][int(resolucion/2)],Vectores[4])
-        creacion_graf5(resolucion,Vectores[5][int(resolucion/2)],Vectores[5])
-        creacion_graf6(resolucion,Vectores[6][int(resolucion/2)],Vectores[6])
+        creacion_graf1(resolucion,int(Vectores[1][0]),int(Vectores[1][-1]),Vectores[1],int(T_f.get()))
+        creacion_graf2(resolucion,int(Vectores[2][0]),int(Vectores[2][-1]),Vectores[2],int(T_f.get()))
+        creacion_graf3(resolucion,int(Vectores[3][0]),int(Vectores[3][-1]),Vectores[3],int(T_f.get()))
+        creacion_graf4(resolucion,Vectores[4][int(resolucion/2)],Vectores[4],int(T_f.get()))
+        creacion_graf5(resolucion,Vectores[5][int(resolucion/2)],Vectores[5],int(T_f.get()))
+        creacion_graf6(resolucion,Vectores[6][int(resolucion/2)],Vectores[6],int(T_f.get()))
         P_xi.config(text=Pl_X.get())
         P_yi.config(text=Pl_Y.get())
         P_zi.config(text=Pl_Z.get())
         obt_datos_temp(P_xi.cget("text"),P_yi.cget("text"),P_zi.cget("text"),0)
         plot_3d(posx,posy,posz)
-    
-def creacion_graf1(res,ampin,ampl,data):
+
+def update_title(axes):
+    axes.set_title(datetime.now())
+    axes.figure.canvas.draw()
+
+def creacion_graf1(res,ampin,ampl,data,timeing):
     fig1,ax1=plt.subplots(facecolor='#85888A')
     ax1.set_ylabel('[q]')
     ax1.set_xlabel('[seg]')
     plt.title("Posición q1",color='k',size=12,family="Arial")
-    ax1.set_xlim(0, res)
+    ax1.set_xlim(0, timeing)
     ax1.set_ylim(ampin, ampl+0.5)
     canvas1=FigureCanvasTkAgg(fig1,master=frmGraf)
     canvas1.get_tk_widget().place(rely=0, relwidth=1/3+0.02, relheight=1/3+0.05)    
     line1,=ax1.plot([],[],color='k',linestyle='solid',linewidth=2)
-    line1.set_data(range(0, res),data)
+    paso=timeing/res
+    line1.set_data(np.arange(0, timeing, paso, dtype=float), data)
+    timer = fig1.canvas.new_timer(interval=100)
+    timer.add_callback(update_title, ax1)
+    timer.start()
 
-def creacion_graf2(res,ampin,ampl,data):
+def creacion_graf2(res,ampin,ampl,data,timeing):
     fig2,ax2=plt.subplots(facecolor='#85888A')
     ax2.set_ylabel('[q]')
     ax2.set_xlabel('[seg]')
     plt.title("Posición q2",color='k',size=12,family="Arial")
-    ax2.set_xlim(0, res)
+    ax2.set_xlim(0, timeing)
     ax2.set_ylim(ampin, ampl+0.5)
     canvas2=FigureCanvasTkAgg(fig2,master=frmGraf)
     canvas2.get_tk_widget().place(relx=1/3,rely=0, relwidth=1/3+0.02, relheight=1/3+0.05)    
     line2,=ax2.plot([],[],color='k',linestyle='solid',linewidth=2)
-    line2.set_data(range(0, res),data)
+    paso=timeing/res
+    line2.set_data(np.arange(0, timeing, paso, dtype=float), data)
 
-def creacion_graf3(res,ampin,ampl,data):
+def creacion_graf3(res,ampin,ampl,data,timeing):
     fig3,ax3=plt.subplots(facecolor='#85888A')   
     ax3.set_ylabel('[q]')
     ax3.set_xlabel('[seg]')
     plt.title("Posición q3",color='k',size=12,family="Arial")
-    ax3.set_xlim(0, res)
+    ax3.set_xlim(0, timeing)
     ax3.set_ylim(ampin, ampl+0.5)
     canvas3=FigureCanvasTkAgg(fig3,master=frmGraf)
     canvas3.get_tk_widget().place(relx=2/3+0.01, rely=0, relwidth=1/3+0.02, relheight=1/3+0.05)    
     line3,=ax3.plot([],[],color='k',linestyle='solid',linewidth=2)
-    line3.set_data(range(0, res),data)
+    paso=timeing/res
+    line3.set_data(np.arange(0, timeing, paso, dtype=float), data)
 
-def creacion_graf4(res,ampl,data):
+def creacion_graf4(res,ampl,data, timeing):
     fig4,ax4=plt.subplots(facecolor='#B5B2B2')
     ax4.set_ylabel('[V]')
     ax4.set_xlabel('[seg]')
     plt.title("Velocidad q1",color='k',size=12,family="Arial")
-    ax4.set_xlim(0, res)
+    ax4.set_xlim(0, timeing)
     ax4.set_ylim(0, ampl+0.5)
     canvas4=FigureCanvasTkAgg(fig4,master=frmGraf)
     canvas4.get_tk_widget().place(rely=1/3+0.04, relwidth=1/3+0.02, relheight=1/3+0.05)    
     line4,=ax4.plot([],[],color='k',linestyle='solid',linewidth=2)
-    line4.set_data(range(0, res),data)
+    paso=timeing/res
+    line4.set_data(np.arange(0, timeing, paso, dtype=float), data)
 
-def creacion_graf5(res,ampl,data):
+def creacion_graf5(res,ampl,data, timeing):
     fig5,ax5=plt.subplots(facecolor='#B5B2B2')
     ax5.set_ylabel('[V]')
     ax5.set_xlabel('[seg]')
     plt.title("Velocidad q2",color='k',size=12,family="Arial")
-    ax5.set_xlim(0, res)
+    ax5.set_xlim(0, timeing)
     ax5.set_ylim(0, ampl+0.5)
     canvas5=FigureCanvasTkAgg(fig5,master=frmGraf)
     canvas5.get_tk_widget().place(relx=1/3, rely=1/3+0.04, relwidth=1/3+0.02, relheight=1/3+0.05)    
     line5,=ax5.plot([],[],color='k',linestyle='solid',linewidth=2)
-    line5.set_data(range(0, res),data)
+    paso=timeing/res
+    line5.set_data(np.arange(0, timeing, paso, dtype=float), data)
 
-def creacion_graf6(res,ampl,data):
+def creacion_graf6(res,ampl,data,timeing):
     fig6,ax6=plt.subplots(facecolor='#B5B2B2')
     ax6.set_ylabel('[V]')
     ax6.set_xlabel('[seg]')
     plt.title("Velocidad q3",color='k',size=12,family="Arial")
-    ax6.set_xlim(0, res)
+    ax6.set_xlim(0, timeing)
     ax6.set_ylim(0, ampl+0.5)
     canvas6=FigureCanvasTkAgg(fig6,master=frmGraf)
     canvas6.get_tk_widget().place(relx=2/3+0.01, rely=1/3+0.04, relwidth=1/3+0.02, relheight=1/3+0.05)    
     line6,=ax6.plot([],[],color='k',linestyle='solid',linewidth=2)
-    line6.set_data(range(0, res),data)
+    paso=timeing/res
+    line6.set_data(np.arange(0, timeing, paso, dtype=float), data)
 
 
 def obt_datos_temp(xtemp,ytemp,ztemp,RW):
@@ -1465,9 +1480,9 @@ Pl_Z= Scale(frmPTdatos,
 Pl_Z.place(relx=1/16+0.025, rely=0.693)
 
 T_f= Scale(frmPTdatos,                
-                from_=0.1,
+                from_=15,
                 to=40,
-                resolution=0.5,
+                resolution=1,
                 orient = HORIZONTAL,
                 length=180,
                 troughcolor='gray',

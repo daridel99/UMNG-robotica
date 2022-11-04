@@ -38,9 +38,9 @@ def Perf_Trape(tf,n,Qi,Qf,vect,tipe): #Encontrar Las Posiciones y Velocidades De
             Ac=Variab[1] 
             Err=Variab[2]
             if Err==1:
-                return Err
+                return Err,Variab[3]
             elif Err==2:
-                return Err
+                return Err, Variab[3]
             else:
                 Err=0
                 if i==0:
@@ -89,7 +89,7 @@ def Constantes_Trape(Qi,Qf,tf,Vect,tipe): #Encontrar las constantes "tc y Ac" pa
             tc=0
             Ac=0
             Error=1            
-        Variables=[tc,Ac,Error]        
+        Variables=[tc,Ac,Error,cond]        
     else: #Si Es Perfil Trapezoidal Tipo II
         Ac=Vect
         cond=4*abs(Qf-Qi)/tf**(2)
@@ -102,7 +102,7 @@ def Constantes_Trape(Qi,Qf,tf,Vect,tipe): #Encontrar las constantes "tc y Ac" pa
             tc=0
             Ac=0
             Error=2
-        Variables=[tc,Ac,Error]
+        Variables=[tc,Ac,Error,cond]
     return Variables
 
 def Constantes_Cuadra(tf,Qf,Qi): #Encontrar las constantes "a" de la funcion cuadratica
