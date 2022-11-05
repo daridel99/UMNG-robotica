@@ -27,33 +27,64 @@ sleep(1) #1 Segundos Para Que Establezca La Comunicacion
 bands=0
 bandr=0
 
+def evento_codo(event):
+    Cuadratico.place(relx=6/16+0.04, rely=0)
+    TrapezoidalI.place(relx=9/16+0.04, rely=0)
+    TrapezoidalII.place(relx=12/16+0.04, rely=0)
+
 def ocultar():
-    print(Tipo.get())
 
     if Tipo.get()==1:
-        Vj_1['state'] = 'disabled';
-        Vj_2['state'] = 'disabled';
-        Vj_3['state'] = 'disabled';
-        Aj_1['state'] = 'disabled';
-        Aj_2['state'] = 'disabled';
-        Aj_3['state'] = 'disabled';
-    
+        Vj_1.place_forget();
+        Vj_2.place_forget();
+        Vj_3.place_forget();
+        Aj_1.place_forget();
+        Aj_2.place_forget();
+        Aj_3.place_forget();
+        S_Ac1.place_forget();
+        S_Ac2.place_forget();
+        S_Ac3.place_forget();
+        S_Vc1.place_forget();
+        S_Vc2.place_forget();
+        S_Vc3.place_forget();
+
     if Tipo.get()==2:
-        Vj_1['state'] = 'normal';
-        Vj_2['state'] = 'normal';
-        Vj_3['state'] = 'normal';
-        Aj_1['state'] = 'disabled';
-        Aj_2['state'] = 'disabled';
-        Aj_3['state'] = 'disabled';
+        Vj_1.place(relx=9/16+0.04, rely=1/8+0.01)
+        Vj_2.place(relx=9/16+0.04, rely=3/8+0.04)
+        Vj_3.place(relx=9/16+0.04, rely=5/8+0.08)
+        S_Vc1.place(relx=9/16+0.02, rely=1/7+0.12)
+        S_Vc2.place(relx=9/16+0.02, rely=3/7+0.12)
+        S_Vc3.place(relx=9/16+0.02, rely=5/7+0.12)
+        Aj_1.place_forget();
+        Aj_2.place_forget();
+        Aj_3.place_forget();
+        S_Ac1.place_forget();
+        S_Ac2.place_forget();
+        S_Ac3.place_forget();
+        #Calculos.Perf_Trape(T_f.get(),N_p.get(),0,0,0,1)
     
     if Tipo.get()==3:
-        Aj_1['state'] = 'normal';
-        Aj_2['state'] = 'normal';
-        Aj_3['state'] = 'normal';
-        Vj_1['state'] = 'disabled';
-        Vj_2['state'] = 'disabled';
-        Vj_3['state'] = 'disabled';
-    
+        Aj_1.place(relx=12/16+0.04, rely=1/8+0.01)
+        Aj_2.place(relx=12/16+0.04, rely=3/8+0.04)
+        Aj_3.place(relx=12/16+0.04, rely=5/8+0.08)
+        S_Ac1.place(relx=12/16+0.02, rely=1/7+0.12)
+        S_Ac2.place(relx=12/16+0.02, rely=3/7+0.12)
+        S_Ac3.place(relx=12/16+0.02, rely=5/7+0.12)
+        Vj_1.place_forget();
+        Vj_2.place_forget();
+        Vj_3.place_forget();
+        S_Vc1.place_forget();
+        S_Vc2.place_forget();
+        S_Vc3.place_forget();
+        #Calculos.Perf_Trape(T_f.get(),N_p.get(),0,0,0,2)
+
+    T_f.place(relx=6/16+0.04, rely=1/8+0.01)
+    N_p.place(relx=6/16+0.04, rely=3/8+0.04)
+    S_tf.place(relx=6/16+0.03, rely=1/7+0.12)
+    S_Np.place(relx=6/16+0.03, rely=3/7+0.12)
+
+    Calc_PL.place(relx=6/16+0.04, rely=6/8)
+
 def plot_3d(pos_final_x, pos_final_y, pos_final_z):
 
     root_3d = tkinter.Tk()
@@ -118,7 +149,7 @@ def But_Perfiles():#Funcion Para Calcular La Generación de Trayectorias
     Vectores=Fnc.Perfil(tip,mani,codo,tfin,xini,yini,zini,xfin,yfin,zfin,resolucion,variable)
     if Vectores[0]==1:
         messagebox.showinfo(title="error", message="La magnitud de la velocidad supera la condición. \n Varie el los valores de la velocidad crucero ")
-        Vj_1.set(Vectores[1]+0.5)
+        #Vj_1.set(Vectores[1]+0.5)
     elif Vectores[0]==2:
         messagebox.showinfo(title="error", message="La magnitud de la aceleración supera la condición. \n Varie el los valores de la aceleración crucero")
     else:  
@@ -162,7 +193,7 @@ def creacion_graf1(res,ampin,ampl,data,timeing):
     ax1.set_xlabel('[seg]')
     plt.title("Posición q1",color='k',size=12,family="Arial")
     ax1.set_xlim(0, timeing)
-    ax1.set_ylim(ampin, ampl+0.5)
+    ax1.set_ylim(ampin, ampl+(Fnc.Signo(ampl)*0.5))
     canvas1=FigureCanvasTkAgg(fig1,master=frmGraf)
     canvas1.get_tk_widget().place(rely=0, relwidth=1/3+0.02, relheight=1/3+0.05)    
     line1,=ax1.plot([],[],color='k',linestyle='solid',linewidth=2)
@@ -179,7 +210,7 @@ def creacion_graf2(res,ampin,ampl,data,timeing):
     ax2.set_xlabel('[seg]')
     plt.title("Posición q2",color='k',size=12,family="Arial")
     ax2.set_xlim(0, timeing)
-    ax2.set_ylim(ampin, ampl+0.5)
+    ax2.set_ylim(ampin, ampl+(Fnc.Signo(ampl)*0.5))
     canvas2=FigureCanvasTkAgg(fig2,master=frmGraf)
     canvas2.get_tk_widget().place(relx=1/3,rely=0, relwidth=1/3+0.02, relheight=1/3+0.05)    
     line2,=ax2.plot([],[],color='k',linestyle='solid',linewidth=2)
@@ -192,7 +223,7 @@ def creacion_graf3(res,ampin,ampl,data,timeing):
     ax3.set_xlabel('[seg]')
     plt.title("Posición q3",color='k',size=12,family="Arial")
     ax3.set_xlim(0, timeing)
-    ax3.set_ylim(ampin, ampl+0.5)
+    ax3.set_ylim(ampin, ampl+(Fnc.Signo(ampl)*0.5))
     canvas3=FigureCanvasTkAgg(fig3,master=frmGraf)
     canvas3.get_tk_widget().place(relx=2/3+0.01, rely=0, relwidth=1/3+0.02, relheight=1/3+0.05)    
     line3,=ax3.plot([],[],color='k',linestyle='solid',linewidth=2)
@@ -205,7 +236,7 @@ def creacion_graf4(res,ampl,data, timeing):
     ax4.set_xlabel('[seg]')
     plt.title("Velocidad q1",color='k',size=12,family="Arial")
     ax4.set_xlim(0, timeing)
-    ax4.set_ylim(0, ampl+0.5)
+    ax4.set_ylim(0, ampl+(Fnc.Signo(ampl)*0.5))
     canvas4=FigureCanvasTkAgg(fig4,master=frmGraf)
     canvas4.get_tk_widget().place(rely=1/3+0.04, relwidth=1/3+0.02, relheight=1/3+0.05)    
     line4,=ax4.plot([],[],color='k',linestyle='solid',linewidth=2)
@@ -218,7 +249,7 @@ def creacion_graf5(res,ampl,data, timeing):
     ax5.set_xlabel('[seg]')
     plt.title("Velocidad q2",color='k',size=12,family="Arial")
     ax5.set_xlim(0, timeing)
-    ax5.set_ylim(0, ampl+0.5)
+    ax5.set_ylim(0, ampl+(Fnc.Signo(ampl)*0.5))
     canvas5=FigureCanvasTkAgg(fig5,master=frmGraf)
     canvas5.get_tk_widget().place(relx=1/3, rely=1/3+0.04, relwidth=1/3+0.02, relheight=1/3+0.05)    
     line5,=ax5.plot([],[],color='k',linestyle='solid',linewidth=2)
@@ -231,7 +262,7 @@ def creacion_graf6(res,ampl,data,timeing):
     ax6.set_xlabel('[seg]')
     plt.title("Velocidad q3",color='k',size=12,family="Arial")
     ax6.set_xlim(0, timeing)
-    ax6.set_ylim(0, ampl+0.5)
+    ax6.set_ylim(0, ampl+(Fnc.Signo(ampl)*0.5))
     canvas6=FigureCanvasTkAgg(fig6,master=frmGraf)
     canvas6.get_tk_widget().place(relx=2/3+0.01, rely=1/3+0.04, relwidth=1/3+0.02, relheight=1/3+0.05)    
     line6,=ax6.plot([],[],color='k',linestyle='solid',linewidth=2)
@@ -387,6 +418,7 @@ def selection_changed(event):#Función Para Elección Pestaña 4
     
 def elec_manipulador():#Funcion Para Elección de Manipulador
     selection = Manis.get()   
+
     if selection == "Scara (PRR)":              
         return 1
     else:              
@@ -401,6 +433,25 @@ def elec_codo():#Funcion Para Elección de codo
 
 def redef_sliders(event):#Funcion Para Redefinir Sliders de Calculo de Trayectorias       
     selection = Manis.get()  
+    #Labels
+    P_xi.place(relx=0, rely=2/6-0.02)
+    P_yi.place(relx=0, rely=3/6+0.075)
+    P_zi.place(relx=0, rely=0.836)
+
+    P_inicial.place(relx=0, rely=1/6)
+    P_final.place(relx=2/16, rely=0)
+
+    #Puntos
+    P_x.place(relx=1/16+0.01, rely=2/6-0.02)
+    P_y.place(relx=1/16+0.01, rely=3/6+0.075)
+    P_z.place(relx=1/16+0.01, rely=0.836)
+
+    checkbox2.place(relx=4/16-0.027, rely=3/6+0.05)
+
+    Pl_X.place(relx=1/16+0.025, rely=1/6)
+    Pl_Y.place(relx=1/16+0.025, rely=3/6-0.07)
+    Pl_Z.place(relx=1/16+0.025, rely=0.693)
+
     obt_datos_temp(0,0,0,1)  
     if selection == "Scara (PRR)":
         Pl_X['from_']=-131.5
@@ -1419,48 +1470,31 @@ Codos = ttk.Combobox(frmPTdatos,
         state="readonly",
         values=["Codo Abajo", "Codo Arriba"]
 )
+Codos.bind("<<ComboboxSelected>>", evento_codo)
 Codos.place(relx=4/16+0.01, rely=4/6)
 
 #Label (Titulos) 
 P_inicial= tk.Label(frmPTdatos,text="Puntos Iniciales")
-P_inicial.place(relx=0, rely=1/6)
 P_final= tk.Label(frmPTdatos,text="Puntos Finales")
-P_final.place(relx=2/16, rely=0)
 Pl_codo= tk.Label(frmPTdatos,text="Elección Codo")
-Pl_codo.place(relx=4/16+0.03, rely=3/6)
 S_tf= tk.Label(frmPTdatos,text="Tf")
-S_tf.place(relx=6/16+0.03, rely=1/7+0.12)
 S_Np= tk.Label(frmPTdatos,text="N")
-S_Np.place(relx=6/16+0.03, rely=3/7+0.12)
 S_Vc1= tk.Label(frmPTdatos,text="Vc1")
-S_Vc1.place(relx=9/16+0.02, rely=1/7+0.12)
 S_Vc2= tk.Label(frmPTdatos,text="Vc2")
-S_Vc2.place(relx=9/16+0.02, rely=3/7+0.12)
 S_Vc3= tk.Label(frmPTdatos,text="Vc3")
-S_Vc3.place(relx=9/16+0.02, rely=5/7+0.12)
 S_Ac1= tk.Label(frmPTdatos,text="Ac1")
-S_Ac1.place(relx=12/16+0.02, rely=1/7+0.12)
 S_Ac2= tk.Label(frmPTdatos,text="Ac2")
-S_Ac2.place(relx=12/16+0.02, rely=3/7+0.12)
 S_Ac3= tk.Label(frmPTdatos,text="Ac3")
-S_Ac3.place(relx=12/16+0.02, rely=5/7+0.12)
-
 
 #Labels Puntos Iniciales
 P_xi= tk.Label(frmPTdatos,text="0",borderwidth=1, relief="solid",width=12)
-P_xi.place(relx=0, rely=2/6-0.02)
 P_yi= tk.Label(frmPTdatos,text="0",borderwidth=1, relief="solid",width=12)
-P_yi.place(relx=0, rely=3/6+0.075)
 P_zi= tk.Label(frmPTdatos,text="0",borderwidth=1, relief="solid",width=12)
-P_zi.place(relx=0, rely=0.836)
 
 #Labels (Titulos) Puntos (x,y,z)
 P_x= tk.Label(frmPTdatos,text="Px")
-P_x.place(relx=1/16+0.01, rely=2/6-0.02)
 P_y= tk.Label(frmPTdatos,text="Py")
-P_y.place(relx=1/16+0.01, rely=3/6+0.075)
 P_z= tk.Label(frmPTdatos,text="Pz")
-P_z.place(relx=1/16+0.01, rely=0.836)
 
 #Sliders Puntos Finales Planeación De Trayectorias
 Pl_X= Scale(frmPTdatos,
@@ -1472,7 +1506,7 @@ Pl_X= Scale(frmPTdatos,
                 width = 20,
                 cursor='dot',
                 )
-Pl_X.place(relx=1/16+0.025, rely=1/6)
+
 
 Pl_Y= Scale(frmPTdatos,
                 #command = servo1,
@@ -1483,7 +1517,6 @@ Pl_Y= Scale(frmPTdatos,
                 width = 20,
                 cursor='dot',
                 )
-Pl_Y.place(relx=1/16+0.025, rely=3/6-0.07)
 
 #CheckBox Para Valores Negativos
 checkbox2_value = BooleanVar()
@@ -1491,7 +1524,6 @@ checkbox2 = ttk.Checkbutton(frmPTdatos,
                            text="-", 
                            variable=checkbox2_value, 
                            command = re_def_SLIDER_clk2)
-checkbox2.place(relx=4/16-0.027, rely=3/6+0.05)
 
 Pl_Z= Scale(frmPTdatos,
                 #command = servo1,
@@ -1502,7 +1534,6 @@ Pl_Z= Scale(frmPTdatos,
                 width = 20,
                 cursor='dot',
                 )
-Pl_Z.place(relx=1/16+0.025, rely=0.693)
 
 T_f= Scale(frmPTdatos,                
                 from_=15,
@@ -1514,10 +1545,10 @@ T_f= Scale(frmPTdatos,
                 width = 20,
                 cursor='dot',
                 )
-T_f.place(relx=6/16+0.04, rely=1/8+0.01)
+
 
 N_p= Scale(frmPTdatos,                
-                from_=0,
+                from_=10,
                 to=1000,
                 resolution=10,
                 orient = HORIZONTAL,
@@ -1526,11 +1557,9 @@ N_p= Scale(frmPTdatos,
                 width = 20,
                 cursor='dot',
                 )
-N_p.place(relx=6/16+0.04, rely=3/8+0.04)
 
 #Boton Planeacion Trayectorias
 Calc_PL=Button(frmPTdatos, width=12, height=2, text='Calculo', activebackground='yellow', command=But_Perfiles)
-Calc_PL.place(relx=6/16+0.04, rely=6/8)
 
 Vj_1= Scale(frmPTdatos,                
                 from_=0,
@@ -1542,7 +1571,6 @@ Vj_1= Scale(frmPTdatos,
                 width = 20,
                 cursor='dot',
                 )
-Vj_1.place(relx=9/16+0.04, rely=1/8+0.01)
 
 Vj_2= Scale(frmPTdatos,                
                 from_=0,
@@ -1554,7 +1582,6 @@ Vj_2= Scale(frmPTdatos,
                 width = 20,
                 cursor='dot',
                 )
-Vj_2.place(relx=9/16+0.04, rely=3/8+0.04)
 
 Vj_3= Scale(frmPTdatos,                
                 from_=0,
@@ -1566,7 +1593,6 @@ Vj_3= Scale(frmPTdatos,
                 width = 20,
                 cursor='dot',
                 )
-Vj_3.place(relx=9/16+0.04, rely=5/8+0.08)
 
 Aj_1= Scale(frmPTdatos,                
                 from_=0,
@@ -1578,7 +1604,6 @@ Aj_1= Scale(frmPTdatos,
                 width = 20,
                 cursor='dot',
                 )
-Aj_1.place(relx=12/16+0.04, rely=1/8+0.01)
 
 Aj_2= Scale(frmPTdatos,                
                 from_=0,
@@ -1590,7 +1615,6 @@ Aj_2= Scale(frmPTdatos,
                 width = 20,
                 cursor='dot',
                 )
-Aj_2.place(relx=12/16+0.04, rely=3/8+0.04)
 
 Aj_3= Scale(frmPTdatos,                
                 from_=0,
@@ -1602,7 +1626,6 @@ Aj_3= Scale(frmPTdatos,
                 width = 20,
                 cursor='dot',
                 )
-Aj_3.place(relx=12/16+0.04, rely=5/8+0.08)
 
 #Label Información Importante (Parte de Reposo)
 info_ini= tk.Label(frmPTdatos,text="Parte de reposo \r termina en reposo: \r Ti=0; Vi=0; Vf=0",font=("Arial",15),borderwidth=1, relief="solid")
@@ -1618,7 +1641,6 @@ Cuadratico = tk.Radiobutton(frmPTdatos,
                            width=15,
                            command = ocultar
                            )
-Cuadratico.place(relx=6/16+0.04, rely=0)
 
 TrapezoidalI = tk.Radiobutton(frmPTdatos,
                            text="Perfil Trapezoidal I",                     
@@ -1628,7 +1650,6 @@ TrapezoidalI = tk.Radiobutton(frmPTdatos,
                            width=15,
                            command = ocultar
                            )
-TrapezoidalI.place(relx=9/16+0.04, rely=0)
 
 TrapezoidalII = tk.Radiobutton(frmPTdatos,
                            text="Perfil Trapezoidal II",                     
@@ -1638,7 +1659,6 @@ TrapezoidalII = tk.Radiobutton(frmPTdatos,
                            width=15,
                            command = ocultar
                            )
-TrapezoidalII.place(relx=12/16+0.04, rely=0)
 
 #Frame Graficas
 frmGraf=LabelFrame(frmPlTr, labelanchor='n')
