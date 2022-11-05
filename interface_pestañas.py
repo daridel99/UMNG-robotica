@@ -23,7 +23,7 @@ from matplotlib.figure import Figure
 
 #Configuracion COM
 board =serial.Serial(port='COM1', baudrate=19200)
-sleep(5) #5 Segundos Para Que Establezca La Comunicacion
+sleep(1) #1 Segundos Para Que Establezca La Comunicacion
 bands=0
 bandr=0
 
@@ -73,6 +73,29 @@ def plot_3d(pos_final_x, pos_final_y, pos_final_z):
     canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
     tkinter.mainloop()
 
+def envio_graf1(Vectores_1,Vectores_2,Vectores_3):
+
+    paso=(T_f.get()/(N_p.get()))  
+    
+    if Manis.get()=="Scara (PRR)":
+        for i in range(0,int(N_p.get())):
+            data=Vectores_1[i]
+            board.write(b'Eb,'+"{:.4f}".format(float(data)).encode()+b'\r\n')
+            data=Vectores_2[i]  
+            board.write(b'Ebr,'+"{:.4f}".format(float(data)).encode()+b'\r\n')
+            data=Vectores_3[i]
+            board.write(b'Eab,'+"{:.4f}".format(float(data)).encode()+b'\r\n')
+            sleep(paso/1)
+    else:
+        for i in range(0,int(N_p.get())):
+            data=Vectores_1[i]
+            board.write(b'Ab,'+"{:.4f}".format(float(data)).encode()+b'\r\n')
+            data=Vectores_2[i]  
+            board.write(b'Abr,'+"{:.4f}".format(float(data)).encode()+b'\r\n')
+            data=Vectores_3[i]
+            board.write(b'Aab,'+"{:.4f}".format(float(data)).encode()+b'\r\n')
+            sleep(paso/1)
+    
 def But_Perfiles():#Funcion Para Calcular La Generación de Trayectorias
     mani=elec_manipulador()
     codo=elec_manipulador()
@@ -116,6 +139,7 @@ def But_Perfiles():#Funcion Para Calcular La Generación de Trayectorias
                 posx[n]=vect_pos[0]               
                 posy[n]=vect_pos[1]                               
                 posz[n]=vect_pos[2]
+        Thread(target=envio_graf1(Vectores[1],Vectores[2],Vectores[3])).start()
         creacion_graf1(resolucion,int(Vectores[1][0]),int(Vectores[1][-1]),Vectores[1],int(T_f.get()))
         creacion_graf2(resolucion,int(Vectores[2][0]),int(Vectores[2][-1]),Vectores[2],int(T_f.get()))
         creacion_graf3(resolucion,int(Vectores[3][0]),int(Vectores[3][-1]),Vectores[3],int(T_f.get()))
