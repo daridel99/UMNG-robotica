@@ -9,12 +9,12 @@ from time import sleep
 import numpy as np
 import serial, serial.tools.list_ports
 import Calculos
-import sera
 import Funciones as Fnc
 from threading import Thread
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
 from mpl_toolkits.mplot3d import Axes3D
 from datetime import datetime
 from matplotlib.backends.backend_tkagg import (
@@ -144,9 +144,10 @@ def creacion_graf1(res,ampin,ampl,data,timeing):
     line1,=ax1.plot([],[],color='k',linestyle='solid',linewidth=2)
     paso=timeing/res
     line1.set_data(np.arange(0, timeing, paso, dtype=float), data)
-    timer = fig1.canvas.new_timer(interval=100)
-    timer.add_callback(update_title, ax1)
-    timer.start()
+    #plt.show()
+    #timer = fig1.canvas.new_timer(interval=100)
+    #timer.add_callback(update_title, ax1)
+    #timer.start()
 
 def creacion_graf2(res,ampin,ampl,data,timeing):
     fig2,ax2=plt.subplots(facecolor='#85888A')
