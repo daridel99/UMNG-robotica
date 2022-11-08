@@ -379,7 +379,7 @@ def But_IK_R3(): #Función Para Calcular Cinematica Inversa Del Antropomórfico 
 
 def Button_CalcularJACO(): #Función Para Calcular Jacobianos 
     J_A=Calculos.JG_A(3,Aangulo1.get(),Aangulo2.get(),Aangulo3.get())
-    J_S=Calculos.JG_S(4,angulo1.get(),angulo2.get(),angulo3.get())
+    J_S=Calculos.JG_S(3,angulo1.get(),angulo2.get(),angulo3.get())
     J_R=Calculos.JG_R()
     Fnc.llenado_JACO(J_A,J_S,J_R)
 
@@ -791,13 +791,13 @@ Sebastian Niño - 1803558
 etiqueta.place(relwidth=0.97,relheight=0.7)
 
 #Logo UMNG
-img= PhotoImage(file='./LOGOUMNG.png')
+img= PhotoImage(file='./Imagenes/LOGOUMNG.png')
 img_zoom=img.zoom(2)
 widget = Label(fi, image=img_zoom)
 widget.place(relwidth=0.3,relheight=0.6)
 
 #Logo Robot
-img1= PhotoImage(file='./icon.png')
+img1= PhotoImage(file='./Imagenes/icon.png')
 img1_zoom=img1.zoom(2)
 widget1 = Label(fi, image=img1_zoom)
 widget1.place(x=1050, y=150)
@@ -1663,9 +1663,6 @@ TrapezoidalII = tk.Radiobutton(frmPTdatos,
 #Frame Graficas
 frmGraf=LabelFrame(frmPlTr, labelanchor='n')
 frmGraf.place(rely=1/4, relwidth=1, relheight=1)
-
-
-
 
 #AGREGAMOS PESTAÑAS CREADAS
 nb.add(pI,text='Portada')

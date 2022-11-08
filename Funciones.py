@@ -15,8 +15,6 @@ def columna_vacia(donde,cuantas,frame,tamano): #Crear Columnas Vacias
         blanco.grid(column=donde+n, row=0)
 
 def creacion(): #Creacion De Variables En Masa
-    globals()["txt_edit_yS_var"] = StringVar()
-
     for n in range(1,16):
         for i in range(0,4):
             for j in range(0,4):

@@ -339,10 +339,10 @@ def R_list(Pi,Pf): #Funcion Para Restar Listas
     resta=list(map(lambda x,y: x-y ,Pi,Pf))
     return resta
     
-def JG_S(n,d1,t2,t3,t4): #Jacobiano Para Scara (PR3)
+def JG_S(n,d1,t2,t3): #Jacobiano Para Scara (PR3)
     Z0=[0,0,1]
     P0=[0,0,0]
-    DK=M1(n,d1,t2,t3,t4)
+    DK=M1(n,d1,t2,t3)
     Tm_1=np.dot(DK[1][0],DK[1][1])
     Tm_2=np.dot(Tm_1,DK[1][2])
     P1=Vec(3,DK[1][0])
@@ -371,3 +371,69 @@ def JG_A(n,j1,j2,j3): #Jacobiano Para Antropomórfico (R3)
 def JG_R(): #Jacobiano Para Antropomórfico (R6)
     JR=[[1,1,1,1,1,1],[1,1,1,1,1,1],[1,1,1,1,1,1],[1,1,1,1,1,1],[1,1,1,1,1,1],[1,1,1,1,1,1]]
     return JR
+
+# def IK_Scara_P3R(P_X, P_Y, P_Z, phi): #Cinematica Inversa Scara (PR3)
+#     #Distacias en x
+#     a_1=float(47.3)
+#     a_2=float(149.1)
+#     a_3=float(148.8)
+#     a_4=float(30)
+
+#     EFx=mt.cos(phi*mt.pi/180)*a_4
+#     EFy=mt.sin(phi*mt.pi/180)*a_4 #Distancia en "y" entre punto W y Join4
+#     Ca=P_X-EFx-a_1    #Cateto Adyacente del triangulo formado en X-Y'
+#     Co=P_Y-EFy        #Cateto Opuesto del triangulo formado en X-Y'
+#     c=np.sqrt(float(Ca)**2+float(Co)**2) 
+#     alpha=mt.atan2(Co,Ca)
+#     beta=mt.acos((a_2**(2)+c**(2)-a_3**(2))/(2*a_2*c))
+#     #Codo abajo
+#     theta_3ab=mt.acos((c**(2)-a_2**(2)-a_3**(2))/(2*a_2*a_3))   #Variable De Juntura T3
+#     theta_2ab=(alpha-beta)                                      #Variable De Juntura T2
+#     theta_4ab=(phi-(theta_2ab*180/mt.pi)-(theta_3ab*180/mt.pi)) #Variable De Juntura T4
+#     #Codo ariba
+#     theta_3ar=-mt.acos((c**(2)-a_2**(2)-a_3**(2))/(2*a_2*a_3))  #Variable De Juntura T3
+#     theta_2ar=(alpha+beta)                                      #Variable De Juntura T2
+#     theta_4ar=(phi-(theta_2ar*180/mt.pi)-(theta_3ar*180/mt.pi)) #Variable De Juntura T4
+
+#     d_1=P_Z                                                     #Variable De Juntura d1
+
+#     if (((theta_3ab)>mt.pi/2) or ((theta_2ab)>mt.pi/2) or ((theta_4ab)>90)) or (((theta_3ab)<-mt.pi/2) or ((theta_2ab)<-mt.pi/2) or ((theta_4ab)<-90)):
+#         indab=1    
+#     else:
+#         indab=0
+
+#     if (((theta_3ar)>mt.pi/2) or ((theta_2ar)>mt.pi/2) or ((theta_4ar)>90)) or (((theta_3ar)<-mt.pi/2) or ((theta_2ar)<-mt.pi/2) or ((theta_4ar)<-90)):
+#         indar=1    
+#     else:
+#         indar=0
+
+#     IK_FINAL=np.array([d_1, theta_2ab*180/mt.pi, theta_3ab*180/mt.pi, theta_4ab,  theta_2ar*180/mt.pi,theta_3ar*180/mt.pi, theta_4ar,indar,indab],float)
+#     return IK_FINAL
+
+# def M1(n,d1,t2,t3,t4): #Definicion Parametros Scara (PR3)
+
+#     matrices=[]
+#     z=[0, t2, t3,t4]
+#     d=[d1,0,0,0]
+#     x=[0,0,0,0] 
+#     a=[47.3,149.1,148.8,30]     
+#     for i in range (0,n):
+#         matrices.append(matrices_T((z[i]*mt.pi/180),d[i],x[i],a[i]))
+#     final=calculo(matrices,n)
+#     return final,matrices
+
+# def JG_S(n,d1,t2,t3,t4): #Jacobiano Para Scara (PR3)
+    Z0=[0,0,1]
+    P0=[0,0,0]
+    DK=M1(n,d1,t2,t3,t4)
+    Tm_1=np.dot(DK[1][0],DK[1][1])
+    Tm_2=np.dot(Tm_1,DK[1][2])
+    P1=Vec(3,DK[1][0])
+    P2=Vec(3,Tm_1)
+    P3=Vec(3,Tm_2)
+    Pe=Vec(3,DK[0])
+    Z1=Vec(2,DK[1][0])
+    Z2=Vec(2,Tm_1)
+    Z3=Vec(2,Tm_2)    
+    JG=[[Z0,np.cross(Z1,R_list(Pe,P1)),np.cross(Z2,R_list(Pe,P2)),np.cross(Z3,R_list(Pe,P3))],[[0,0,0],Z1,Z2,Z3]]
+    return JG
