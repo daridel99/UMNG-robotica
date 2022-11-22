@@ -1,25 +1,24 @@
-import tkinter 
-from tkinter import *
+import tkinter
 import tkinter as tk
-from tkinter import ttk
 import tkinter.font as tkFont
-from tkinter import messagebox
-from tkinter import HORIZONTAL, PhotoImage, StringVar, Widget
+from datetime import datetime
+from threading import Thread
 from time import sleep
+from tkinter import *
+from tkinter import HORIZONTAL, PhotoImage, StringVar, Widget, messagebox, ttk
+
+import matplotlib.pyplot as plt
 import numpy as np
-import serial, serial.tools.list_ports
+import serial
+import serial.tools.list_ports
+from matplotlib.animation import FuncAnimation
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,
+                                               NavigationToolbar2Tk)
+from matplotlib.figure import Figure
+from mpl_toolkits.mplot3d import Axes3D
+
 import Calculos
 import Funciones as Fnc
-from threading import Thread
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
-from mpl_toolkits.mplot3d import Axes3D
-from datetime import datetime
-from matplotlib.backends.backend_tkagg import (
-                                    FigureCanvasTkAgg, NavigationToolbar2Tk)
-from matplotlib.figure import Figure
 
 #Configuracion COM
 board =serial.Serial(port='COM1', baudrate=19200)
@@ -182,6 +181,35 @@ def But_Perfiles():#Funcion Para Calcular La Generación de Trayectorias
         P_zi.config(text=Pl_Z.get())
         obt_datos_temp(P_xi.cget("text"),P_yi.cget("text"),P_zi.cget("text"),0)
         plot_3d(posx,posy,posz)
+
+globals()["clickeo"]=True
+globals()["clickeo1"]=True
+
+def BG_PT_fun():
+
+    if Manis.get()=="Scara (PRR)":
+        if  globals()["clickeo"]:
+            globals()["clickeo"]=globals()["clickeo"]^1
+            BoA["bg"]="red"
+            BG_PT["bg"]="red"
+            board.write(b'E,0 \r\n')
+        
+        else:
+            globals()["clickeo"]=globals()["clickeo"]^1
+            BoA["bg"]="green"
+            BG_PT["bg"]="green"
+            board.write(b'E,1 \r\n')
+    else:
+        if  globals()["clickeo1"]:
+            globals()["clickeo1"]=globals()["clickeo1"]^1
+            BoC["bg"]="red"
+            BG_PT["bg"]="red"
+            board.write(b'A,0 \r\n')
+        else:
+            globals()["clickeo1"]=globals()["clickeo1"]^1
+            BoC["bg"]="green"
+            BG_PT["bg"]="green"
+            board.write(b'A,1 \r\n')
 
 def update_title(axes):
     axes.set_title(datetime.now())
@@ -433,6 +461,7 @@ def elec_codo():#Funcion Para Elección de codo
 
 def redef_sliders(event):#Funcion Para Redefinir Sliders de Calculo de Trayectorias       
     selection = Manis.get()  
+    BG_PT_fun()
     #Labels
     P_xi.place(relx=0, rely=2/6-0.02)
     P_yi.place(relx=0, rely=3/6+0.075)
@@ -617,28 +646,26 @@ def Rservo6(posiciones6):
     dato3(1)
 
 #Gripper
-globals()["clickeo"]=True
-def abrir():#Función Abrir Gripper
+def abrir():#Función Abrir/Cerrar Gripper
     if  globals()["clickeo"]:
         globals()["clickeo"]=globals()["clickeo"]^1
         BoA["bg"]="red"
-        board.write(b'E0 \r\n')
+        board.write(b'E,0 \r\n')
     
     else:
         globals()["clickeo"]=globals()["clickeo"]^1
         BoA["bg"]="green"
-        board.write(b'E1 \r\n')
+        board.write(b'E,1 \r\n')
 
-globals()["clickeo1"]=True
-def cerrar():#Función Cerrar Gripper
+def cerrar():#Función Abrir/Cerrar Gripper
     if  globals()["clickeo1"]:
         globals()["clickeo1"]=globals()["clickeo1"]^1
         BoC["bg"]="red"
-        board.write(b'A0 \r\n')
+        board.write(b'A,0 \r\n')
     else:
         globals()["clickeo1"]=globals()["clickeo1"]^1
         BoC["bg"]="green"
-        board.write(b'A1 \r\n')
+        board.write(b'A,1 \r\n')
 
 def info():#Función Información DK
     messagebox.showinfo("Informacion de uso",
@@ -1630,6 +1657,10 @@ Aj_3= Scale(frmPTdatos,
 #Label Información Importante (Parte de Reposo)
 info_ini= tk.Label(frmPTdatos,text="Parte de reposo \r termina en reposo: \r Ti=0; Vi=0; Vf=0",font=("Arial",15),borderwidth=1, relief="solid")
 info_ini.place(relx=4/16, rely=0)
+
+#Boton Gripper
+BG_PT = Button(frmPTdatos,text="Gripper",command=BG_PT_fun, bg='green', bd=3, height=2, width=10)
+BG_PT.place(relx=2/4,rely=3/4-0.01)
 
 #CheckBox Para Tipos
 Tipo = IntVar()
