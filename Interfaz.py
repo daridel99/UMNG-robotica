@@ -614,8 +614,13 @@ Tipo=tk.IntVar()
 Cuadratico=Wd.Radio(Fr_T, "Perfil Cuadrático", Fuente_12, 1, Tipo, 15, Show_Datos)
 TrapezoidalI=Wd.Radio(Fr_T, "Perfil Trapezoidal I", Fuente_12, 2, Tipo, 15, Show_Datos)
 TrapezoidalII=Wd.Radio(Fr_T, "Perfil Trapezoidal II", Fuente_12, 3, Tipo, 15, Show_Datos)
+<<<<<<< Updated upstream
 Calcular_PT=Wd.Boton(Fr_T, 12, None, "Calcular", "dim gray")
 Wd.Boton(Fr_T, None, None, "Instrucciones", "LightYellow2").Ubicacion(1, 1, tk.SE)
+=======
+#Calcular_PT=Wd.Boton(Fr_T, 12, None, "Calcular", "dim gray")
+#Wd.Boton(Fr_T, None, None, "Instrucciones", "LightYellow2").Ubicacion(1, 1, tk.SE)
+>>>>>>> Stashed changes
 
 #Barra De Progreso
 Br_Pl=Wd.Barra(Fr_T, 150, 1/8, 5/16, 1, tk.S)
@@ -626,6 +631,7 @@ Check_A_PL=Wd.Check(Fr_T, 'Inf', 1/4-0.025, 2/3+0.15, Cambio, 'AT', Check_AT_Val
 Pl_x=Wd.Slider(Fr_T, None, None, 0.5, 180, 20, None, None, Alter_Sliders, 'A1')              
 Pl_y=Wd.Slider(Fr_T, None, None, 0.5, 180, 20, None, None, Alter_Sliders, 'A2')
 Pl_z=Wd.Slider(Fr_T, None, None, 0.5, 180, 20, None, None, Show_Codo, None)
+<<<<<<< Updated upstream
 T_f=Wd.Slider(Fr_T, 15, 40, 1, 180, 20, None, None, None, None)
 N_p=Wd.Slider(Fr_T, 10, 1000, 10, 180, 20, None, None, None, None)
 Vj_1=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, None, None)
@@ -634,6 +640,16 @@ Vj_3=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, None, None)
 Aj_1=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, None, None)
 Aj_2=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, None, None)
 Aj_3=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, None, None)
+=======
+# T_f=Wd.Slider(Fr_T, 15, 40, 1, 180, 20, None, None, None, None)
+# N_p=Wd.Slider(Fr_T, 10, 1000, 10, 180, 20, None, None, None, None)
+# Vj_1=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, None, None)
+# Vj_2=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, None, None)
+# Vj_3=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, None, None)
+# Aj_1=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, None, None)
+# Aj_2=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, None, None)
+# Aj_3=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, None, None)
+>>>>>>> Stashed changes
 
 # #Wd.Aparecer(Despl_Codo, 4/16+0.01, 4/6)
 # #Titulos
