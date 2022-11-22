@@ -1,7 +1,7 @@
 from tkinter import ttk
 import tkinter.font as Fuentes
 import tkinter as tk
-import Calculos as Cal
+import Ecuaciones as Ec
 import numpy as np
 
 
