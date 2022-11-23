@@ -7,7 +7,11 @@ import threading as hilos
 ###### Modulos De Librerias ######
 import tkinter.ttk as ttk
 import tkinter.messagebox as MsB
+import serial
+import serial.tools.list_ports
 
+board =serial.Serial(port='COM1', baudrate=19200)
+tm.sleep(1)
 
 def Show_Sliders(event): #Función Para Mostrar Sliders
     Alter_Sliders('T', Pl_x.get())
@@ -137,7 +141,7 @@ def Color(Bandera, Boton, Identi): #Función Para Alternan Color De Boton
         print(Identi + '1')
     else:
         Boton["bg"]="lime green"
-        print(Identi + '0')
+        board.write(Identi + '0')
 
 def Gripper(Identi): #Función Para Abrir o Cerrar Grippers
         global Estado_S        
@@ -225,7 +229,7 @@ def Cine_Directa(Vector, Valor): #Función Para Enviar y Calcular Cinemática Di
         Wd.Llenado(Matriz, 9, 15)    
     hilos.Thread(target=Wd.Barra.Carga, args=(Vector[1],)).start()
     #print-->board.write
-    print(Identi.encode()+b','+ Valor.encode()+b'\r\n')
+    board.write(Identi.encode()+b','+ Valor.encode()+b'\r\n')
 
 def Cajas_DK(Vector): #Función Para Boton "Enviar". Se Calcula y Envia La Cinemática Directa Con Los Cuadros de Texto
     Identi=Vector[0]
@@ -245,11 +249,11 @@ def Cine_Inversa(Vector): #Función Para Calcular Cinematica Inversa Del Scara
     Identi=Vector[0]
     Codos=Vector[1]
     if Identi=='S':
-        Vec_IK=Ec.Calculo_Inversa(1, float(146.0), float(205.05), float(10)) 
+        Vec_IK=Ec.Calculo_Inversa(1, float(Px_S.get()), float(Py_S.get()), float(Pz_S.get())) 
         Codos[0].Ubicacion(1/2,1/2,tk.N)
         Codos[1].Ubicacion(2/3, 1/2, tk.N)
         #Inserta Valores de Variables de Juntura en La Interfaz (Codo Abajo y Codo Arriba)
-        q1_S.set(str("{:.4f}".format(Vec_IK[0])))
+        q1_S.set(str("{:.4f}".format(Vec_IK[0]/10)))
         q2_S_D.set(str("{:.4f}".format(Vec_IK[1])))
         q3_S_D.set(str("{:.4f}".format(Vec_IK[2])))
         q2_S_U.set(str("{:.4f}".format(Vec_IK[3])))
@@ -258,6 +262,8 @@ def Cine_Inversa(Vector): #Función Para Calcular Cinematica Inversa Del Scara
         Vec_IK=Ec.Calculo_Inversa(2, float(Px_A.get()), float(Py_A.get()), float(Pz_A.get())) 
         Codos[0].Ubicacion(1/2, 1/2, tk.N)
         Codos[1].Ubicacion(2/3, 1/2, tk.N)
+        if Vec_IK[0]<-0.1:
+            Vec_IK[0]=360+Vec_IK[0]
         #Inserta Valores de Variables de Juntura en La Interfaz (Codo Abajo y Codo Arriba)
         q1_A.set(str("{:.4f}".format(Vec_IK[0])))
         q2_A_D.set(str("{:.4f}".format(Vec_IK[1])))
@@ -282,8 +288,8 @@ def Enviar(Vector): #Función Donde Se Envia Los Datos
     for i in range (0,len(Identi)):
         #print-->board.write
         hilos.Thread(target=Wd.Barra.Carga, args=(Vector[2],)).start()
-        print(Identi[i].encode()+Valor[i].get().encode()+b'\r\n')  
-        tm.sleep(0.2)
+        board.write(Identi[i].encode()+Valor[i].get().encode()+b'\r\n')  
+        tm.sleep(0.5)
 
 def Jacobians(Barra): #Función Para Mostrar Los Jacobianos
     j_S=Ec.Jacobianos(1, Qs1_S.get(), Qs2_S.get(), Qs3_S.get())    
@@ -361,11 +367,11 @@ Fr_IK_S=Wd.Frame(Pestaña_Scara, 'Cinemática Inversa', Fuente_12, 1, 3/8, 0, 5/
 Ba_S=Wd.Barra(Fr_IK_S, 300, 1/6, 0.98, 0.25, tk.E)
 
 #Sliders
-Qs1_S=Wd.Slider(Fr_DK_S, 0, 221, 0.5, 250, 34, 'Desplazamiento Base', Fuente_Slider, Cine_Directa, ['Eb',Ba_S])
+Qs1_S=Wd.Slider(Fr_DK_S, 0, 19, 1, 250, 34, 'Desplazamiento Base', Fuente_Slider, Cine_Directa, ['Eb',Ba_S])
 Qs1_S.Ubicacion(0,0)
-Qs2_S=Wd.Slider(Fr_DK_S, -90, 90, 0.5, 250, 34, 'Rotación Brazo', Fuente_Slider, Cine_Directa, ['Ebr',Ba_S])
+Qs2_S=Wd.Slider(Fr_DK_S, 0, 180, 0.5, 250, 34, 'Rotación Brazo', Fuente_Slider, Cine_Directa, ['Eab',Ba_S])
 Qs2_S.Ubicacion(0, 1/3)
-Qs3_S=Wd.Slider(Fr_DK_S, -90, 90, 0.5, 250, 34, 'Rotación Codo', Fuente_Slider, Cine_Directa, ['Eab',Ba_S])
+Qs3_S=Wd.Slider(Fr_DK_S, 0, 180, 0.5, 250, 34, 'Rotación Codo', Fuente_Slider, Cine_Directa, ['Ebr',Ba_S])
 Qs3_S.Ubicacion(0, 2/3)
 Qt1_S=Wd.Editables(Fr_DK_S, Fuente_Num, 3/16, 0.11)
 Qt2_S=Wd.Editables(Fr_DK_S, Fuente_Num, 3/16, 1/3+0.11)
@@ -389,7 +395,7 @@ Wd.Boton(Fr_DK_S, 12, 2, "Enviar", "ivory3", Cajas_DK, [['Eb,','Eab,','Ebr,'], Q
 
 Py_S=Wd.Slider(Fr_IK_S, -90, 90, 0.5, 250, 20, 'Py', Fuente_Slider, Red_Slider, ['N','N'])
 Py_S.Ubicacion(0, 1/3)
-Pz_S=Wd.Slider(Fr_IK_S, 0, 221, 0.5, 250, 20, 'Pz', Fuente_Slider, Red_Slider, ['N','N'])
+Pz_S=Wd.Slider(Fr_IK_S, 0, 190, 10, 250, 20, 'Pz', Fuente_Slider, Red_Slider, ['N','N'])
 Pz_S.Ubicacion(0, 2/3)
 Check_S=Wd.Check(Fr_IK_S, '-', 3/16, 1/3+0.18, Cambio, 'S', Check_S_Valor)
 Px_S=Wd.Slider(Fr_IK_S, -101.5, 345, 0.5, 250, 20, 'Px', Fuente_Slider, Red_Slider, ['S', 'I', Py_S, Check_S, 3/16, 1/2+0.01])
@@ -438,9 +444,9 @@ Ba_A=Wd.Barra(Fr_IK_A, 300, 1/6, 0.98, 0.25, tk.E)
 #Sliders
 Qs1_A=Wd.Slider(Fr_DK_A, 0, 360, 0.5, 250, 34, 'Rotación Base', Fuente_Slider, Cine_Directa, ['Ab',Ba_A])
 Qs1_A.Ubicacion(0, 0)
-Qs2_A=Wd.Slider(Fr_DK_A, 0, 180, 0.5, 250, 34, 'Rotación Brazo', Fuente_Slider, Cine_Directa, ['Abr',Ba_A])
+Qs2_A=Wd.Slider(Fr_DK_A, 0, 180, 0.5, 250, 34, 'Rotación Brazo', Fuente_Slider, Cine_Directa, ['Aab',Ba_A])
 Qs2_A.Ubicacion(0, 1/3)
-Qs3_A=Wd.Slider(Fr_DK_A, -90, 90, 0.5, 250, 34, 'Rotación Codo', Fuente_Slider, Cine_Directa, ['Aab',Ba_A])
+Qs3_A=Wd.Slider(Fr_DK_A, 0, 180, 0.5, 250, 34, 'Rotación Codo', Fuente_Slider, Cine_Directa, ['Abr',Ba_A])
 Qs3_A.Ubicacion(0, 2/3)
 Qt1_A=Wd.Editables(Fr_DK_A,Fuente_Num, 3/16, 0.11)
 Qt2_A=Wd.Editables(Fr_DK_A,Fuente_Num, 3/16, 1/3+0.11)
@@ -614,13 +620,8 @@ Tipo=tk.IntVar()
 Cuadratico=Wd.Radio(Fr_T, "Perfil Cuadrático", Fuente_12, 1, Tipo, 15, Show_Datos)
 TrapezoidalI=Wd.Radio(Fr_T, "Perfil Trapezoidal I", Fuente_12, 2, Tipo, 15, Show_Datos)
 TrapezoidalII=Wd.Radio(Fr_T, "Perfil Trapezoidal II", Fuente_12, 3, Tipo, 15, Show_Datos)
-<<<<<<< Updated upstream
-Calcular_PT=Wd.Boton(Fr_T, 12, None, "Calcular", "dim gray")
-Wd.Boton(Fr_T, None, None, "Instrucciones", "LightYellow2").Ubicacion(1, 1, tk.SE)
-=======
 #Calcular_PT=Wd.Boton(Fr_T, 12, None, "Calcular", "dim gray")
 #Wd.Boton(Fr_T, None, None, "Instrucciones", "LightYellow2").Ubicacion(1, 1, tk.SE)
->>>>>>> Stashed changes
 
 #Barra De Progreso
 Br_Pl=Wd.Barra(Fr_T, 150, 1/8, 5/16, 1, tk.S)
@@ -631,16 +632,6 @@ Check_A_PL=Wd.Check(Fr_T, 'Inf', 1/4-0.025, 2/3+0.15, Cambio, 'AT', Check_AT_Val
 Pl_x=Wd.Slider(Fr_T, None, None, 0.5, 180, 20, None, None, Alter_Sliders, 'A1')              
 Pl_y=Wd.Slider(Fr_T, None, None, 0.5, 180, 20, None, None, Alter_Sliders, 'A2')
 Pl_z=Wd.Slider(Fr_T, None, None, 0.5, 180, 20, None, None, Show_Codo, None)
-<<<<<<< Updated upstream
-T_f=Wd.Slider(Fr_T, 15, 40, 1, 180, 20, None, None, None, None)
-N_p=Wd.Slider(Fr_T, 10, 1000, 10, 180, 20, None, None, None, None)
-Vj_1=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, None, None)
-Vj_2=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, None, None)
-Vj_3=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, None, None)
-Aj_1=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, None, None)
-Aj_2=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, None, None)
-Aj_3=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, None, None)
-=======
 # T_f=Wd.Slider(Fr_T, 15, 40, 1, 180, 20, None, None, None, None)
 # N_p=Wd.Slider(Fr_T, 10, 1000, 10, 180, 20, None, None, None, None)
 # Vj_1=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, None, None)
@@ -649,7 +640,6 @@ Aj_3=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, None, None)
 # Aj_1=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, None, None)
 # Aj_2=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, None, None)
 # Aj_3=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, None, None)
->>>>>>> Stashed changes
 
 # #Wd.Aparecer(Despl_Codo, 4/16+0.01, 4/6)
 # #Titulos

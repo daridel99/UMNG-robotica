@@ -1,9 +1,6 @@
 ###### Librerias ######
 import tkinter as tk
-<<<<<<< Updated upstream
 import Ecuaciones as Ec
-=======
->>>>>>> Stashed changes
 import numpy as np
 import time as tm
 import functools as tools
@@ -180,17 +177,17 @@ def Signo(x): #Determina El signo del numero
         sgn=-1
     return sgn
 
-def Perfil(tipo,mani,codo,tf,xi,yi,zi,xf,yf,zf,resol,var): #Determinar el tipo de Perfil A Utilizar
-    if tipo==1:   #Perfil Cuadratico
-        Qs=Manipulador(mani,codo,xi,yi,zi,xf,yf,zf)
-        perfiles=Cal.Perf_Cuadra(tf,resol,Qs[0],Qs[1])
-    elif tipo==2: #Perfil Trapezoidal Tipo I
-        Qs=Manipulador(mani,codo,xi,yi,zi,xf,yf,zf)
-        perfiles=Cal.Perf_Trape(tf,resol,Qs[0],Qs[1],var,1)
-    else:         #Perfil Trapezoidal Tipo II
-        Qs=Manipulador(mani,codo,xi,yi,zi,xf,yf,zf)
-        perfiles=Cal.Perf_Trape(tf,resol,Qs[0],Qs[1],var,2)
-    return perfiles       
+# def Perfil(tipo,mani,codo,tf,xi,yi,zi,xf,yf,zf,resol,var): #Determinar el tipo de Perfil A Utilizar
+#     if tipo==1:   #Perfil Cuadratico
+#         Qs=Manipulador(mani,codo,xi,yi,zi,xf,yf,zf)
+#         perfiles=Cal.Perf_Cuadra(tf,resol,Qs[0],Qs[1])
+#     elif tipo==2: #Perfil Trapezoidal Tipo I
+#         Qs=Manipulador(mani,codo,xi,yi,zi,xf,yf,zf)
+#         perfiles=Cal.Perf_Trape(tf,resol,Qs[0],Qs[1],var,1)
+#     else:         #Perfil Trapezoidal Tipo II
+#         Qs=Manipulador(mani,codo,xi,yi,zi,xf,yf,zf)
+#         perfiles=Cal.Perf_Trape(tf,resol,Qs[0],Qs[1],var,2)
+#     return perfiles       
 
 # def Manipulador(manipu,cod,Pxi,Pyi,Pzi,Pxf,Pyf,Pzf): #Determina el Manipulador a Utilizar
 #     if manipu==1:

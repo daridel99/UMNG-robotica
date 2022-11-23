@@ -74,6 +74,7 @@ def Calculo_Inversa(n, P_X, P_Y, P_Z): #Calculo Cinemática Inversa
         Co=P_Y        #Cateto Opuesto del triangulo formado en X-Y'
         q_1=P_Z       #Variable De Juntura d1
         Rob='S'
+        print(q_1)
     elif n==2:
         d_1=float(95.91)
         a_2=float(66.76)
@@ -104,9 +105,12 @@ def Limites_Junturas(Qs, Robot): #Establecer Si Los Limites Mecanicos De Juntura
         lim_1=221
         lim_2=mt.pi/2
         lim_3=mt.pi/2
+        print(Qs[0])
     elif Robot=='A':
         Qs[1]=Qs[1]-mt.pi/2
         Qs[3]=Qs[3]-mt.pi/2
+        Qs[2]=Qs[2]-mt.pi/2
+        Qs[4]=Qs[4]-mt.pi/2
         lim_1=180
         lim_2=mt.pi/2
         lim_3=mt.pi/2
