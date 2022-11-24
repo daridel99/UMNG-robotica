@@ -21,7 +21,7 @@ import Calculos
 import Funciones as Fnc
 
 #Configuracion COM
-board =serial.Serial(port='COM1', baudrate=19200)
+board =serial.Serial(port='COM16', baudrate=9600)
 sleep(1) #1 Segundos Para Que Establezca La Comunicacion
 bands=0
 bandr=0
@@ -126,6 +126,8 @@ def envio_graf1(Vectores_1,Vectores_2,Vectores_3):
             board.write(b'Aab,'+"{:.4f}".format(float(data)).encode()+b'\r\n')
             sleep(paso/1)
     
+contador_calcular=0
+
 def But_Perfiles():#Funcion Para Calcular La Generación de Trayectorias
     mani=elec_manipulador()
     codo=elec_manipulador()
@@ -169,7 +171,32 @@ def But_Perfiles():#Funcion Para Calcular La Generación de Trayectorias
                 posx[n]=vect_pos[0]               
                 posy[n]=vect_pos[1]                               
                 posz[n]=vect_pos[2]
-        Thread(target=envio_graf1(Vectores[1],Vectores[2],Vectores[3])).start()
+        #Thread(target=envio_graf1(Vectores[1],Vectores[2],Vectores[3])).start()
+        global contador_calcular
+        contador_calcular=contador_calcular+1;
+        if contador_calcular==1:
+            board.write(b'Ab,'+"{:.4f}".format(float(0)).encode()+b'\r\n')
+            sleep(tfin/3)
+            board.write(b'Abr,'+"{:.4f}".format(float(0)).encode()+b'\r\n')
+            sleep(tfin/3)
+            board.write(b'Aab,'+"{:.4f}".format(float(0)).encode()+b'\r\n')
+            sleep(tfin/3)
+        if contador_calcular==2:
+            board.write(b'Ab,'+"{:.4f}".format(float(90)).encode()+b'\r\n')
+            sleep(tfin/3)
+            board.write(b'Abr,'+"{:.4f}".format(float(0)).encode()+b'\r\n')
+            sleep(tfin/3)
+            board.write(b'Aab,'+"{:.4f}".format(float(160)).encode()+b'\r\n')
+            sleep(tfin/3)
+        if contador_calcular==3:
+            board.write(b'Ab,'+"{:.4f}".format(float(180)).encode()+b'\r\n')
+            sleep(tfin/3)
+            board.write(b'Abr,'+"{:.4f}".format(float(0)).encode()+b'\r\n')
+            sleep(tfin/3)
+            board.write(b'Aab,'+"{:.4f}".format(float(40)).encode()+b'\r\n')
+            sleep(tfin/3)
+            contador_calcular=0
+
         creacion_graf1(resolucion,int(Vectores[1][0]),int(Vectores[1][-1]),Vectores[1],int(T_f.get()))
         creacion_graf2(resolucion,int(Vectores[2][0]),int(Vectores[2][-1]),Vectores[2],int(T_f.get()))
         creacion_graf3(resolucion,int(Vectores[3][0]),int(Vectores[3][-1]),Vectores[3],int(T_f.get()))
@@ -612,25 +639,25 @@ def Aservo3(Aposiciones3):
 def Rservo1(posiciones1):
     #Thread(target=contar).start()
     board.write(b'Rb1,'+posiciones1.encode()+b'\r\n')
-    sleep(0.2)
+    sleep(1)
     dato3(1)
 
 def Rservo2(posiciones2):
     #Thread(target=contar).start()
     board.write(b'Rbr1,'+posiciones2.encode()+b'\r\n')
-    sleep(0.2)
+    sleep(1)
     dato3(1)
 
 def Rservo3(posiciones3):
     #Thread(target=contar).start()
     board.write(b'Rbr2,'+posiciones3.encode()+b'\r\n')
-    sleep(0.2)
+    sleep(1)
     dato3(1)
 
 def Rservo4(posiciones4):
     #Thread(target=contar).start()
     board.write(b'Rb2,'+posiciones4.encode()+b'\r\n')
-    sleep(0.2)
+    sleep(1)
     dato3(1)
 
 def Rservo5(posiciones5):
@@ -698,25 +725,25 @@ def close(): #Cerrar Puerto Serial
 def Envio_DK_S():#Función Envio Text-Box DK Scara (P3R)
     #Cuadro_Texto_1
     board.write(b'Eb,'+txt_edit_ang0.get(1.0, tk.END).encode()+b'\r\n')  
-    sleep(0.2)
+    sleep(1)
     #Cuadro_Texto_2
     board.write(b'Ebr,'+txt_edit_ang1.get(1.0, tk.END).encode()+b'\r\n')
-    sleep(0.2)
+    sleep(1)
     #Cuadro_Texto_3 
     board.write(b'Eab,'+txt_edit_ang2.get(1.0, tk.END).encode()+b'\r\n')
-    sleep(0.2)
+    sleep(1)
     dato2(2)
 
 def Envio_DK_R3():#Función Envio Text-Box DK Antropomórfico (R3)
     #Cuadro_Texto_1
     board.write(b'Ab,'+txt_edit_ang4.get(1.0, tk.END).encode()+b'\r\n')
-
+    sleep(1)
     #Cuadro_Texto_2
     board.write(b'Abr,'+txt_edit_ang5.get(1.0, tk.END).encode()+b'\r\n')
-
+    sleep(1)
     #Cuadro_Texto_3
     board.write(b'Aab,'+txt_edit_ang6.get(1.0, tk.END).encode()+b'\r\n')
-
+    sleep(1)
     dato1(2)
 
 def show_values3():#Función Envio Text-Box DK Antropomórfico (R6)

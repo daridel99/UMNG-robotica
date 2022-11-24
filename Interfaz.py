@@ -10,7 +10,7 @@ import tkinter.messagebox as MsB
 import serial
 import serial.tools.list_ports
 
-board =serial.Serial(port='COM1', baudrate=19200)
+board =serial.Serial(port='COM1', baudrate=9600)
 tm.sleep(1)
 
 def Show_Sliders(event): #Función Para Mostrar Sliders
@@ -229,7 +229,7 @@ def Cine_Directa(Vector, Valor): #Función Para Enviar y Calcular Cinemática Di
         Wd.Llenado(Matriz, 9, 15)    
     hilos.Thread(target=Wd.Barra.Carga, args=(Vector[1],)).start()
     #print-->board.write
-    board.write(Identi.encode()+b','+ Valor.encode()+b'\r\n')
+    board.write(Identi.encode()+b','+ Valor.encode()+b'\n')
 
 def Cajas_DK(Vector): #Función Para Boton "Enviar". Se Calcula y Envia La Cinemática Directa Con Los Cuadros de Texto
     Identi=Vector[0]
@@ -253,23 +253,23 @@ def Cine_Inversa(Vector): #Función Para Calcular Cinematica Inversa Del Scara
         Codos[0].Ubicacion(1/2,1/2,tk.N)
         Codos[1].Ubicacion(2/3, 1/2, tk.N)
         #Inserta Valores de Variables de Juntura en La Interfaz (Codo Abajo y Codo Arriba)
-        q1_S.set(str("{:.4f}".format(Vec_IK[0]/10)))
-        q2_S_D.set(str("{:.4f}".format(Vec_IK[1])))
-        q3_S_D.set(str("{:.4f}".format(Vec_IK[2])))
-        q2_S_U.set(str("{:.4f}".format(Vec_IK[3])))
-        q3_S_U.set(str("{:.4f}".format(Vec_IK[4])))        
+        q1_S.set(str(int(Vec_IK[0]/10)))
+        q2_S_D.set(str(int(Vec_IK[1])))
+        q3_S_D.set(str(int(Vec_IK[2])))
+        q2_S_U.set(str(int(Vec_IK[3])))
+        q3_S_U.set(str(int(Vec_IK[4])))        
     elif Identi=='A':
         Vec_IK=Ec.Calculo_Inversa(2, float(Px_A.get()), float(Py_A.get()), float(Pz_A.get())) 
         Codos[0].Ubicacion(1/2, 1/2, tk.N)
         Codos[1].Ubicacion(2/3, 1/2, tk.N)
-        if Vec_IK[0]<-0.1:
+        if Vec_IK[0]<(-1):
             Vec_IK[0]=360+Vec_IK[0]
         #Inserta Valores de Variables de Juntura en La Interfaz (Codo Abajo y Codo Arriba)
-        q1_A.set(str("{:.4f}".format(Vec_IK[0])))
-        q2_A_D.set(str("{:.4f}".format(Vec_IK[1])))
-        q3_A_D.set(str("{:.4f}".format(Vec_IK[2])))
-        q2_A_U.set(str("{:.4f}".format(Vec_IK[3])))
-        q3_A_U.set(str("{:.4f}".format(Vec_IK[4])))
+        q1_A.set(str(int(Vec_IK[0])))
+        q2_A_D.set(str(int(Vec_IK[1])))
+        q3_A_D.set(str(int(Vec_IK[2])))
+        q2_A_U.set(str(int(Vec_IK[3])))
+        q3_A_U.set(str(int(Vec_IK[4])))
         
     #Desabilitación de Botones de Envio Cinematica Inversa
     if Vec_IK[5] or Vec_IK[6]: #indar indab
@@ -287,9 +287,9 @@ def Enviar(Vector): #Función Donde Se Envia Los Datos
     Valor=Vector[1]    
     for i in range (0,len(Identi)):
         #print-->board.write
-        hilos.Thread(target=Wd.Barra.Carga, args=(Vector[2],)).start()
-        board.write(Identi[i].encode()+Valor[i].get().encode()+b'\r\n')  
-        tm.sleep(0.5)
+        #hilos.Thread(target=Wd.Barra.Carga, args=(Vector[2],)).start()
+        board.write(Identi[i].encode()+Valor[i].get().encode())  
+        tm.sleep(4)
 
 def Jacobians(Barra): #Función Para Mostrar Los Jacobianos
     j_S=Ec.Jacobianos(1, Qs1_S.get(), Qs2_S.get(), Qs3_S.get())    
@@ -367,16 +367,23 @@ Fr_IK_S=Wd.Frame(Pestaña_Scara, 'Cinemática Inversa', Fuente_12, 1, 3/8, 0, 5/
 Ba_S=Wd.Barra(Fr_IK_S, 300, 1/6, 0.98, 0.25, tk.E)
 
 #Sliders
-Qs1_S=Wd.Slider(Fr_DK_S, 0, 19, 1, 250, 34, 'Desplazamiento Base', Fuente_Slider, Cine_Directa, ['Eb',Ba_S])
+Qs1_S=Wd.Slider(Fr_DK_S, 1, 19, 1, 250, 34, 'Desplazamiento Base', Fuente_Slider, Cine_Directa, ['Eb',Ba_S])
 Qs1_S.Ubicacion(0,0)
-Qs2_S=Wd.Slider(Fr_DK_S, 0, 180, 0.5, 250, 34, 'Rotación Brazo', Fuente_Slider, Cine_Directa, ['Eab',Ba_S])
+Qs2_S=Wd.Slider(Fr_DK_S, 0, 180, 10, 250, 34, 'Rotación Antebrazo', Fuente_Slider, Cine_Directa, ['Ebr',Ba_S])
 Qs2_S.Ubicacion(0, 1/3)
-Qs3_S=Wd.Slider(Fr_DK_S, 0, 180, 0.5, 250, 34, 'Rotación Codo', Fuente_Slider, Cine_Directa, ['Ebr',Ba_S])
+Qs3_S=Wd.Slider(Fr_DK_S, 0, 180, 10, 250, 34, 'Rotación Brazo', Fuente_Slider, Cine_Directa, ['Eab',Ba_S])
 Qs3_S.Ubicacion(0, 2/3)
 Qt1_S=Wd.Editables(Fr_DK_S, Fuente_Num, 3/16, 0.11)
 Qt2_S=Wd.Editables(Fr_DK_S, Fuente_Num, 3/16, 1/3+0.11)
 Qt3_S=Wd.Editables(Fr_DK_S, Fuente_Num, 3/16, 2/3+0.11)
 Qt_S=[Qt1_S, Qt2_S, Qt3_S]
+#Seteo Inicial
+Qs3_S.set(90)
+board.write(b'Eb,1\r\n')
+board.write(b'Ebr,5\r\n')
+
+
+
 
 #Matrices
 Wd.Matrices(Fr_DK_S, "DK", 1, 4, 4, "Link 1", 1/2, 0, Fuente_12)
@@ -388,7 +395,7 @@ Wd.Matrices(Fr_DK_S, "DK", 4, 4, 4, "Total", 5/6, 1/2, Fuente_12)
 Wd.Boton(Fr_DK_S, None, None, "Instrucciones", "LightYellow2", Mensajes, 'DK').Ubicacion(1, 1, tk.SE)
 Gp_S=Wd.Boton(Fr_DK_S, 15, 3, "Griper", "lime green", Gripper, 'E')
 Gp_S.Ubicacion(4/6, 0.9, tk.CENTER)
-Wd.Boton(Fr_DK_S, 12, 2, "Enviar", "ivory3", Cajas_DK, [['Eb,','Eab,','Ebr,'], Qt_S, Ba_S]).Ubicacion(1/4+0.02, 0.9, tk.W)
+Wd.Boton(Fr_DK_S, 12, 2, "Enviar", "ivory3", Cajas_DK, [['Eb,','Ebr,','Eab,'], Qt_S, Ba_S]).Ubicacion(1/4+0.02, 0.9, tk.W)
 
 ######Cinematica Inversa######
 #Sliders
@@ -428,8 +435,8 @@ Wd.Labels(Co_U_S, q3_S_U, None, None, None, None, Fuente_15, "white").Ubicacion(
 
 #Botones
 Wd.Boton(Fr_IK_S, None, None, "Instrucciones", "LightYellow2", Mensajes, 'IK').Ubicacion(1, 1, tk.SE)
-CodoD_S=Wd.Boton(Fr_IK_S, 12, 2, "Codo Abajo", "ivory3", Enviar, [['Eb,','Eab,','Ebr,'], qs_S_D, Ba_S])
-CodoU_S=Wd.Boton(Fr_IK_S, 12, 2, "Codo Arriba", "ivory3", Enviar, [['Eb,','Eab,','Ebr,'], qs_S_U, Ba_S])
+CodoD_S=Wd.Boton(Fr_IK_S, 12, 2, "Codo Abajo", "ivory3", Enviar, [['Eb,','Ebr,','Eab,'], qs_S_D, Ba_S])
+CodoU_S=Wd.Boton(Fr_IK_S, 12, 2, "Codo Arriba", "ivory3", Enviar, [['Eb,','Ebr,','Eab,'], qs_S_U, Ba_S])
 Wd.Boton(Fr_IK_S, 12, 8, "Calcular", "dim gray", Cine_Inversa, ['S', [CodoD_S, CodoU_S]]).Ubicacion(1/4+0.02, 1/2, tk.W)
 
 ##################################Pestaña 3########################################
@@ -442,12 +449,12 @@ Fr_IK_A=Wd.Frame(Pestaña_Antro3R, 'Cinemática Inversa', Fuente_12, 1, 3/8, 0, 
 Ba_A=Wd.Barra(Fr_IK_A, 300, 1/6, 0.98, 0.25, tk.E)
 
 #Sliders
-Qs1_A=Wd.Slider(Fr_DK_A, 0, 360, 0.5, 250, 34, 'Rotación Base', Fuente_Slider, Cine_Directa, ['Ab',Ba_A])
+Qs1_A=Wd.Slider(Fr_DK_A, 0, 360, 10, 250, 34, 'Rotación Base', Fuente_Slider, Cine_Directa, ['Ab',Ba_A])
 Qs1_A.Ubicacion(0, 0)
-Qs2_A=Wd.Slider(Fr_DK_A, 0, 180, 0.5, 250, 34, 'Rotación Brazo', Fuente_Slider, Cine_Directa, ['Aab',Ba_A])
-Qs2_A.Ubicacion(0, 1/3)
-Qs3_A=Wd.Slider(Fr_DK_A, 0, 180, 0.5, 250, 34, 'Rotación Codo', Fuente_Slider, Cine_Directa, ['Abr',Ba_A])
-Qs3_A.Ubicacion(0, 2/3)
+Qs2_A=Wd.Slider(Fr_DK_A, 0, 180, 10, 250, 34, 'Rotación Brazo', Fuente_Slider, Cine_Directa, ['Aab',Ba_A])
+Qs2_A.Ubicacion(0, 2/3)
+Qs3_A=Wd.Slider(Fr_DK_A, 0, 180, 10, 250, 34, 'Rotación Antebrazo', Fuente_Slider, Cine_Directa, ['Abr',Ba_A])
+Qs3_A.Ubicacion(0, 1/3)
 Qt1_A=Wd.Editables(Fr_DK_A,Fuente_Num, 3/16, 0.11)
 Qt2_A=Wd.Editables(Fr_DK_A,Fuente_Num, 3/16, 1/3+0.11)
 Qt3_A=Wd.Editables(Fr_DK_A,Fuente_Num, 3/16, 2/3+0.11)
@@ -463,7 +470,7 @@ Wd.Matrices(Fr_DK_A, "DK", 8, 4, 4, "Total", 5/6, 1/2, Fuente_12)
 Wd.Boton(Fr_DK_A, None, None, "Instrucciones", "LightYellow2", Mensajes, 'DK').Ubicacion(1, 1, tk.SE)
 Gp_A=Wd.Boton(Fr_DK_A, 15, 3, "Griper", "lime green", Gripper, 'A')
 Gp_A.Ubicacion(4/6, 0.9, tk.CENTER)
-Wd.Boton(Fr_DK_A, 12, 2, "Enviar", "ivory3", Cajas_DK, [['Ab,','Aab,','Abr,'], Qt_A, Ba_A]).Ubicacion(1/4+0.02, 0.9, tk.W)
+Wd.Boton(Fr_DK_A, 12, 2, "Enviar", "ivory3", Cajas_DK, [['Ab,','Abr,','Aab,'], Qt_A, Ba_A]).Ubicacion(1/4+0.02, 0.9, tk.W)
 
 ######Cinematica Inversa######
 
@@ -503,8 +510,8 @@ Wd.Labels(Co_U_A, q3_A_U, None, None, None, None, Fuente_15, "white").Ubicacion(
 
 #Botones
 Wd.Boton(Fr_IK_A, None, None, "Instrucciones", "LightYellow2", Mensajes, 'IK').Ubicacion(1, 1, tk.SE)
-CodoD_A=Wd.Boton(Fr_IK_A, 12, 2, "Codo Abajo", "ivory3", Enviar, [['Ab,','Aab,','Abr,'], qs_A_D, Ba_A])
-CodoU_A=Wd.Boton(Fr_IK_A, 12, 2, "Codo Arriba", "ivory3", Enviar, [['Ab,','Aab,','Abr,'], qs_A_U, Ba_A])
+CodoD_A=Wd.Boton(Fr_IK_A, 12, 2, "Codo Abajo", "ivory3", Enviar, [['Ab,','Abr,','Aab,'], qs_A_D, Ba_A])
+CodoU_A=Wd.Boton(Fr_IK_A, 12, 2, "Codo Arriba", "ivory3", Enviar, [['Ab,','Abr,','Aab,'], qs_A_U, Ba_A])
 Wd.Boton(Fr_IK_A, 12, 8, "Calcular", "dim gray", Cine_Inversa, ['A', [CodoD_A, CodoU_A]]).Ubicacion(1/4+0.02, 1/2, tk.W)
 
 ##################################Pestaña 4########################################
