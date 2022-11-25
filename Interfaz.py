@@ -12,6 +12,8 @@ import serial.tools.list_ports
 
 board =serial.Serial(port='COM1', baudrate=9600)
 tm.sleep(1)
+board2 =serial.Serial(port='COM3', baudrate=9600)
+tm.sleep(1)
 
 def Show_Sliders(event): #Función Para Mostrar Sliders
     Alter_Sliders('T', Pl_x.get())
@@ -230,6 +232,8 @@ def Cine_Directa(Vector, Valor): #Función Para Enviar y Calcular Cinemática Di
     hilos.Thread(target=Wd.Barra.Carga, args=(Vector[1],)).start()
     #print-->board.write
     board.write(Identi.encode()+b','+ Valor.encode()+b'\n')
+    board2.write(Identi.encode()+b','+ Valor.encode()+b'\n')
+    tm.sleep(2)
 
 def Cajas_DK(Vector): #Función Para Boton "Enviar". Se Calcula y Envia La Cinemática Directa Con Los Cuadros de Texto
     Identi=Vector[0]
@@ -289,7 +293,8 @@ def Enviar(Vector): #Función Donde Se Envia Los Datos
         #print-->board.write
         #hilos.Thread(target=Wd.Barra.Carga, args=(Vector[2],)).start()
         board.write(Identi[i].encode()+Valor[i].get().encode())  
-        tm.sleep(4)
+        board2.write(Identi[i].encode()+Valor[i].get().encode()) 
+        tm.sleep(2)
 
 def Jacobians(Barra): #Función Para Mostrar Los Jacobianos
     j_S=Ec.Jacobianos(1, Qs1_S.get(), Qs2_S.get(), Qs3_S.get())    

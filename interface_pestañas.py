@@ -21,8 +21,10 @@ import Calculos
 import Funciones as Fnc
 
 #Configuracion COM
-board =serial.Serial(port='COM16', baudrate=9600)
+board =serial.Serial(port='COM1', baudrate=9600)
 sleep(1) #1 Segundos Para Que Establezca La Comunicacion
+board2 =serial.Serial(port='COM3', baudrate=9600)
+sleep(1)
 bands=0
 bandr=0
 
@@ -599,24 +601,34 @@ def contar():
 
 #Funciones De Sliders Scara (PR3)
 def servo1(posiciones1):
-    if board.isOpen():
+    if board.isOpen() and board2.isOpen():
         #pbr_tarea["background"]='green'
         pbr_tarea['value'] = 0
         Thread(target=contar).start()
         board.write(b'Eb,'+posiciones1.encode()+b'\r\n')
+        board2.write(b'Eb,'+posiciones1.encode()+b'\r\n')
     else:
         pbr_tarea['value'] = 100
         pbr_tarea.configure(style='red.Horizontal.TProgressbar')
     dato2(1)
 
 def servo2(posiciones2):
-    Thread(target=contar).start()
-    board.write(b'Ebr,'+posiciones2.encode()+b'\r\n')
+    if board.isOpen() and board2.isOpen():
+        Thread(target=contar).start()
+        board.write(b'Ebr,'+posiciones2.encode()+b'\r\n')
+        board2.write(b'Ebr,'+posiciones2.encode()+b'\r\n')
+    else:
+        pbr_tarea['value'] = 100
+        pbr_tarea.configure(style='red.Horizontal.TProgressbar')
     dato2(1)
 
 def servo3(posiciones3):
-    Thread(target=contar).start()
-    board.write(b'Eab,'+posiciones3.encode()+b'\r\n')
+    if board.isOpen() and board2.isOpen():
+        Thread(target=contar).start()
+        board.write(b'Eab,'+posiciones3.encode()+b'\r\n')
+    else:
+        pbr_tarea['value'] = 100
+        pbr_tarea.configure(style='red.Horizontal.TProgressbar')       
     dato2(1)
 
 #Funciones De Sliders Antropomórfico (R3)
