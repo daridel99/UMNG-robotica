@@ -10,7 +10,7 @@ import tkinter.messagebox as MsB
 import serial
 import serial.tools.list_ports
 
-board =serial.Serial(port='COM1', baudrate=9600)
+board =serial.Serial(port='COM12', baudrate=9600)
 tm.sleep(1)
 board2 =serial.Serial(port='COM3', baudrate=9600)
 tm.sleep(1)
@@ -232,7 +232,7 @@ def Cine_Directa(Vector, Valor): #Función Para Enviar y Calcular Cinemática Di
     hilos.Thread(target=Wd.Barra.Carga, args=(Vector[1],)).start()
     #print-->board.write
     board.write(Identi.encode()+b','+ Valor.encode()+b'\n')
-    board2.write(Identi.encode()+b','+ Valor.encode()+b'\n')
+    board2.write(Identi.encode()+b','+ Valor.encode()+b'\r\n')
     tm.sleep(2)
 
 def Cajas_DK(Vector): #Función Para Boton "Enviar". Se Calcula y Envia La Cinemática Directa Con Los Cuadros de Texto
@@ -292,8 +292,8 @@ def Enviar(Vector): #Función Donde Se Envia Los Datos
     for i in range (0,len(Identi)):
         #print-->board.write
         #hilos.Thread(target=Wd.Barra.Carga, args=(Vector[2],)).start()
-        board.write(Identi[i].encode()+Valor[i].get().encode())  
-        board2.write(Identi[i].encode()+Valor[i].get().encode()) 
+        board.write(Identi[i].encode()+Valor[i].get().encode()+b'\n')  
+        board2.write(Identi[i].encode()+Valor[i].get().encode()+b'\r\n') 
         tm.sleep(2)
 
 def Jacobians(Barra): #Función Para Mostrar Los Jacobianos
@@ -306,9 +306,9 @@ def Jacobians(Barra): #Función Para Mostrar Los Jacobianos
 #Objetos Principales
 Ventana = tk.Tk()
 Ventana.title('Controles de Manipuladores Roboticos')
-# width=Ventana.winfo_screenwidth()  
-# height= Ventana.winfo_screenheight() 
-# Ventana.geometry("%dx%d" % (width, height))
+width=Ventana.winfo_screenwidth()  
+height= Ventana.winfo_screenheight() 
+Ventana.geometry("%dx%d" % (width, height))
 Panel_Pestañas = ttk.Notebook(Ventana)
 Panel_Pestañas.pack(fill='both',expand='yes')
 
@@ -384,8 +384,8 @@ Qt3_S=Wd.Editables(Fr_DK_S, Fuente_Num, 3/16, 2/3+0.11)
 Qt_S=[Qt1_S, Qt2_S, Qt3_S]
 #Seteo Inicial
 Qs3_S.set(90)
-board.write(b'Eb,1\r\n')
-board.write(b'Ebr,5\r\n')
+#board.write(b'Eb,1\r\n')
+#board.write(b'Ebr,5\r\n')
 
 
 
@@ -675,5 +675,5 @@ Wd.Grafica(Fr_Graf, r'Velocidad $w_1$', r'w$[rad/s]$', 0, 1/2)
 Wd.Grafica(Fr_Graf, r'Velocidad $w_2$', r'w$[rad/s]$', 1/3, 1/2)
 Wd.Grafica(Fr_Graf, r'Velocidad $w_3$', r'w$[rad/s]$', 2/3, 1/2)
 
-Ventana.attributes('-fullscreen',True)
+#Ventana.attributes('-fullscreen',True)
 Ventana.mainloop()
