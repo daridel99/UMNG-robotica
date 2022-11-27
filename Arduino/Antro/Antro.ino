@@ -1,14 +1,7 @@
-/*
-  KARLA JUANITA BARON HURTADO
-  FINAL DE ARDUINO MEGA
-  ANTROPOMORFICO
-*/
-//LIBRARIES:
 #include <Servo.h> 
 #include <Stepper.h>
 
 Stepper myStepper(200, 3, 4, 5, 6);
-
 
 Servo myservo1;  //creamos un objeto servo 
 Servo myservo2;  //creamos un objeto servo 
@@ -30,15 +23,17 @@ int Pos_actual=0;
 int Pasos=0;
 
 void setup(){
-  myservo1.attach(11);  // asignamos el pin 11 al servo1 codo 1
-  myservo2.attach(9);  // asignamos el pin 9 al servo2 codo 2
-  myservo3.attach(10); // asignamos el pin 11 al servo3 pinza
-  myStepper.setSpeed(20); // base
+  myservo1.attach(11);    // Pin 11 al servo1 (Codo 1)
+  myservo2.attach(9);     // Pin 9 al servo2 (Codo 2)
+  myservo3.attach(10);    // Pin 10 al servo3 (Pinza)
+  myStepper.setSpeed(20); // Velocidad Paso a Paso (Base)
   Servo1(0);
   delay(20);
   Servo2(3);
   delay(20);
-  Servo3(-5); 
+  Servo3(-5);
+  delay(20);
+  myStepper.step(0);
   Serial.begin(9600); // iniciamos el puerto serial
 }
 
@@ -92,7 +87,7 @@ void Base(int angulo){
     }
   else {
       Pos_futura = angulo ;
-      Pasos = ( Pos_futura - Pos_actual )*5/9;
+      Pasos = (Pos_futura - Pos_actual)*5/9;
       Pos_actual = angulo;
     }
   Serial.println(Pasos);

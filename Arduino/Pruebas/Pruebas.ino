@@ -17,7 +17,6 @@ int Pos_actual=0;
 int Pasos=0;
 
 
-
 void setup() {
 myStepper.setSpeed(10);
 Serial.begin(9600);
@@ -53,22 +52,62 @@ void serialEvent()                            //Recepción de datos Seriales
         }    
      }
 }
-     
-void Base(int angulo)
-{
-  Serial.println(angulo*(5/9));
-  Pasos=angulo*(5/9);
-//  if ((angulo == 0) && (Pasos != 0))
-//    {
-//      Pasos = -Pos_actual*(5/9);
-//      Pos_futura=0;
-//      Pos_actual=0;
-//    }
-//  else 
-//    {
-//      Pos_futura = angulo ;
-//      Pasos = (Pos_futura-Pos_actual)*(5/9);
-//      Pos_actual = angulo;
-//    }
+void Servo1(int angulo){  
+  myservo1.write(angulo);
+}
+void Servo2(int angulo){
+  angulo = map(angulo, 90, -90, 0, 180);
+  myservo2.write(angulo); 
+}
+void Servo3(int pinza){
+  if (pinza == 0){angulo = 90;}
+  else if (pinza == 1){angulo = 0;}
+  myservo3.write(angulo);
+}
+void Base(int angulo){  
+  if ((angulo == 0) && (Pasos != 0)){
+      Pasos = -Pos_actual*(5/9);
+      Pos_futura=0;
+      Pos_actual=0;
+    }
+  else {
+    Pos_futura = angulo ;
+    Pasos = ( Pos_futura - Pos_actual )*5/9;
+    Pos_actual = angulo;
+  }
   myStepper.step(Pasos);
+
+}
+//----------Seleccion
+void Select(String Aux , int Grado){
+
+  if (Aux=="Ab"){aux=4;}//Serial.println(aux);} // Ab = base 1
+  else if (Aux=="Abr"){aux=1;}//Serial.println(aux);} // Abr = brazo 2 
+  else if (Aux=="Aab"){aux=2;}//Serial.println(aux);} // Aab = antebrazo 3 
+  else if (Aux=="A"){aux=3;}//Serial.println(aux);}
+
+  switch (aux) {
+    //----------------------SERVO 1 CODO 1 360 - on vel 
+    case 1:
+      aux = 0;
+      Servo1(Grado);
+      break;
+    //----------------------SERVO 2 CODO 2
+      case 2:
+        aux = 0;
+        Servo2(Grado);
+      break;
+    //----------------------SERVO 3 PINZA
+      case 3:
+        aux = 0;
+        Servo3(Grado);
+      break;
+    //----------------------Paso a paso - base
+      case 4:
+        aux = 0;
+        Base(Grado);
+      break;
+      default:
+      break;
+  }
 }
