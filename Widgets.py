@@ -139,13 +139,20 @@ class Grafica(): #Clase Para Crear Graficas
         plt.title(Titulo, color='k', size=12, family="Arial")        
         canvas=Canvas(fig, master=Frame)
         canvas.get_tk_widget().place(relx=Posx, rely=Posy, relwidth=1/3, relheight=0.5)     
-        # relwidth=1/3+0.02, relheight=1/3+0.05
+        
     def Linea(self, Resolucion, Ampl_Min, Ampl_Max, Tiempo, Vec_Datos):
         self.ax.set_xlim(0, Tiempo)
-        self.ax.set_ylim(Ampl_Min, Ampl_Max+(Signo(Ampl_Max)*0.5))   
+        self.ax.set_ylim(Ampl_Min, Ampl_Max+(Ec.Signo(Ampl_Max)*0.5))   
         self.line,=self.ax.plot([], [], color='k', linestyle='solid', linewidth=2)
         paso=Tiempo/Resolucion
         self.line.set_data(np.arange(0, Tiempo, paso, dtype=float), Vec_Datos)
+
+    def Linea_Vel(self, Resolucion, Ampl_Min, Ampl_Max, Tiempo, Vec_Datos):
+        self.ax.set_xlim(0, Tiempo)
+        self.ax.set_ylim(Ampl_Min, Ampl_Max+(Ec.Signo(Ampl_Max)*0.5))   
+        self.line,=self.ax.plot([], [], color='k', linestyle='solid', linewidth=2)
+        paso=Tiempo/Resolucion
+        self.line.set_data(np.arange(0, Tiempo, paso, dtype=float), Vec_Datos)        
     
 def Ocultar(Objetos): #Función Para Ocultar Objetos
     for i in range (0, len(Objetos)):
@@ -170,41 +177,34 @@ def Llenado_Jaco (matri, M, K): #Función Para Llenado Matrices Jacobianos
                     for k in range(1, 4):                                    
                         globals()["Jaco" + str(n) +"_" + str(k+h) + str(j)].set("{:.5f}".format(matri[n-M][i][j-1][k-1])) 
 
-def Signo(x): #Determina El signo del numero
-    if x>=0:
-        sgn=1            
+def Perfil(tipo, mani, codo, tf, xi, yi, zi, xf, yf, zf, resol, var): #Determinar el tipo de Perfil A Utilizar
+    if tipo == 1:   #Perfil Cuadratico
+        Qs=Manipulador(mani, codo, xi, yi, zi, xf, yf, zf)
+        perfiles=Ec.Perf_Cuadra(tf, resol, Qs[0], Qs[1])
+    elif tipo==2: #Perfil Trapezoidal Tipo I
+        Qs=Manipulador(mani, codo, xi, yi, zi, xf, yf, zf)
+        perfiles=Ec.Perf_Trape(tf, resol, Qs[0], Qs[1], var, 1)
+    else:         #Perfil Trapezoidal Tipo II
+        Qs=Manipulador(mani, codo, xi, yi, zi, xf, yf, zf)
+        perfiles=Ec.Perf_Trape(tf, resol, Qs[0], Qs[1], var, 2)
+    return perfiles       
+
+def Manipulador(manipu, cod, Pxi, Pyi, Pzi, Pxf, Pyf, Pzf): #Determina el Manipulador a Utilizar
+    if manipu == 1:
+        Inversai=Ec.Calculo_Inversa(1, Pxi, Pyi, Pzi) #Cinematica Inversa para Punto Inicial        
+        Inversaf=Ec.Calculo_Inversa(1, Pxf, Pyf, Pzf) #Cinematica Inversa para Punto Final
+        Junturas=Solucion(cod, Inversai, Inversaf)        
     else:
-        sgn=-1
-    return sgn
+        Inversai=Ec.Calculo_Inversa(2, Pxi, Pyi, Pzi) #Cinematica Inversa para Punto Inicial
+        Inversaf=Ec.Calculo_Inversa(2, Pxf, Pyf, Pzf) #Cinematica Inversa para Punto Final
+        Junturas=Solucion(cod, Inversai, Inversaf)
+    return Junturas
 
-# def Perfil(tipo,mani,codo,tf,xi,yi,zi,xf,yf,zf,resol,var): #Determinar el tipo de Perfil A Utilizar
-#     if tipo==1:   #Perfil Cuadratico
-#         Qs=Manipulador(mani,codo,xi,yi,zi,xf,yf,zf)
-#         perfiles=Cal.Perf_Cuadra(tf,resol,Qs[0],Qs[1])
-#     elif tipo==2: #Perfil Trapezoidal Tipo I
-#         Qs=Manipulador(mani,codo,xi,yi,zi,xf,yf,zf)
-#         perfiles=Cal.Perf_Trape(tf,resol,Qs[0],Qs[1],var,1)
-#     else:         #Perfil Trapezoidal Tipo II
-#         Qs=Manipulador(mani,codo,xi,yi,zi,xf,yf,zf)
-#         perfiles=Cal.Perf_Trape(tf,resol,Qs[0],Qs[1],var,2)
-#     return perfiles       
-
-# def Manipulador(manipu,cod,Pxi,Pyi,Pzi,Pxf,Pyf,Pzf): #Determina el Manipulador a Utilizar
-#     if manipu==1:
-#         Inversai=Cal.IK_Scara_P3R(Pxi,Pyi,Pzi) #Cinematica Inversa para Punto Inicial        
-#         Inversaf=Cal.IK_Scara_P3R(Pxf,Pyf,Pzf) #Cinematica Inversa para Punto Final
-#         Junturas=Solucion(cod,Inversai,Inversaf)        
-#     else:
-#         Inversai=Cal.IK_Antropo_3R(Pxi,Pyi,Pzi) #Cinematica Inversa para Punto Inicial
-#         Inversaf=Cal.IK_Antropo_3R(Pxf,Pyf,Pzf) #Cinematica Inversa para Punto Final
-#         Junturas=Solucion(cod,Inversai,Inversaf)
-#     return Junturas
-
-# def Solucion(sol,Ini,Fin): #Determina la Solución a utilizar (Codo Arriba o Codo Abajo)
-#     if sol==1: #Codo Abajo
-#         Qi=[Ini[0],Ini[1],Ini[2]] #Toma los valores de las junturas iniciales para Codo Abajo 
-#         Qf=[Fin[0],Fin[1],Fin[2]] #Toma los valores de las junturas finales para Codo Abajo 
-#     else: #Codo Arriba
-#         Qi=[Ini[0],Ini[3],Ini[4]] #Toma los valores de las junturas iniciales para Codo Arriba
-#         Qf=[Fin[0],Fin[3],Fin[4]] #Toma los valores de las junturas finales para Codo Arriba
-#     return Qi,Qf
+def Solucion(sol, Ini, Fin): #Determina la Solución a utilizar (Codo Arriba o Codo Abajo)
+    if sol == 1: #Codo Abajo
+        Qi=[Ini[0], Ini[1], Ini[2]] #Toma los valores de las junturas iniciales para Codo Abajo 
+        Qf=[Fin[0], Fin[1], Fin[2]] #Toma los valores de las junturas finales para Codo Abajo 
+    else: #Codo Arriba
+        Qi=[Ini[0], Ini[3], Ini[4]] #Toma los valores de las junturas iniciales para Codo Arriba
+        Qf=[Fin[0], Fin[3], Fin[4]] #Toma los valores de las junturas finales para Codo Arriba
+    return Qi, Qf

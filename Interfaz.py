@@ -4,28 +4,34 @@ import Widgets as Wd
 import Ecuaciones as Ec
 import time as tm
 import threading as hilos
+import numpy as np
 ###### Modulos De Librerias ######
 import tkinter.ttk as ttk
 import tkinter.messagebox as MsB
 import serial
 import serial.tools.list_ports
+import matplotlib.pyplot as plt
+###### SubModulos De Librerias ######
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 
-board =serial.Serial(port='COM12', baudrate=9600)
+board =serial.Serial(port='COM3', baudrate=9600)
 tm.sleep(1)
-board2 =serial.Serial(port='COM3', baudrate=9600)
+board2 =serial.Serial(port='COM4', baudrate=9600)
 tm.sleep(1)
 
 def Show_Sliders(event): #Función Para Mostrar Sliders
     Alter_Sliders('T', Pl_x.get())
-    Wd.Aparecer([Pl_x,Pl_y,Pl_z,P_xi,P_yi,P_zi,P_x,P_y,P_z,P_inicial,P_final],
+    Datos_Temp(0,0,0,1) 
+    Wd.Aparecer([Pl_x, Pl_y, Pl_z, P_xi, P_yi, P_zi, P_x, P_y, P_z, P_inicial, P_final],
     [1/16+0.025, 1/16+0.025, 1/16+0.025, 0, 0, 0, 1/16+0.01, 1/16+0.01, 1/16+0.01, 0, 2/16],
     [1/6, 3/6-0.07, 0.693, 2/6-0.02, 3/6+0.075, 0.836, 2/6-0.02, 3/6+0.075, 0.836, 1/6-0.02, 0])
 
 def Show_Codo(Iden, Valor): #Función Para Mostrar Codos
-    Wd.Aparecer([T_Codo,Despl_Codo],[4/16+0.02, 4/16+0.01],[3/7+0.02, 4/6])    
+    Wd.Aparecer([T_Codo, Despl_Codo], [4/16+0.02, 4/16+0.01], [3/7+0.02, 4/6])    
 
 def Show_Perfiles(event): #Función Para Mostrar Perfiles
-    Wd.Aparecer([Cuadratico,TrapezoidalI,TrapezoidalII],[6/16+0.04, 9/16+0.04, 12/16+0.04],[0, 0, 0])  
+    Wd.Aparecer([Cuadratico, TrapezoidalI, TrapezoidalII], [6/16+0.04, 9/16+0.04, 12/16+0.04], [0, 0, 0])  
 
 def Show_Datos(): #Función Para Mostrar Los Sliders De Datos De Entrada
     if Tipo.get()==1:
@@ -48,7 +54,10 @@ def Show_Datos(): #Función Para Mostrar Los Sliders De Datos De Entrada
     Wd.Aparecer([T_f, N_p, TT_f, TN_p, Calcular_PT],
     [6/16+0.04, 6/16+0.04, 6/16+0.02, 6/16+0.02, 6/16+0.04],
     [1/8+0.01, 3/8+0.04, 1/7+0.012, 3/7+0.012, 6/8])
-    
+
+def Show_Graficas(Iden, Valor):
+    print(Valor)
+
 bands=0
 bandr=0
 def Datos_Temp(xtemp, ytemp, ztemp, RW): #Función Para Guardar Los Valores Para Nuevo Punto Inicial
@@ -84,12 +93,11 @@ def Datos_Temp(xtemp, ytemp, ztemp, RW): #Función Para Guardar Los Valores Para
                 P_yi.config(text=temp_yr)
                 P_zi.config(text=temp_zr)                
             else:   
-                P_xi.config(text=170.28) 
+                P_xi.config(text=197) 
                 P_yi.config(text=0)
-                P_zi.config(text=62.87)    
+                P_zi.config(text=95.5)    
 
-def Alter_Sliders(Ident, Valor): #Función Para Alternos Los Sliders (Scara-Antropomórfico)
-    Datos_Temp(0,0,0,1) 
+def Alter_Sliders(Ident, Valor): #Función Para Alternos Los Sliders (Scara-Antropomórfico)    
     if Despl_Mani.get() == "Scara (PRR)":
         Pl_x['from_']=-131.5
         Pl_x['to']=375.5
@@ -140,10 +148,10 @@ def Color(Bandera, Boton, Identi): #Función Para Alternan Color De Boton
     #print-->board.write
     if Bandera:
         Boton["bg"]="red4"
-        print(Identi + '1')
+        board.write(Identi.encode() +b',1\n')
     else:
         Boton["bg"]="lime green"
-        board.write(Identi + '0')
+        board.write(Identi.encode() +b',0\n')
 
 def Gripper(Identi): #Función Para Abrir o Cerrar Grippers
         global Estado_S        
@@ -230,10 +238,8 @@ def Cine_Directa(Vector, Valor): #Función Para Enviar y Calcular Cinemática Di
         Matriz=Ec.Parametros(3, Qs1_R.get(), Qs2_R.get(), Qs3_R.get(), Qs4_R.get(), Qs5_R.get(), Qs6_R.get())  
         Wd.Llenado(Matriz, 9, 15)    
     hilos.Thread(target=Wd.Barra.Carga, args=(Vector[1],)).start()
-    #print-->board.write
     board.write(Identi.encode()+b','+ Valor.encode()+b'\n')
-    board2.write(Identi.encode()+b','+ Valor.encode()+b'\r\n')
-    tm.sleep(2)
+    board2.write(Identi.encode()+b','+ Valor.encode()+b'\r\n')   
 
 def Cajas_DK(Vector): #Función Para Boton "Enviar". Se Calcula y Envia La Cinemática Directa Con Los Cuadros de Texto
     Identi=Vector[0]
@@ -289,12 +295,11 @@ def Cine_Inversa(Vector): #Función Para Calcular Cinematica Inversa Del Scara
 def Enviar(Vector): #Función Donde Se Envia Los Datos
     Identi=Vector[0]
     Valor=Vector[1]    
-    for i in range (0,len(Identi)):
-        #print-->board.write
-        #hilos.Thread(target=Wd.Barra.Carga, args=(Vector[2],)).start()
+    for i in range (0,len(Identi)):        
+        hilos.Thread(target=Wd.Barra.Carga, args=(Vector[2],)).start()
         board.write(Identi[i].encode()+Valor[i].get().encode()+b'\n')  
         board2.write(Identi[i].encode()+Valor[i].get().encode()+b'\r\n') 
-        tm.sleep(2)
+        tm.sleep(3)
 
 def Jacobians(Barra): #Función Para Mostrar Los Jacobianos
     j_S=Ec.Jacobianos(1, Qs1_S.get(), Qs2_S.get(), Qs3_S.get())    
@@ -302,7 +307,124 @@ def Jacobians(Barra): #Función Para Mostrar Los Jacobianos
     Matriz=[j_S[0], j_S[1], j_A[0], j_A[1]]
     hilos.Thread(target=Wd.Barra.Carga, args=(Barra,)).start()
     Wd.Llenado_Jaco(Matriz, 1, 4)
-    
+
+def elec_manipulador():#Funcion Para Elección de Manipulador
+    selection=Despl_Mani.get()   
+    if selection == "Scara (PRR)":              
+        return 1
+    else:              
+        return 2
+            
+def elec_codo():#Funcion Para Elección de codo
+    selection=Despl_Codo.get()
+    if selection == "Codo Abajo":
+        return 1
+    else:
+        return 2
+
+def plot_3d(pos_final_x, pos_final_y, pos_final_z):
+
+    root_3d = tk.Tk()
+    root_3d.wm_title("Plot 3D Efector Final")
+
+    fig = Figure(figsize=(5, 5), dpi=100)
+
+    canvas = FigureCanvasTkAgg(fig, master=root_3d)
+    canvas.draw()
+    ax = fig.add_subplot(111, projection="3d")
+    ax.plot(pos_final_x, pos_final_y, pos_final_z)
+
+    toolbar = NavigationToolbar2Tk(canvas, root_3d)
+    toolbar.update()
+    canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+    tk.mainloop()
+
+def Envio_Pl(Vectores_1, Vectores_2, Vectores_3):
+    paso=(T_f.get()/(N_p.get()))      
+    if Despl_Mani.get() == "Scara (PRR)":
+        for i in range(0,int(N_p.get())):            
+            board.write(b'Eb,'+"{:.4f}".format(int(Vectores_1[i])).encode()+b'n')
+            board2.write(b'Eb,'+"{:.4f}".format(int(Vectores_1[i])).encode()+b'\r\n')
+            tm.sleep(paso/3)            
+            board.write(b'Ebr,'+"{:.4f}".format(int(Vectores_2[i])).encode()+b'\n')            
+            board2.write(b'Ebr,'+"{:.4f}".format(int(Vectores_2[i])).encode()+b'\r\n')
+            tm.sleep(paso/3)                        
+            board.write(b'Eab,'+"{:.4f}".format(int(Vectores_3[i])).encode()+b'\n')
+            board2.write(b'Eab,'+"{:.4f}".format(int(Vectores_3[i])).encode()+b'\r\n')
+            tm.sleep(paso/3)
+    else:
+        for i in range(0,int(N_p.get())):                    
+            board.write(b'Ab,'+"{:.4f}".format(int(Vectores_1[i])).encode()+b'\n')                    
+            board2.write(b'Ab,'+"{:.4f}".format(int(Vectores_1[i])).encode()+b'\r\n')
+            tm.sleep(paso/3)            
+            board.write(b'Abr,'+"{:.4f}".format(int(Vectores_2[i])).encode()+b'\n')  
+            board2.write(b'Abr,'+"{:.4f}".format(int(Vectores_2[i])).encode()+b'\r\n')                        
+            tm.sleep(paso/3)            
+            board.write(b'Aab,'+"{:.4f}".format(int(Vectores_3[i])).encode()+b'\n')
+            board2.write(b'Aab,'+"{:.4f}".format(int(Vectores_3[i])).encode()+b'\r\n')            
+            tm.sleep(paso/3)          
+
+def But_Perfiles(Ident):#Funcion Para Calcular La Generación de Trayectorias
+    mani=elec_manipulador()
+    codo=elec_codo()
+    xini=float(P_xi.cget("text"))
+    yini=float(P_yi.cget("text"))
+    zini=float(P_zi.cget("text"))
+    xfin=float(Pl_x.get())
+    yfin=float(Pl_y.get())
+    zfin=float(Pl_z.get())
+    tip=Tipo.get()
+    tfin=T_f.get()
+    resolucion=N_p.get()
+    if tip == 2:
+        variable=[Vj_1.get(), Vj_2.get(), Vj_3.get()]
+    elif tip == 3:
+        variable=[Aj_1.get(), Aj_2.get(), Aj_3.get()]
+    else:
+        variable=[0, 0, 0]    
+    Vectores=Wd.Perfil(tip, mani, codo, tfin, xini, yini, zini, xfin, yfin, zfin, resolucion, variable)
+    if Vectores[0] == 1:
+        MsB.showwarning(title="error", message="La magnitud de la velocidad supera la condición. \n Varie el los valores de la velocidad crucero ")
+    elif Vectores[0] == 2:
+        MsB.showwarning(title="error", message="La magnitud de la aceleración supera la condición. \n Varie el los valores de la aceleración crucero")
+    else:   
+        posx=np.empty(resolucion)
+        posy=np.empty(resolucion)
+        posz=np.empty(resolucion)
+        for n in range(0, resolucion):
+            if mani == 1:
+                mat=Ec.Parametros(1, Vectores[1][n], Vectores[2][n], Vectores[3][n], None, None, None)
+                vect_pos=Ec.Vec('C', 3, None, mat[0])                             
+                posx[n]=vect_pos[0]                                  
+                posy[n]=vect_pos[1]                   
+                posz[n]=vect_pos[2]  
+            else:
+                mat=Ec.Parametros(2, Vectores[1][n], Vectores[2][n], Vectores[3][n], None, None, None)
+                vect_pos=Ec.Vec('C', 3, None, mat[0])
+                posx[n]=vect_pos[0]               
+                posy[n]=vect_pos[1]                               
+                posz[n]=vect_pos[2]
+        #Thread(target=envio_graf1(Vectores[1],Vectores[2],Vectores[3])).start()
+        Gr1=Wd.Grafica(Fr_Graf, r'Posición $q_1$', "q[°]", 0, 0)
+        Gr2=Wd.Grafica(Fr_Graf, r'Posición $q_2$', "q[°]", 1/3, 0)
+        Gr3=Wd.Grafica(Fr_Graf, r'Posición $q_3$', "q[°]", 2/3, 0)
+        Gr4=Wd.Grafica(Fr_Graf, r'Velocidad $w_1$', r'w$[rad/s]$', 0, 1/2)
+        Gr5=Wd.Grafica(Fr_Graf, r'Velocidad $w_2$', r'w$[rad/s]$', 1/3, 1/2)
+        Gr6=Wd.Grafica(Fr_Graf, r'Velocidad $w_3$', r'w$[rad/s]$', 2/3, 1/2)
+        print(Vectores[1])
+        Gr1.Linea(resolucion, int(Vectores[1][0]), int(Vectores[1][-1]), int(T_f.get()), Vectores[1])        
+        Gr2.Linea(resolucion, int(Vectores[2][0]), int(Vectores[2][-1]), int(T_f.get()), Vectores[2])
+        Gr3.Linea(resolucion, int(Vectores[3][0]), int(Vectores[3][-1]), int(T_f.get()), Vectores[3])
+        Gr4.Linea(resolucion, 0, Vectores[4][int(resolucion/2)], int(T_f.get()), Vectores[4])
+        Gr5.Linea(resolucion, 0, Vectores[5][int(resolucion/2)], int(T_f.get()), Vectores[5])
+        Gr6.Linea(resolucion, 0, Vectores[6][int(resolucion/2)], int(T_f.get()), Vectores[6])
+        P_xi.config(text=Pl_x.get())
+        P_yi.config(text=Pl_y.get())
+        P_zi.config(text=Pl_z.get())
+        Datos_Temp(P_xi.cget("text"), P_yi.cget("text"), P_zi.cget("text"), 0)
+        Envio_Pl(Vectores[1], Vectores[2], Vectores[3]) 
+        plot_3d(posx, posy, posz)          
+
 #Objetos Principales
 Ventana = tk.Tk()
 Ventana.title('Controles de Manipuladores Roboticos')
@@ -386,9 +508,6 @@ Qt_S=[Qt1_S, Qt2_S, Qt3_S]
 Qs3_S.set(90)
 #board.write(b'Eb,1\r\n')
 #board.write(b'Ebr,5\r\n')
-
-
-
 
 #Matrices
 Wd.Matrices(Fr_DK_S, "DK", 1, 4, 4, "Link 1", 1/2, 0, Fuente_12)
@@ -632,7 +751,7 @@ Tipo=tk.IntVar()
 Cuadratico=Wd.Radio(Fr_T, "Perfil Cuadrático", Fuente_12, 1, Tipo, 15, Show_Datos)
 TrapezoidalI=Wd.Radio(Fr_T, "Perfil Trapezoidal I", Fuente_12, 2, Tipo, 15, Show_Datos)
 TrapezoidalII=Wd.Radio(Fr_T, "Perfil Trapezoidal II", Fuente_12, 3, Tipo, 15, Show_Datos)
-#Calcular_PT=Wd.Boton(Fr_T, 12, None, "Calcular", "dim gray")
+Calcular_PT=Wd.Boton(Fr_T, 12, None, "Calcular", "dim gray", But_Perfiles, None)
 #Wd.Boton(Fr_T, None, None, "Instrucciones", "LightYellow2").Ubicacion(1, 1, tk.SE)
 
 #Barra De Progreso
@@ -644,16 +763,15 @@ Check_A_PL=Wd.Check(Fr_T, 'Inf', 1/4-0.025, 2/3+0.15, Cambio, 'AT', Check_AT_Val
 Pl_x=Wd.Slider(Fr_T, None, None, 0.5, 180, 20, None, None, Alter_Sliders, 'A1')              
 Pl_y=Wd.Slider(Fr_T, None, None, 0.5, 180, 20, None, None, Alter_Sliders, 'A2')
 Pl_z=Wd.Slider(Fr_T, None, None, 0.5, 180, 20, None, None, Show_Codo, None)
-# T_f=Wd.Slider(Fr_T, 15, 40, 1, 180, 20, None, None, None, None)
-# N_p=Wd.Slider(Fr_T, 10, 1000, 10, 180, 20, None, None, None, None)
-# Vj_1=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, None, None)
-# Vj_2=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, None, None)
-# Vj_3=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, None, None)
-# Aj_1=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, None, None)
-# Aj_2=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, None, None)
-# Aj_3=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, None, None)
+T_f=Wd.Slider(Fr_T, 15, 40, 1, 180, 20, None, None, Show_Graficas, None)
+N_p=Wd.Slider(Fr_T, 10, 1000, 10, 180, 20, None, None, Show_Graficas, None)
+Vj_1=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, Show_Graficas, None)
+Vj_2=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, Show_Graficas, None)
+Vj_3=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, Show_Graficas, None)
+Aj_1=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, Show_Graficas, None)
+Aj_2=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, Show_Graficas, None)
+Aj_3=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, Show_Graficas, None)
 
-# #Wd.Aparecer(Despl_Codo, 4/16+0.01, 4/6)
 # #Titulos
 P_inicial=Wd.Labels(Fr_T, None, "Puntos Iniciales", None, None, 12, Fuente_Num2, None)
 P_final=Wd.Labels(Fr_T, None, "Puntos Finales", None, None, 12, Fuente_Num2, None)
@@ -668,12 +786,7 @@ TAc_2=Wd.Labels(Fr_T, None, "Ac2", None, None, None, Fuente_Num2, None)
 TAc_3=Wd.Labels(Fr_T, None, "Ac3", None, None, None, Fuente_Num2, None)
 
 Fr_Graf=Wd.Frame(Pestaña_Trayectorias, 'Gráficas', Fuente_12, 1, 3/4, 0, 1/4, None)   #Frame Graficas
-Wd.Grafica(Fr_Graf, r'Posición $q_1$', "q[°]", 0, 0)
-Wd.Grafica(Fr_Graf, r'Posición $q_2$', "q[°]", 1/3, 0)
-Wd.Grafica(Fr_Graf, r'Posición $q_3$', "q[°]", 2/3, 0)
-Wd.Grafica(Fr_Graf, r'Velocidad $w_1$', r'w$[rad/s]$', 0, 1/2)
-Wd.Grafica(Fr_Graf, r'Velocidad $w_2$', r'w$[rad/s]$', 1/3, 1/2)
-Wd.Grafica(Fr_Graf, r'Velocidad $w_3$', r'w$[rad/s]$', 2/3, 1/2)
+
 
 #Ventana.attributes('-fullscreen',True)
 Ventana.mainloop()

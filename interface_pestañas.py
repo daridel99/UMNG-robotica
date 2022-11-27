@@ -174,30 +174,30 @@ def But_Perfiles():#Funcion Para Calcular La Generación de Trayectorias
                 posy[n]=vect_pos[1]                               
                 posz[n]=vect_pos[2]
         #Thread(target=envio_graf1(Vectores[1],Vectores[2],Vectores[3])).start()
-        global contador_calcular
-        contador_calcular=contador_calcular+1;
-        if contador_calcular==1:
-            board.write(b'Ab,'+"{:.4f}".format(float(0)).encode()+b'\r\n')
-            sleep(tfin/3)
-            board.write(b'Abr,'+"{:.4f}".format(float(0)).encode()+b'\r\n')
-            sleep(tfin/3)
-            board.write(b'Aab,'+"{:.4f}".format(float(0)).encode()+b'\r\n')
-            sleep(tfin/3)
-        if contador_calcular==2:
-            board.write(b'Ab,'+"{:.4f}".format(float(90)).encode()+b'\r\n')
-            sleep(tfin/3)
-            board.write(b'Abr,'+"{:.4f}".format(float(0)).encode()+b'\r\n')
-            sleep(tfin/3)
-            board.write(b'Aab,'+"{:.4f}".format(float(160)).encode()+b'\r\n')
-            sleep(tfin/3)
-        if contador_calcular==3:
-            board.write(b'Ab,'+"{:.4f}".format(float(180)).encode()+b'\r\n')
-            sleep(tfin/3)
-            board.write(b'Abr,'+"{:.4f}".format(float(0)).encode()+b'\r\n')
-            sleep(tfin/3)
-            board.write(b'Aab,'+"{:.4f}".format(float(40)).encode()+b'\r\n')
-            sleep(tfin/3)
-            contador_calcular=0
+        # global contador_calcular
+        # contador_calcular=contador_calcular+1;
+        # if contador_calcular==1:
+        #     board.write(b'Ab,'+"{:.4f}".format(float(0)).encode()+b'\r\n')
+        #     sleep(tfin/3)
+        #     board.write(b'Abr,'+"{:.4f}".format(float(0)).encode()+b'\r\n')
+        #     sleep(tfin/3)
+        #     board.write(b'Aab,'+"{:.4f}".format(float(0)).encode()+b'\r\n')
+        #     sleep(tfin/3)
+        # if contador_calcular==2:
+        #     board.write(b'Ab,'+"{:.4f}".format(float(90)).encode()+b'\r\n')
+        #     sleep(tfin/3)
+        #     board.write(b'Abr,'+"{:.4f}".format(float(0)).encode()+b'\r\n')
+        #     sleep(tfin/3)
+        #     board.write(b'Aab,'+"{:.4f}".format(float(160)).encode()+b'\r\n')
+        #     sleep(tfin/3)
+        # if contador_calcular==3:
+        #     board.write(b'Ab,'+"{:.4f}".format(float(180)).encode()+b'\r\n')
+        #     sleep(tfin/3)
+        #     board.write(b'Abr,'+"{:.4f}".format(float(0)).encode()+b'\r\n')
+        #     sleep(tfin/3)
+        #     board.write(b'Aab,'+"{:.4f}".format(float(40)).encode()+b'\r\n')
+        #     sleep(tfin/3)
+        #     contador_calcular=0
 
         creacion_graf1(resolucion,int(Vectores[1][0]),int(Vectores[1][-1]),Vectores[1],int(T_f.get()))
         creacion_graf2(resolucion,int(Vectores[2][0]),int(Vectores[2][-1]),Vectores[2],int(T_f.get()))

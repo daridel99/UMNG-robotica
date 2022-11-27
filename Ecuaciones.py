@@ -58,9 +58,9 @@ def Matrices_Homo(angz, dz, angx, ax): #Matriz Homogenea DH
 
 def Calculo_Directa(matrices_DH, n): #Calculo de matriz Cinemática Directa
     MatrizFinal=np.eye(4)
-    for j in range (0,n):
-        MatrizFinal=np.dot(MatrizFinal,matrices_DH[j]) 
-        MatrizFinal=np.round(MatrizFinal,decimals=5)    
+    for j in range (0, n):
+        MatrizFinal=np.dot(MatrizFinal, matrices_DH[j]) 
+        MatrizFinal=np.round(MatrizFinal, decimals=5)    
     return MatrizFinal
 
 ################### Cinemática Inversa #################
@@ -74,7 +74,6 @@ def Calculo_Inversa(n, P_X, P_Y, P_Z): #Calculo Cinemática Inversa
         Co=P_Y        #Cateto Opuesto del triangulo formado en X-Y'
         q_1=P_Z       #Variable De Juntura d1
         Rob='S'
-        print(q_1)
     elif n==2:
         d_1=float(95.91)
         a_2=float(66.76)
@@ -97,23 +96,22 @@ def Calculo_Inversa(n, P_X, P_Y, P_Z): #Calculo Cinemática Inversa
     q_2ab=(alpha-beta)                                      #Variable De Juntura T2
     
     Banderas=Limites_Junturas([q_1, q_2ar, q_3ar,  q_2ab, q_3ab], Rob)
-    Qs_IK=np.array([q_1, q_2ab*180/mt.pi, q_3ab*180/mt.pi,  q_2ar*180/mt.pi, q_3ar*180/mt.pi, Banderas[0], Banderas[1]],float)
+    Qs_IK=np.array([q_1, q_2ab*180/mt.pi, q_3ab*180/mt.pi,  q_2ar*180/mt.pi, q_3ar*180/mt.pi, Banderas[0], Banderas[1]], float)
     return Qs_IK
 
 def Limites_Junturas(Qs, Robot): #Establecer Si Los Limites Mecanicos De Junturas Son Superados
-    if Robot=='S':
+    if Robot == 'S':
         lim_1=221
         lim_2=mt.pi/2
         lim_3=mt.pi/2
-        print(Qs[0])
-    elif Robot=='A':
+    elif Robot == 'A':
         Qs[1]=Qs[1]-mt.pi/2
         Qs[3]=Qs[3]-mt.pi/2
         Qs[2]=Qs[2]-mt.pi/2
         Qs[4]=Qs[4]-mt.pi/2
         lim_1=180
         lim_2=mt.pi/2
-        lim_3=mt.pi/2
+        lim_3=mt.pi
 
     if ((Qs[0] > lim_1) or (Qs[0] < -lim_1)) or ((Qs[1] > lim_2) or (Qs[1] < -lim_2)) or ((Qs[2] > lim_3) or (Qs[2] < -lim_3)):
         IndU=True
@@ -284,3 +282,150 @@ def Jacobianos(n, q1, q2, q3): #Calculo Para Jacobianos Scara y Antropomórfico 
     return jaco_Geo, jaco_Ana
 
 ################### Planeación De Trayectorias ###################
+
+def Perf_Cuadra(tf, n, Qi, Qf): #Encontrar Las Posiciones y Velocidades De Juntura Utilizando El Perfil Cuadratrico
+    #Se recalcula un valor para "t" dependiendo la cantidad de puntos deseados (resolución)
+    t = np.arange(0, tf+((tf)/(n-1)), (tf)/(n-1), dtype=float) 
+    Err=0
+    for i in range(0, 3): #Ciclo de 3 para crear los vectores de las 3 junturas     
+        #Calculo de las constantes "a". (1 Vez para cada juntura)   
+        Cons_a=Constantes_Cuadra(float(tf), float(Qf[i]), float(Qi[i]))  
+        if i==0:
+            Pos_q1= Cons_a[3]*t**(3) + Cons_a[2]*t**(2) + Cons_a[1]*t + Cons_a[0]  #Vector de Posición Juntura 1 (d1=Desplazamiento Base)                                   
+            Vel_q1 = 3*Cons_a[3]*t**(2) + 2*Cons_a[2]*t + Cons_a[1]              #Vector de Velocidad Juntura 1 (d1=Desplazamiento Base)    
+        if i==1:
+            Pos_q2 = Cons_a[3]*t**(3) + Cons_a[2]*t**(2) + Cons_a[1]*t + Cons_a[0] #Vector de Posición Juntura 2 (t2=Angulo Brazo)
+            Vel_q2= 3*Cons_a[3]*t**(2) + 2*Cons_a[2]*t + Cons_a[1]               #Vector de Velocidad Juntura 2 (t2=Angulo Brazo)
+        else:
+            Pos_q3 = Cons_a[3]*t**(3) + Cons_a[2]*t**(2) + Cons_a[1]*t + Cons_a[0] #Vector de Posición Juntura 3 (t3=Angulo AnteBrazo)
+            Vel_q3 = 3*Cons_a[3]*t**(2) + 2*Cons_a[2]*t + Cons_a[1]              #Vector de Velocidad Juntura 3 (t3=Angulo AnteBrazo) 
+    
+    return Err, Pos_q1, Pos_q2, Pos_q3, Vel_q1, Vel_q2, Vel_q3
+
+def Perf_Trape(tf, n, Qi, Qf, vect, tipe): #Encontrar Las Posiciones y Velocidades De Juntura Utilizando El Perfil Trapezoidal    
+    t = np.arange(0, tf+((tf)/(n-1)), (tf)/(n-1), dtype=float) 
+    Pos_q1=np.empty(n)
+    Pos_q2=np.empty(n)
+    Pos_q3=np.empty(n)
+    Vel_q1=np.empty(n)
+    Vel_q2=np.empty(n)
+    Vel_q3=np.empty(n)
+    for j in range (0, len(t)):
+        for i in range (0, 3):
+            Variab=Constantes_Trape(float(Qi[i]), float(Qf[i]), tf, float(vect[i]), tipe)
+            tc=Variab[0]
+            Ac=Variab[1] 
+            Err=Variab[2]
+            if Err == 1:
+                return Err,Variab[3]
+            elif Err == 2:
+                return Err, Variab[3]
+            else:
+                Err=0
+                if i == 0:
+                    if t[j] <= tc:                            #Segmento velocidad LINEAL trapecio inicio
+                        Pos_q1[j]=Qi[i]+(Ac*t[j]**2)/2
+                        Vel_q1[j]=Ac*t[j]
+                    elif t[j] <= tf-tc:                       #Segmento velocidad CONSTANTE trapecio medio
+                        Pos_q1[j]=Qi[i]+Ac*tc*(t[j]-tc/2)
+                        Vel_q1[j]=Ac*tc
+                    else:                                   #Segmento velocidad LINEAL trapecio final
+                        Pos_q1[j]=Qf[i]-(Ac*(tf-t[j])**(2))/2  
+                        Vel_q1[j]=Ac*(tf-t[j])
+                if i == 1:
+                    if t[j] <= tc:                            #Segmento velocidad LINEAL trapecio inicio
+                        Pos_q2[j]=Qi[i]+(Ac*t[j]**2)/2
+                        Vel_q2[j]=Ac*t[j]
+                    elif t[j] <= tf-tc:                       #Segmento velocidad CONSTANTE trapecio medio
+                        Pos_q2[j]=Qi[i]+Ac*tc*(t[j]-tc/2)
+                        Vel_q2[j]=Ac*tc
+                    else:                                   #Segmento velocidad LINEAL trapecio final
+                        Pos_q2[j]=Qf[i]-(Ac*(tf-t[j])**(2))/2  
+                        Vel_q2[j]=Ac*(tf-t[j])
+                if i == 2:
+                    if t[j] <= tc:                            #Segmento velocidad LINEAL trapecio inicio
+                        Pos_q3[j]=Qi[i]+(Ac*t[j]**2)/2
+                        Vel_q3[j]=Ac*t[j]
+                    elif t[j] <= tf-tc:                       #Segmento velocidad CONSTANTE trapecio medio
+                        Pos_q3[j]=Qi[i]+Ac*tc*(t[j]-tc/2)
+                        Vel_q3[j]=Ac*tc
+                    else:                                   #Segmento velocidad LINEAL trapecio final
+                        Pos_q3[j]=Qf[i]-(Ac*(tf-t[j])**(2))/2  
+                        Vel_q3[j]=Ac*(tf-t[j])   
+    return Err, Pos_q1, Pos_q2, Pos_q3, Vel_q1, Vel_q2, Vel_q3
+
+def Constantes_Trape(Qi, Qf, tf, Vect, tipe): #Encontrar las constantes "tc y Ac" para el Perfil Trapezoidal
+    if tipe == 1: #Si Es Perfil Trapezoidal Tipo I
+        Vc=Vect
+        cond=abs(Qf-Qi)/tf
+        print (cond)
+        if (2*cond >= Vc) & (Vc > cond):
+            Vc=Signo(Qf-Qi)*Vc
+            tc=(Qi-Qf+(Vc*tf))/Vc
+            Ac=Vc/tc
+            Error=0            
+        else:
+            tc=0
+            Ac=0
+            Error=1            
+        Variables=[tc, Ac, Error, cond]        
+    else: #Si Es Perfil Trapezoidal Tipo II
+        Ac=Vect
+        cond=4*abs(Qf-Qi)/tf**(2)
+        #print (cond)
+        if Ac > cond:
+            Ac=Signo(Qf-Qi)*Ac
+            tc=(tf/2)-(0.5*(np.sqrt(((tf**(2)*Ac)-(4*(Qf-Qi)))/Ac)))
+            Error=0 
+        else:
+            tc=0
+            Ac=0
+            Error=2
+        Variables=[tc, Ac, Error, cond]
+    return Variables
+
+def Constantes_Cuadra(tf, Qf, Qi): #Encontrar las constantes "a" de la funcion cuadratica
+    #Parte de reposo y termina en reposo: ti=0
+    Vi=0
+    Vf=0
+    
+    a=np.array([0, 0, 0, 0],float)
+    a3=symbols('a3')  
+    a2=symbols('a2')
+
+    '''Con las siguientes 3 ecuaciones
+    Q =      a3*t^3 + a2*t^2 + a1*t + a0   (Posición de Juntura)
+    Q.= V =  3*a3*t^2 + 2*a2*t + a1        (Velocidad de Juntura)
+    Q..= α = 6*a3*t + a2                   (Aceleración de Juntura)
+    Calcular los valores de las "a"
+    '''
+    #Para t=ti: Se pueden calcular a0 y a1 de la ecuación "Q" y "Q."
+    a0 = Qi
+    a1 = Vi
+    a[0]=a0
+    a[1]=a1
+    cont=2
+
+    #Para t=tf: Se pueden calcular a2 y a3 de la ecuación "Q" y "Q."
+    t = tf
+
+    #Se utilizan variables auxiliares para realizar calculos simbolicos
+    aux1 = a3*t**3 + a2*t**2 + a[1]*t + a[0] - Qf 
+    aux2 = 3*a3*t**2 + 2*a2*t + a[1] - Vf   
+
+    aux3 = solve([aux1, aux2], a2, a3) #Se solucionan en terminos de a2 y a3
+
+    for data in aux3.values():#Ciclo para extraer los valores de a2 y a3 del "Diccionario aux3"
+        a[cont]=float(data)
+        cont+=1
+
+    Const_as=np.array([a[0], a[1], a[2], a[3]], float)
+    return Const_as
+
+################### Funciones Adicionales ###################
+def Signo(x): #Determina El signo del numero
+    if x>=0:
+        sgn=1            
+    else:
+        sgn=-1
+    return sgn
