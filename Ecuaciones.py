@@ -317,9 +317,9 @@ def Perf_Trape(tf, n, Qi, Qf, vect, tipe): #Encontrar Las Posiciones y Velocidad
             Ac=Variab[1] 
             Err=Variab[2]
             if Err == 1:
-                return Err,Variab[3]
+                return Err,Variab[3],i
             elif Err == 2:
-                return Err, Variab[3]
+                return Err, Variab[3],i
             else:
                 Err=0
                 if i == 0:
@@ -357,8 +357,9 @@ def Perf_Trape(tf, n, Qi, Qf, vect, tipe): #Encontrar Las Posiciones y Velocidad
 def Constantes_Trape(Qi, Qf, tf, Vect, tipe): #Encontrar las constantes "tc y Ac" para el Perfil Trapezoidal
     if tipe == 1: #Si Es Perfil Trapezoidal Tipo I
         Vc=Vect
-        cond=abs(Qf-Qi)/tf
-        print (cond)
+        cond=abs(Qf-Qi)/tf #cond from_ hasta cond*2 to (vel)
+        cond_velocidad=cond
+        #print (cond)
         if (2*cond >= Vc) & (Vc > cond):
             Vc=Signo(Qf-Qi)*Vc
             tc=(Qi-Qf+(Vc*tf))/Vc
@@ -371,8 +372,9 @@ def Constantes_Trape(Qi, Qf, tf, Vect, tipe): #Encontrar las constantes "tc y Ac
         Variables=[tc, Ac, Error, cond]        
     else: #Si Es Perfil Trapezoidal Tipo II
         Ac=Vect
-        cond=4*abs(Qf-Qi)/tf**(2)
-        #print (cond)
+        cond=4*abs(Qf-Qi)/tf**(2) #cond from_ hasta cond*4 to (acele) 
+        cond_aceleracion=cond
+        #print (cond) #vj1 vj2 vj3#
         if Ac > cond:
             Ac=Signo(Qf-Qi)*Ac
             tc=(tf/2)-(0.5*(np.sqrt(((tf**(2)*Ac)-(4*(Qf-Qi)))/Ac)))

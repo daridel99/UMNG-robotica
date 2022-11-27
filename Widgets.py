@@ -181,10 +181,10 @@ def Perfil(tipo, mani, codo, tf, xi, yi, zi, xf, yf, zf, resol, var): #Determina
     if tipo == 1:   #Perfil Cuadratico
         Qs=Manipulador(mani, codo, xi, yi, zi, xf, yf, zf)
         perfiles=Ec.Perf_Cuadra(tf, resol, Qs[0], Qs[1])
-    elif tipo==2: #Perfil Trapezoidal Tipo I
+    elif tipo==2: #Perfil Trapezoidal Tipo I (vel
         Qs=Manipulador(mani, codo, xi, yi, zi, xf, yf, zf)
         perfiles=Ec.Perf_Trape(tf, resol, Qs[0], Qs[1], var, 1)
-    else:         #Perfil Trapezoidal Tipo II
+    else:         #Perfil Trapezoidal Tipo II (acel)
         Qs=Manipulador(mani, codo, xi, yi, zi, xf, yf, zf)
         perfiles=Ec.Perf_Trape(tf, resol, Qs[0], Qs[1], var, 2)
     return perfiles       

@@ -383,10 +383,34 @@ def But_Perfiles(Ident):#Funcion Para Calcular La Generación de Trayectorias
     else:
         variable=[0, 0, 0]    
     Vectores=Wd.Perfil(tip, mani, codo, tfin, xini, yini, zini, xfin, yfin, zfin, resolucion, variable)
-    if Vectores[0] == 1:
+    if Vectores[0] == 1: # vel
         MsB.showwarning(title="error", message="La magnitud de la velocidad supera la condición. \n Varie el los valores de la velocidad crucero ")
-    elif Vectores[0] == 2:
+        for i in range (0, 3):
+            if Vectores[2]==0:
+                Vj_1["from_"]=(Vectores[1])+0.1
+                Vj_1["to"]=(Vectores[1]*2)-0.1
+            if Vectores[2]==1:
+                Vj_2["from_"]=(Vectores[1])+0.1
+                Vj_2["to"]=(Vectores[1]*2)-0.1
+            if Vectores[2]==2:
+                Vj_3["from_"]=(Vectores[1])+0.1
+                Vj_3["to"]=(Vectores[1]*2)-0.1
+            Vectores=Wd.Perfil(Tipo.get(), elec_manipulador(), elec_codo(), T_f.get(), float(P_xi.cget("text")), float(P_yi.cget("text")), float(P_zi.cget("text")), float(Pl_x.get()), float(Pl_y.get()), float(Pl_z.get()), N_p.get(), [Vj_1.get(), Vj_2.get(), Vj_3.get()])
+
+    elif Vectores[0] == 2: #acel
         MsB.showwarning(title="error", message="La magnitud de la aceleración supera la condición. \n Varie el los valores de la aceleración crucero")
+        for i in range (0, 3):
+            if Vectores[2]==0:
+                Aj_1["from_"]=(Vectores[1])+0.1
+                Aj_1["to"]=(Vectores[1]*4)-0.1
+            if Vectores[2]==1:
+                Aj_2["from_"]=(Vectores[1])+0.1
+                Aj_2["to"]=(Vectores[1]*4)-0.1
+            if Vectores[2]==2:
+                Aj_3["from_"]=(Vectores[1])+0.1
+                Aj_3["to"]=(Vectores[1]*4)-0.1
+            Vectores=Wd.Perfil(Tipo.get(), elec_manipulador(), elec_codo(), T_f.get(), float(P_xi.cget("text")), float(P_yi.cget("text")), float(P_zi.cget("text")), float(Pl_x.get()), float(Pl_y.get()), float(Pl_z.get()), N_p.get(), [Aj_1.get(), Aj_2.get(), Aj_3.get()])
+
     else:   
         posx=np.empty(resolucion)
         posy=np.empty(resolucion)
@@ -411,7 +435,6 @@ def But_Perfiles(Ident):#Funcion Para Calcular La Generación de Trayectorias
         Gr4=Wd.Grafica(Fr_Graf, r'Velocidad $w_1$', r'w$[rad/s]$', 0, 1/2)
         Gr5=Wd.Grafica(Fr_Graf, r'Velocidad $w_2$', r'w$[rad/s]$', 1/3, 1/2)
         Gr6=Wd.Grafica(Fr_Graf, r'Velocidad $w_3$', r'w$[rad/s]$', 2/3, 1/2)
-        print(Vectores[1])
         Gr1.Linea(resolucion, int(Vectores[1][0]), int(Vectores[1][-1]), int(T_f.get()), Vectores[1])        
         Gr2.Linea(resolucion, int(Vectores[2][0]), int(Vectores[2][-1]), int(T_f.get()), Vectores[2])
         Gr3.Linea(resolucion, int(Vectores[3][0]), int(Vectores[3][-1]), int(T_f.get()), Vectores[3])
