@@ -344,24 +344,24 @@ def Envio_Pl(Vectores_1, Vectores_2, Vectores_3):
     if Despl_Mani.get() == "Scara (PRR)":
         for i in range(0,int(N_p.get())):            
             board.write(b'Eb,'+"{:.4f}".format(int(Vectores_1[i])).encode()+b'n')
-            board2.write(b'Eb,'+"{:.4f}".format(int(Vectores_1[i])).encode()+b'\r\n')
+            board2.write(b'Eb,'+str(int(Vectores_1[i])).encode()+b'\r\n')
             tm.sleep(paso/3)            
             board.write(b'Ebr,'+"{:.4f}".format(int(Vectores_2[i])).encode()+b'\n')            
-            board2.write(b'Ebr,'+"{:.4f}".format(int(Vectores_2[i])).encode()+b'\r\n')
+            board2.write(b'Ebr,'+str(int(Vectores_2[i])).encode()+b'\r\n')
             tm.sleep(paso/3)                        
             board.write(b'Eab,'+"{:.4f}".format(int(Vectores_3[i])).encode()+b'\n')
-            board2.write(b'Eab,'+"{:.4f}".format(int(Vectores_3[i])).encode()+b'\r\n')
+            board2.write(b'Eab,'+str(int(Vectores_3[i])).encode()+b'\r\n')
             tm.sleep(paso/3)
     else:
         for i in range(0,int(N_p.get())):                    
             board.write(b'Ab,'+"{:.4f}".format(int(Vectores_1[i])).encode()+b'\n')                    
-            board2.write(b'Ab,'+"{:.4f}".format(int(Vectores_1[i])).encode()+b'\r\n')
+            board2.write(b'Ab,'+str(int(Vectores_1[i])).encode()+b'\r\n')
             tm.sleep(paso/3)            
             board.write(b'Abr,'+"{:.4f}".format(int(Vectores_2[i])).encode()+b'\n')  
-            board2.write(b'Abr,'+"{:.4f}".format(int(Vectores_2[i])).encode()+b'\r\n')                        
+            board2.write(b'Abr,'+str(int(Vectores_2[i])).encode()+b'\r\n')                        
             tm.sleep(paso/3)            
             board.write(b'Aab,'+"{:.4f}".format(int(Vectores_3[i])).encode()+b'\n')
-            board2.write(b'Aab,'+"{:.4f}".format(int(Vectores_3[i])).encode()+b'\r\n')            
+            board2.write(b'Aab,'+str(int(Vectores_3[i])).encode()+b'\r\n')            
             tm.sleep(paso/3)          
 
 def But_Perfiles(Ident):#Funcion Para Calcular La Generación de Trayectorias
