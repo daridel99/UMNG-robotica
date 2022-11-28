@@ -89,8 +89,7 @@ void Base(int angulo){
       Pos_futura = angulo ;
       Pasos = (Pos_futura - Pos_actual)*5/9;
       Pos_actual = angulo;
-    }
-  Serial.println(Pasos);
+    }  
   myStepper.step(Pasos);
 }
 //----------Seleccion

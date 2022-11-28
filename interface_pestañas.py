@@ -21,9 +21,9 @@ import Calculos
 import Funciones as Fnc
 
 #Configuracion COM
-board =serial.Serial(port='COM1', baudrate=9600)
+board =serial.Serial(port='COM3', baudrate=9600)
 sleep(1) #1 Segundos Para Que Establezca La Comunicacion
-board2 =serial.Serial(port='COM3', baudrate=9600)
+board2 =serial.Serial(port='COM2', baudrate=9600)
 sleep(1)
 bands=0
 bandr=0
@@ -603,7 +603,8 @@ def contar():
 def servo1(posiciones1):
     if board.isOpen() and board2.isOpen():
         #pbr_tarea["background"]='green'
-        pbr_tarea['value'] = 0
+        pbr_tare
+        a['value'] = 0
         Thread(target=contar).start()
         board.write(b'Eb,'+posiciones1.encode()+b'\r\n')
         board2.write(b'Eb,'+posiciones1.encode()+b'\r\n')

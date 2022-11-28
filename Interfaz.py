@@ -102,7 +102,7 @@ def Alter_Sliders(Ident, Valor): #Función Para Alternos Los Sliders (Scara-Antr
         Pl_x['from_']=-131.5
         Pl_x['to']=375.5
         Pl_z['from_']=0
-        Pl_z['to']=221
+        Pl_z['to']=19
         if Ident == 'A1':        
             Red_Slider(['S', 'T', Pl_y, Check_S_PL, 1/4-0.025, 1/3+0.22], Valor)           
     else:
@@ -239,6 +239,7 @@ def Cine_Directa(Vector, Valor): #Función Para Enviar y Calcular Cinemática Di
         Wd.Llenado(Matriz, 9, 15)    
     hilos.Thread(target=Wd.Barra.Carga, args=(Vector[1],)).start()
     board.write(Identi.encode()+b','+ Valor.encode()+b'\n')
+    print(Identi.encode()+b','+ Valor.encode()+b'\n')
     board2.write(Identi.encode()+b','+ Valor.encode()+b'\r\n')   
 
 def Cajas_DK(Vector): #Función Para Boton "Enviar". Se Calcula y Envia La Cinemática Directa Con Los Cuadros de Texto
@@ -519,16 +520,16 @@ Ba_S=Wd.Barra(Fr_IK_S, 300, 1/6, 0.98, 0.25, tk.E)
 #Sliders
 Qs1_S=Wd.Slider(Fr_DK_S, 1, 19, 1, 250, 34, 'Desplazamiento Base', Fuente_Slider, Cine_Directa, ['Eb',Ba_S])
 Qs1_S.Ubicacion(0,0)
-Qs2_S=Wd.Slider(Fr_DK_S, 0, 180, 10, 250, 34, 'Rotación Antebrazo', Fuente_Slider, Cine_Directa, ['Ebr',Ba_S])
+Qs2_S=Wd.Slider(Fr_DK_S, -90, 90, 10, 250, 34, 'Rotación Antebrazo', Fuente_Slider, Cine_Directa, ['Ebr',Ba_S])
 Qs2_S.Ubicacion(0, 1/3)
-Qs3_S=Wd.Slider(Fr_DK_S, 0, 180, 10, 250, 34, 'Rotación Brazo', Fuente_Slider, Cine_Directa, ['Eab',Ba_S])
+Qs3_S=Wd.Slider(Fr_DK_S, -90, 90, 10, 250, 34, 'Rotación Brazo', Fuente_Slider, Cine_Directa, ['Eab',Ba_S])
 Qs3_S.Ubicacion(0, 2/3)
 Qt1_S=Wd.Editables(Fr_DK_S, Fuente_Num, 3/16, 0.11)
 Qt2_S=Wd.Editables(Fr_DK_S, Fuente_Num, 3/16, 1/3+0.11)
 Qt3_S=Wd.Editables(Fr_DK_S, Fuente_Num, 3/16, 2/3+0.11)
 Qt_S=[Qt1_S, Qt2_S, Qt3_S]
 #Seteo Inicial
-Qs3_S.set(90)
+#Qs3_S.set(90)
 #board.write(b'Eb,1\r\n')
 #board.write(b'Ebr,5\r\n')
 
@@ -809,7 +810,6 @@ TAc_2=Wd.Labels(Fr_T, None, "Ac2", None, None, None, Fuente_Num2, None)
 TAc_3=Wd.Labels(Fr_T, None, "Ac3", None, None, None, Fuente_Num2, None)
 
 Fr_Graf=Wd.Frame(Pestaña_Trayectorias, 'Gráficas', Fuente_12, 1, 3/4, 0, 1/4, None)   #Frame Graficas
-
 
 #Ventana.attributes('-fullscreen',True)
 Ventana.mainloop()
