@@ -531,10 +531,6 @@ Qt1_S=Wd.Editables(Fr_DK_S, Fuente_Num, 3/16, 0.11)
 Qt2_S=Wd.Editables(Fr_DK_S, Fuente_Num, 3/16, 1/3+0.11)
 Qt3_S=Wd.Editables(Fr_DK_S, Fuente_Num, 3/16, 2/3+0.11)
 Qt_S=[Qt1_S, Qt2_S, Qt3_S]
-#Seteo Inicial
-#Qs3_S.set(90)
-#board.write(b'Eb,1\r\n')
-#board.write(b'Ebr,5\r\n')
 
 #Matrices
 Wd.Matrices(Fr_DK_S, "DK", 1, 4, 4, "Link 1", 1/2, 0, Fuente_12)
