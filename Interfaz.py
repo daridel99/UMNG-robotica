@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 
-board =serial.Serial(port='COM3', baudrate=9600)
+board =serial.Serial(port='COM1', baudrate=9600)
 tm.sleep(1)
 board2 =serial.Serial(port='COM4', baudrate=9600)
 tm.sleep(1)
@@ -343,16 +343,19 @@ def plot_3d(pos_final_x, pos_final_y, pos_final_z):
 def Envio_Pl(Vectores_1, Vectores_2, Vectores_3):
     paso=(T_f.get()/(N_p.get()))      
     if Despl_Mani.get() == "Scara (PRR)":
-        for i in range(0,int(N_p.get())):            
-            board.write(b'Eb,'+"{:.4f}".format(int(Vectores_1[i])).encode()+b'n')
-            board2.write(b'Eb,'+str(int(Vectores_1[i])).encode()+b'\r\n')
-            tm.sleep(paso/3)            
+        board.write(b'Eb,'+"{:.4f}".format(int(Vectores_1[-1])).encode()+b'\n')
+        board2.write(b'Eb,'+str(int(Vectores_1[-1])).encode()+b'\r\n')
+        Time_Prisma=int(Vectores_1[-1])*(1.8)
+        tm.sleep (Time_Prisma)
+        Restante=T_f.get()-Time_Prisma
+        paso=(Restante/N_p.get())
+        for i in range(0,int(N_p.get())):                                                      
             board.write(b'Ebr,'+"{:.4f}".format(int(Vectores_2[i])).encode()+b'\n')            
             board2.write(b'Ebr,'+str(int(Vectores_2[i])).encode()+b'\r\n')
-            tm.sleep(paso/3)                        
+            tm.sleep(paso/2)                        
             board.write(b'Eab,'+"{:.4f}".format(int(Vectores_3[i])).encode()+b'\n')
             board2.write(b'Eab,'+str(int(Vectores_3[i])).encode()+b'\r\n')
-            tm.sleep(paso/3)
+            tm.sleep(paso/2)
     else:
         for i in range(0,int(N_p.get())):                    
             board.write(b'Ab,'+"{:.4f}".format(int(Vectores_1[i])).encode()+b'\n')                    
@@ -599,7 +602,7 @@ Ba_A=Wd.Barra(Fr_IK_A, 300, 1/6, 0.98, 0.25, tk.E)
 #Sliders
 Qs1_A=Wd.Slider(Fr_DK_A, 0, 360, 10, 250, 34, 'Rotación Base', Fuente_Slider, Cine_Directa, ['Ab',Ba_A])
 Qs1_A.Ubicacion(0, 0)
-Qs2_A=Wd.Slider(Fr_DK_A, 0, 180, 10, 250, 34, 'Rotación Brazo', Fuente_Slider, Cine_Directa, ['Aab',Ba_A])
+Qs2_A=Wd.Slider(Fr_DK_A, -90, 90, 10, 250, 34, 'Rotación Brazo', Fuente_Slider, Cine_Directa, ['Aab',Ba_A])
 Qs2_A.Ubicacion(0, 2/3)
 Qs3_A=Wd.Slider(Fr_DK_A, 0, 180, 10, 250, 34, 'Rotación Antebrazo', Fuente_Slider, Cine_Directa, ['Abr',Ba_A])
 Qs3_A.Ubicacion(0, 1/3)
@@ -788,7 +791,7 @@ Pl_x=Wd.Slider(Fr_T, None, None, 0.5, 180, 20, None, None, Alter_Sliders, 'A1')
 Pl_y=Wd.Slider(Fr_T, None, None, 0.5, 180, 20, None, None, Alter_Sliders, 'A2')
 Pl_z=Wd.Slider(Fr_T, None, None, 0.5, 180, 20, None, None, Show_Codo, None)
 T_f=Wd.Slider(Fr_T, 15, 40, 1, 180, 20, None, None, Show_Graficas, None)
-N_p=Wd.Slider(Fr_T, 10, 1000, 10, 180, 20, None, None, Show_Graficas, None)
+N_p=Wd.Slider(Fr_T, 10, 100, 10, 180, 20, None, None, Show_Graficas, None)
 Vj_1=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, Show_Graficas, None)
 Vj_2=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, Show_Graficas, None)
 Vj_3=Wd.Slider(Fr_T, None, None, 0.2, 180, 20, None, None, Show_Graficas, None)

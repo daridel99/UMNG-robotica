@@ -12,7 +12,7 @@ String Aux = "";
 String cadenaCharEntrada = "";
 String cadenaNumeroGrado = "";
 
-char *Cadenas ;
+char *Cadenas ; 
 
 int angulo;
 int aux;
@@ -24,7 +24,7 @@ int Pasos=0;
 
 void setup(){
   myservo1.attach(11);    // Pin 11 al servo1 (Codo 1)
-  myservo2.attach(9);     // Pin 9 al servo2 (Codo 2)
+  myservo2.attach(8);     // Pin 9 al servo2 (Codo 2)
   myservo3.attach(10);    // Pin 10 al servo3 (Pinza)
   myStepper.setSpeed(20); // Velocidad Paso a Paso (Base)
   Servo1(0);
