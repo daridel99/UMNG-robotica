@@ -106,11 +106,9 @@ def Limites_Junturas(Qs, Robot): #Establecer Si Los Limites Mecanicos De Juntura
         lim_3=mt.pi/2
     elif Robot == 'A':
         Qs[1]=Qs[1]-mt.pi/2
-        Qs[3]=Qs[3]-mt.pi/2
-        Qs[2]=Qs[2]-mt.pi/2
-        Qs[4]=Qs[4]-mt.pi/2
+        Qs[3]=Qs[3]-mt.pi/2       
         lim_1=180
-        lim_2=mt.pi
+        lim_2=mt.pi/2
         lim_3=mt.pi/2
 
     if ((Qs[0] > lim_1) or (Qs[0] < -lim_1)) or ((Qs[1] > lim_2) or (Qs[1] < -lim_2)) or ((Qs[2] > lim_3) or (Qs[2] < -lim_3)):
